@@ -22,20 +22,20 @@ const calendarsData = {
         category: 'Apoio ao Estudo'
       },
       {
-        title: 'ITN - MAP15',
+        title: 'ITN',
         date: '24 de setembro de 2025',
         time: 'A definir',
         location: 'A definir',
-        description: '',
+        description: 'MAP15',
         category: 'Avaliação'
       },
       {
-        title: 'Torneio de Sueca',
-        date: '24 de setembro de 2025',
-        time: '19:00',
-        location: 'A definir',
-        description: "Durante o dia estudas, e ao pôr do sol relaxas: junta-te a nós para ver o teu filme favorito ao ar livre!",
-        category: 'Social'
+        title: "Torneio de Sueca",
+        date: "24 de setembro, 2025",
+        time: "21:00",
+        location: "LabMat",
+        description: "Escolhe um parceiro e mostra que sabes jogar!",
+        category: "Social"
       }
     ]
   },
@@ -44,28 +44,28 @@ const calendarsData = {
     link: "https://calendar.google.com/calendar/embed?src=eb00b377c1894a6f74a819e275182d0d910214d616c852dc61a78ec0d7a1c6b3%40group.calendar.google.com&ctz=Europe/Lisbon",
     events: [
       {
-        title: 'Arraial do Técnico',
-        date: '12–13 de setembro de 2025',
-        time: '20:00',
-        location: 'Instituto Superior Técnico — banca 5',
-        description: 'Vem festejar com os alunos de Matemática no Arraial do Técnico. Procura a banca 5 e junta-te à festa universitária!',
-        category: 'Social'
-      },
-      {
-        title: 'Sessão de cinema',
-        date: '17 de setembro de 2025',
-        time: '19:00',
-        location: 'A definir',
-        description: "Durante o dia estudas, e ao pôr do sol relaxas: junta-te a nós para ver o teu filme favorito ao ar livre!",
-        category: 'Social'
-      },
-      {
         title: "Torneio de Sueca",
         date: "24 de setembro, 2025",
         time: "21:00",
         location: "LabMat",
         description: "Escolhe um parceiro e mostra que sabes jogar!",
         category: "Social"
+      },
+      {
+        title: 'TFE',
+        date: '30 de setembro de 2025',
+        time: 'A definir',
+        location: 'A definir',
+        description: 'MAP45',
+        category: 'Avaliação'
+      },
+      {
+        title: 'IAC',
+        date: '8 de outubro de 2025',
+        time: 'A definir',
+        location: 'A definir',
+        description: 'MAP45',
+        category: 'Avaliação'
       }
     ]
   },
@@ -74,28 +74,28 @@ const calendarsData = {
     link: "https://calendar.google.com/calendar/embed?src=6db57e8fd203da0ec88a436a0ce4f74ff8f34e9337329d81dba89131b7f6c387%40group.calendar.google.com&ctz=Europe/Lisbon",
     events: [
       {
-        title: 'Arraial do Técnico',
-        date: '12–13 de setembro de 2025',
-        time: '20:00',
-        location: 'Instituto Superior Técnico — banca 5',
-        description: 'Vem festejar com os alunos de Matemática no Arraial do Técnico. Procura a banca 5 e junta-te à festa universitária!',
-        category: 'Social'
-      },
-      {
-        title: 'Sessão de cinema',
-        date: '17 de setembro de 2025',
-        time: '19:00',
-        location: 'A definir',
-        description: "Uma noite de cinema descontraída com colegas!",
-        category: 'Social'
-      },
-      {
         title: "Torneio de Sueca",
         date: "24 de setembro, 2025",
         time: "21:00",
         location: "LabMat",
         description: "Escolhe um parceiro e mostra que sabes jogar!",
         category: "Social"
+      },
+      {
+        title: 'Lógica Matemática',
+        date: '9 de outubro de 2025',
+        time: 'A definir',
+        location: 'A definir',
+        description: 'MAP30',
+        category: 'Avaliação'
+      },
+      {
+        title: 'AML',
+        date: '17 de outubro de 2025',
+        time: 'A definir',
+        location: 'A definir',
+        description: 'Opcional',
+        category: 'Avaliação'
       }
     ]
   },
@@ -104,28 +104,28 @@ const calendarsData = {
     link: "https://calendar.google.com/calendar/embed?src=f6f9b2919de8bcf8296174bc8016b07943c15ff037657f3c33db0aa37f28042e%40group.calendar.google.com&ctz=Europe/Lisbon",
     events: [
       {
-        title: 'Arraial do Técnico',
-        date: '12–13 de setembro de 2025',
-        time: '20:00',
-        location: 'Instituto Superior Técnico — banca 5',
-        description: 'Vem festejar com os alunos de Matemática no Arraial do Técnico. Procura a banca 5 e junta-te à festa universitária!',
-        category: 'Social'
-      },
-      {
-        title: 'Sessão de cinema',
-        date: '17 de setembro de 2025',
-        time: '19:00',
-        location: 'A definir',
-        description: "Uma noite de cinema descontraída com colegas!",
-        category: 'Social'
-      },
-      {
         title: "Torneio de Sueca",
         date: "24 de setembro, 2025",
         time: "21:00",
         location: "LabMat",
         description: "Escolhe um parceiro e mostra que sabes jogar!",
         category: "Social"
+      },
+      {
+        title: 'Banco Alimentar',
+        date: 'A definir',
+        time: 'A definir',
+        location: 'A definir',
+        description: "Em preparação",
+        category: 'Social'
+      },
+      {
+        title: "Semana de Preparação",
+        date: "23 de outubro, 2025",
+        time: "...",
+        location: "...",
+        description: "...",
+        category: "Avaliação"
       }
     ]
   }
