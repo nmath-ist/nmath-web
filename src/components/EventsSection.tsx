@@ -62,10 +62,10 @@ const events: Event[] = [
     id: 'time2talk',
     title: 'Time2Talk',
     shortDescription:
-      'Evento dedicado à divulgação do papel da Matemática no mundo empresarial, com ENEMATH, roundtables e palestras.',
+      'Evento dedicado à divulgação do papel da Matemática no mundo empresarial com roundtables e palestras.',
     color: 'green',
     category: 'Palestras',
-    stats: 'Edição 2025 • ENEMATH & Palestras',
+    stats: 'Edição 2025',
     icon: <Mic className="h-7 w-7" />,
     yearLinks: [
       { year: '2025', url: 'https://sites.google.com/view/time2talk-nmath/p%C3%A1gina-inicial' }
