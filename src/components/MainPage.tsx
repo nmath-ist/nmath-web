@@ -14,7 +14,8 @@ import {
   Music,
   Mail,
   MapPin,
-  Phone
+  Phone, 
+  FileText
 } from 'lucide-react';
 
 function Footer() {
@@ -42,6 +43,7 @@ function Footer() {
           </div>
 
           {/* Quick Links */}
+          
           <div>
             <h4 className="mb-4">Acesso Rápido</h4>
             <ul className="space-y-2 text-slate-400">
@@ -50,6 +52,17 @@ function Footer() {
               <li><a href="#calendar" className="hover:text-white transition-colors">Calendário de Eventos</a></li>
               <li><a href="#team" className="hover:text-white transition-colors">Equipa</a></li>
               <li><a href="#magazine" className="hover:text-white transition-colors">Ponto Fixo</a></li>
+              <li>
+                <a 
+                  href="https://drive.google.com/file/d/1bz51RRJGDGnmMCrDUdgws43MKJ7kxvdz/view?usp=share_link" 
+                  target="_blank" 
+                  rel="noopener noreferrer" 
+                  className="hover:text-white transition-colors flex items-center space-x-2"
+                >
+                  <FileText className="h-4 w-4" /> 
+                  <span>Regulamento NMATH</span>
+                </a>
+              </li>
             </ul>
           </div>
 

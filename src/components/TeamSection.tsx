@@ -20,10 +20,10 @@ export default function TeamSection() {
     { id: 1, name: "Matilde Variz", role: "Presidente", year: "3º Ano - LMAC", image: matildeImg },
     { id: 2, name: "Leonor Lourenço", role: "Vice Presidente", year: "3º Ano - LMAC", image: leonorImg },
     { id: 3, name: "Catarina Franco", role: "Tesoureira", year: "2º Ano - MMAC", image: catarinaImg },
-    { id: 4, name: "João Cordeiro", role: "Vogal para a Educação", year: "1º Ano - MMAC", image: joaoImg },
-    { id: 5, name: "Francisco Relvas", role: "Vogal para Eventos e Relações Empresariais", year: "1º Ano - MMAC", image: franciscoImg },
-    { id: 6, name: "Cátia Mendes", role: "Vogal para o Marketing", year: "3º Ano - LMAC", image: catiaImg },
-    { id: 7, name: "Luisa Marcelino", role: "Vogal para a Recreativa", year: "3º Ano - LMAC", image: luisaImg },
+    { id: 4, name: "João Cordeiro", role: "Coordenador da Educação", year: "1º Ano - MMAC", image: joaoImg },
+    { id: 5, name: "Francisco Relvas", role: "Coordenador de Eventos e Relações Empresariais", year: "1º Ano - MMAC", image: franciscoImg },
+    { id: 6, name: "Cátia Mendes", role: "Coordenadora do Marketing", year: "3º Ano - LMAC", image: catiaImg },
+    { id: 7, name: "Luisa Marcelino", role: "Coordenadora da Recreativa", year: "3º Ano - LMAC", image: luisaImg },
   ];
 
   const MemberCard = ({ member }: { member: typeof teamMembers[0] }) => (
