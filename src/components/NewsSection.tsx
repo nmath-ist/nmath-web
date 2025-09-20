@@ -10,13 +10,13 @@ export default function NewsSection() {
   const [selectedArticle, setSelectedArticle] = useState<any>(null);
   const newsItems = [
     {
-      id: 1,
+      id: 3,
       title: "Bem vindos!",
       excerpt: "O NMATH vai marcar presença no Dia de Acolhimento, pronto para ser um dos teus principais pontos de referência aqui no Técnico.",
       category: "Eventos",
       date: "1 Set, 2025",
       readTime: "3 min",
-      featured: true,
+      featured: false,
       icon: Trophy,
       fullContent: `
         <p>Bem-vindo a Matemática! 🎉</p>
@@ -36,34 +36,55 @@ export default function NewsSection() {
     <p>Vem conhecer-nos e dar início a uma jornada académica inesquecível. Estamos à tua espera!</p>
   `
     },
-    {
-      id: 2,
-      title: "Programação Time2Talk",
-  excerpt: "Workshops e palestras no Anfiteatro Abreu Faro sobre Finanças, Tecnologias Quânticas, Data Science e Machine Learning.",
-  category: "Eventos",
-  date: "16 Fev, 2025",
-  readTime: "2 min",
-  featured: false,
-  icon: CalendarIcon,
-  fullContent: `
-    <p>⚠ Já está quase! Não percas o <strong>Time2Talk</strong>, um evento imperdível no Anfiteatro Abreu Faro com workshops e palestras sobre as aplicações da matemática.</p>
-
-    <h3>O que vais encontrar</h3>
-    <ul>
-      <li>Finanças</li>
-      <li>Tecnologias Quânticas</li>
-      <li>Data Science & Machine Learning</li>
-    </ul>
-
-    <p>Além disso, podes habilitar-te a ganhar <strong>bilhetes para o NOS Alive</strong>, um monitor e muito mais!</p>
-
-    <h3>Inscreve-te</h3>
-    <p>Se estás a pensar ir, inscreve-te já para garantir o teu lugar.</p>
-  `
-},
+    
+      { 
+        id: 1,
+        title: "Noite de Cinema",
+        excerpt: "O NMATH traz de volta as noites de cinema com a exibição do filme Dead Poets Society no Anfiteatro AM.",
+        category: "Eventos",
+        date: "17 Set, 2025",
+        readTime: "1 min",
+        featured: false,
+        icon: CalendarIcon,
+        fullContent: `
+          <p>As noites de cinema do NMATH estão de volta. Se precisas de uma pausa das aulas e do estudo, aproveita para viver um fim de tarde diferente connosco.</p>
+          <p>Será uma oportunidade para relaxar, divertir-te e partilhar um momento com os teus colegas.</p>
+          <p><strong>Data:</strong> Quarta-feira, 17 de setembro<br>
+          <strong>Hora:</strong> 19h00<br>
+          <strong>Local:</strong> Anfiteatro AM [Mecânica II]</p>
+          <p>O filme escolhido foi <em>Dead Poets Society</em>.</p>
+        `
+      },
+      {
+        id: 2,
+        title: "Evento Rede UNITE",
+        excerpt: "Professores e alunos debatem a transição do secundário para a universidade no Departamento de Matemática.",
+        category: "Eventos",
+        date: "23 Set, 2025",
+        readTime: "2 min",
+        featured: false,
+        icon: CalendarIcon,
+        fullContent: `
+          <p>A Rede UNITE está a desenvolver um projeto que estuda os desafios da transição dos alunos do ensino secundário para a universidade, com enfoque no ensino da matemática.</p>
+          <p>No dia 23 de setembro, o Departamento de Matemática recebe professores de várias escolas da Rede UNITE para apresentar o projeto e debater com docentes e alunos do Técnico.</p>
+          <p><strong>Data:</strong> 23 de setembro<br>
+          <strong>Hora:</strong> 14h00 - 15h30<br>
+          <strong>Local:</strong> Sala 3.10, Departamento de Matemática</p>
+          <p>A sessão será seguida de um coffee break.</p>
+          <p>Mais informações disponíveis em: <a href="https://tecnico.ulisboa.pt/pt/eventos/unite-seed-fund-workshop" target="_blank">tecnico.ulisboa.pt</a></p>
+          <h3>Inscrição</h3>
+          <p>Envia um email para <a href="mailto:educacao.nmath.ist@gmail.com">educacao.nmath.ist@gmail.com</a> até 17/9 às 16h, indicando:</p>
+          <ul>
+            <li>O teu nome</li>
+            <li>A frase: “Quero participar”</li>
+          </ul>
+          <p>Apenas existem 25 vagas, com prioridade para as primeiras inscrições.</p>
+        `
+      }
+      
     ,
     {
-      id: 3,
+      id: 4,
       title: "Workshop de Introdução ao JavaScript",
   excerpt: "Aprende os fundamentos do JavaScript, a linguagem essencial da Web, neste workshop prático com Rodrigo Girão Serrão.",
   category: "Workshops",
@@ -80,7 +101,7 @@ export default function NewsSection() {
   `
 },
     {
-      id: 4,
+      id: 5,
       title: "Time2Talk... Novo Formato das Jornadas",
       excerpt: "As Jornadas NMATH regressam com um conceito inovador: o Time2Talk! Três dias de aplicações práticas da matemática.",
       category: "Eventos",
