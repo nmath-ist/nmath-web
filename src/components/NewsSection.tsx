@@ -9,33 +9,6 @@ import { useState } from 'react';
 export default function NewsSection() {
   const [selectedArticle, setSelectedArticle] = useState<any>(null);
   const newsItems = [
-    {
-      id: 3,
-      title: "Bem vindos!",
-      excerpt: "O NMATH vai marcar presença no Dia de Acolhimento, pronto para ser um dos teus principais pontos de referência aqui no Técnico.",
-      category: "Eventos",
-      date: "1 Set, 2025",
-      readTime: "3 min",
-      featured: false,
-      icon: Trophy,
-      fullContent: `
-        <p>Bem-vindo a Matemática! 🎉</p>
-    
-    <p>De forma a começares esta tua jornada da melhor forma, o <strong>NMATH</strong> vai estar presente no <strong>Dia de Acolhimento</strong>, preparado para te apoiar e ser um dos teus principais pontos de referência no Técnico.</p>
-    
-    <h3>O que esperar?</h3>
-    <p>No nosso espaço poderás conhecer melhor a associação, descobrir todas as iniciativas que temos para ti ao longo do ano e tirar dúvidas sobre a vida académica em Matemática.</p>
-    
-    <h3>Porquê visitar-nos?</h3>
-    <ul>
-      <li>Conhecer colegas e integrar-te na comunidade de Matemática</li>
-      <li>Saber mais sobre os eventos e oportunidades organizados pelo NMATH</li>
-      <li>Descobrir como participar e contribuir ativamente</li>
-    </ul>
-    
-    <p>Vem conhecer-nos e dar início a uma jornada académica inesquecível. Estamos à tua espera!</p>
-  `
-    },
     
       { 
         id: 1,
@@ -44,7 +17,7 @@ export default function NewsSection() {
         category: "Eventos",
         date: "17 Set, 2025",
         readTime: "1 min",
-        featured: false,
+        featured: true,
         icon: CalendarIcon,
         fullContent: `
           <p>As noites de cinema do NMATH estão de volta. Se precisas de uma pausa das aulas e do estudo, aproveita para viver um fim de tarde diferente connosco.</p>
@@ -80,9 +53,34 @@ export default function NewsSection() {
           </ul>
           <p>Apenas existem 25 vagas, com prioridade para as primeiras inscrições.</p>
         `
-      }
+      },
+      {
+        id: 3,
+        title: "Bem vindos!",
+        excerpt: "O NMATH vai marcar presença no Dia de Acolhimento, pronto para ser um dos teus principais pontos de referência aqui no Técnico.",
+        category: "Eventos",
+        date: "1 Set, 2025",
+        readTime: "3 min",
+        featured: false,
+        icon: Trophy,
+        fullContent: `
+          <p>Bem-vindo a Matemática! </p>
       
-    ,
+      <p>De forma a começares esta tua jornada da melhor forma, o <strong>NMATH</strong> vai estar presente no <strong>Dia de Acolhimento</strong>, preparado para te apoiar e ser um dos teus principais pontos de referência no Técnico.</p>
+      
+      <h3>O que esperar?</h3>
+      <p>No nosso espaço poderás conhecer melhor a associação, descobrir todas as iniciativas que temos para ti ao longo do ano e tirar dúvidas sobre a vida académica em Matemática.</p>
+      
+      <h3>Porquê visitar-nos?</h3>
+      <ul>
+        <li>Conhecer colegas e integrar-te na comunidade de Matemática</li>
+        <li>Saber mais sobre os eventos e oportunidades organizados pelo NMATH</li>
+        <li>Descobrir como participar e contribuir ativamente</li>
+      </ul>
+      
+      <p>Vem conhecer-nos e dar início a uma jornada académica inesquecível. Estamos à tua espera!</p>
+    `
+      },
     {
       id: 4,
       title: "Workshop de Introdução ao JavaScript",

@@ -36,7 +36,7 @@ function Footer() {
               <a href="#" className="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors">
                 <Linkedin className="h-4 w-4" />
               </a>
-              <a href="https://open.spotify.com/show/4rOoJ6Egrf8K2IrywzwOMk" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors">
+              <a href="https://open.spotify.com/show/2yqzMLv5S0W5kaiDGJ6Fa7?si=a4ee8e15ca244417" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors">
                 <Music className="h-4 w-4" />
               </a>
             </div>
