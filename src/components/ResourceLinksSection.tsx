@@ -1,6 +1,5 @@
 import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
-import { Badge } from './ui/badge';
 import { 
   Camera, 
   Headphones, 
@@ -26,36 +25,22 @@ export default function ResourceLinksSection() {
       title: "Oráculo",
       description: "Se aprender Matemática é bom, ouvir Matemática é ainda melhor.",
       icon: Headphones,
-      url: "link",
+      url: "https://open.spotify.com/show/2yqzMLv5S0W5kaiDGJ6Fa7?si=537cde4120b3435c",
       color: "from-purple-500 to-indigo-600",
-      stats: "24 episódios • Lançamentos semanais",
-      highlights: ["Dicas de Carreira", "Entrevistas", "Insights da Indústria", "Notícias do Campus"],
+      stats: "Lançamentos mensais",
+      highlights: ["Dicas", "Entrevistas", "Insights de alunos"],
       action: "Ouvir Agora"
     }
   ];
 
-
-
-  const latestPodcastEpisodes = [
-    {
-      title: "Como sobreviver ao meu primeiro ano no técnico",
-      duration: "42 min",
-      date: "3 Set, 2025",
-      plays: "1.2k"
-    },
-    {
-      title: "Experiências de Intercâmbio: Edição Europa",
-      duration: "38 min",
-      date: "3 Dez, 2024",
-      plays: "890"
-    },
-    {
-      title: "Histórias de Startups do Campus",
-      duration: "45 min",
-      date: "26 Nov, 2024",
-      plays: "1.5k"
-    }
-  ];
+  // Último episódio disponível
+  const latestEpisode = {
+    title: "Como sobreviver ao meu primeiro ano em Matemática",
+    duration: "42 min",
+    date: "3 Set, 2025",
+    plays: "1.2k",
+    url: "https://open.spotify.com/episode/2U48w20Lvi7CIM5uiX9X11?si=OnYUjCw2R5aJX6xOP5E1Dw"
+  };
 
   return (
     <section id="photos" className="py-16 bg-white">
@@ -63,7 +48,7 @@ export default function ResourceLinksSection() {
         <div className="text-center mb-12">
           <h2 className="text-4xl mb-4 text-slate-800">Conecta & Explora</h2>
           <p className="text-slate-600 max-w-2xl mx-auto">
-          Acede às nossas memórias fotográficas, ouve testemunhos da comunidade de Matemática e encontra recursos úteis para os teus estudos.
+            Acede às nossas memórias fotográficas, ouve testemunhos da comunidade de Matemática e encontra recursos úteis para os teus estudos.
           </p>
         </div>
 
@@ -81,9 +66,7 @@ export default function ResourceLinksSection() {
                       <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center">
                         <link.icon className="h-8 w-8" />
                       </div>
-                      <div>
-                        <h3 className="text-2xl mb-1">{link.title}</h3>
-                      </div>
+                      <h3 className="text-2xl mb-1">{link.title}</h3>
                     </div>
                     
                     <p className="text-white/90 mb-6 leading-relaxed">
@@ -100,26 +83,37 @@ export default function ResourceLinksSection() {
                   </div>
                 </div>
 
-                {/* Additional Content for Podcast - Apenas último episódio */}
-                {link.id === 2 && (
+                {/* Extra section apenas para o Oráculo */}
+                {link.id === 2 && latestEpisode && (
                   <div className="p-6 bg-slate-50">
-                    <h4 className="mb-4 text-slate-800">Último Episódio</h4>
-                    <div className="p-3 bg-white rounded-lg border border-slate-200">
+                    <h4 className="mb-4 text-slate-800">🎧 Último Episódio</h4>
+                    <div 
+                      className="p-4 bg-white rounded-lg border border-slate-200 hover:shadow-md hover:bg-slate-100 cursor-pointer transition"
+                      onClick={() => window.open(latestEpisode.url, '_blank')}
+                    >
                       <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
                           <Play className="h-5 w-5 text-purple-600" />
                         </div>
                         <div className="flex-1">
-                          <p className="font-medium text-sm leading-tight">{latestPodcastEpisodes[0].title}</p>
+                          <p className="font-medium text-sm leading-tight">{latestEpisode.title}</p>
                           <div className="flex items-center space-x-3 text-xs text-slate-500 mt-1">
                             <span className="flex items-center space-x-1">
                               <Clock className="h-3 w-3" />
-                              <span>{latestPodcastEpisodes[0].duration}</span>
+                              <span>{latestEpisode.duration}</span>
                             </span>
-                            <span>{latestPodcastEpisodes[0].date}</span>
+                            <span>{latestEpisode.date}</span>
                           </div>
                         </div>
-                        <Button size="sm" variant="ghost" className="text-purple-600 hover:bg-purple-50">
+                        <Button 
+                          size="sm" 
+                          variant="ghost" 
+                          className="text-purple-600 hover:bg-purple-50"
+                          onClick={(e) => {
+                            e.stopPropagation(); // Evita abrir o cartão duas vezes
+                            window.open(latestEpisode.url, '_blank');
+                          }}
+                        >
                           <Play className="h-3 w-3" />
                         </Button>
                       </div>
@@ -130,8 +124,6 @@ export default function ResourceLinksSection() {
             </Card>
           ))}
         </div>
-
-
 
         {/* Contact Section */}
         <Card className="mt-8 border border-slate-200 bg-gradient-to-r from-blue-600 to-teal-600 text-white overflow-hidden">
