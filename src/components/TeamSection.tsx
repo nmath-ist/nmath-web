@@ -9,7 +9,7 @@ import { ImageWithFallback } from './figma/ImageWithFallback';
 // Exemplo:
 import matildeImg from '../assets/team/matilde.jpg';
 import leonorImg from '../assets/team/leonor.jpg';
-import catarinaImg from '../assets/team/catarina.jpeg';
+import catarinaImg from '../assets/team/catarina.jpg';
 import joaoImg from '../assets/team/joao.jpg';
 import franciscoImg from '../assets/team/francisco.jpg';
 import catiaImg from '../assets/team/catia.jpg';
