@@ -9,7 +9,7 @@ export default function Router() {
       const hash = window.location.hash.slice(1);
 
       if (hash === 'repositorio') {
-        window.open('https://drive.google.com/drive/folders/1nmath-repo-example', '_blank');
+        window.open('https://mega.nz/folder/S1dizQQL#He7vgZPzvSCG1nSJw1vVsQ', '_blank');
         window.location.hash = '';
         setCurrentPage('home');
       } else {

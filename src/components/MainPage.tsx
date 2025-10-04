@@ -48,7 +48,7 @@ function Footer() {
             <h4 className="mb-4">Acesso Rápido</h4>
             <ul className="space-y-2 text-slate-400">
               <li><a href="#news" className="hover:text-white transition-colors">Anúncios</a></li>
-              <li><a href="https://drive.google.com/drive/folders/1nmath-repo-example" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Repositório</a></li>
+              <li><a href="https://mega.nz/folder/S1dizQQL#He7vgZPzvSCG1nSJw1vVsQ" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Repositório</a></li>
               <li><a href="#calendar" className="hover:text-white transition-colors">Calendário de Eventos</a></li>
               <li><a href="#team" className="hover:text-white transition-colors">Equipa</a></li>
               <li><a href="#magazine" className="hover:text-white transition-colors">Ponto Fixo</a></li>
