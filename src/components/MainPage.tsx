@@ -52,6 +52,7 @@ function Footer() {
               <li><a href="#calendar" className="hover:text-white transition-colors">Calendário de Eventos</a></li>
               <li><a href="#team" className="hover:text-white transition-colors">Equipa</a></li>
               <li><a href="#magazine" className="hover:text-white transition-colors">Ponto Fixo</a></li>
+              <li><a href="https://drive.google.com/drive/folders/1naDV4YMTDx_qFfSumzlt8i7dZNW982fI" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Atas</a></li>
               <li>
                 <a 
                   href="https://drive.google.com/file/d/1bz51RRJGDGnmMCrDUdgws43MKJ7kxvdz/view?usp=share_link" 
