@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from './ui/button';
 import { ArrowRight, Code, Coffee, BookOpen, Calendar } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
-// import whiteLogo from 'figma:asset/white.png';
+// import whiteLogo from '../assets/white.png';
 
 export default function HeroSection() {
   return (
@@ -20,7 +20,7 @@ export default function HeroSection() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div>
             <div className="flex justify-center lg:justify-start mb-8">
-              <img src="/build/assets/white-Di8Y-CCC.png" alt="NMATH Logo" className="h-48 w-48 lg:h-64 lg:w-64 object-contain" />
+              <img src="/src/assets/white.png" alt="NMATH Logo" className="h-48 w-48 lg:h-64 lg:w-64 object-contain" />
             </div>
             
             <div className="text-lg mb-8 leading-relaxed">
