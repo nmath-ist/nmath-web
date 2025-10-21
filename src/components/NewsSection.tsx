@@ -22,7 +22,7 @@ export default function NewsSection() {
         
         <p>Nesta palestra irás aprender sobre a definição de Cantor dos números ordinais e sobre o porquê desta ser inadequada. Para além disso, serão exploradas concepções alternativas de ordinais e as razões a favor destas perspectivas. O palestrante irá terminar com a sua própria visão deste tema.</p>
         
-        <p><strong>Aparece e descobre mais sobre as ideias que moldam a matemática!</strong> No fim, haverá um coffee break!!</p>
+        <p><strong>Aparece e descobre mais sobre as ideias que moldam a matemática!</strong> No fim, haverá um coffee break!</p>
         
         <p><strong>Data:</strong> 21 de outubro<br>
         <strong>Hora:</strong> 18h00<br>
@@ -42,7 +42,7 @@ export default function NewsSection() {
       fullContent: `
         <p>O NMATH vai organizar uma tarde de voluntariado no <strong>Banco Alimentar no dia 10 de outubro, das 14h30 às 17h00</strong>.</p>
         
-        <p>Será uma oportunidade para participar ativamente e contribuir para apoiar quem mais precisa 💙</p>
+        <p>Será uma oportunidade para participar ativamente e contribuir para apoiar quem mais precisa!</p>
         
         <p><strong>Junta-te a nós e ajuda a fazer a diferença!</strong></p>
         
@@ -50,9 +50,27 @@ export default function NewsSection() {
         <strong>Hora:</strong> 14h30 - 17h00<br>
         <strong>Local:</strong> Banco Alimentar</p>
         
-        <p><strong>Inscrições:</strong> <a href="https://docs.google.com/forms/d/e/1FAIpQLSdv3m13RZTzKSw7_co7AAAFuLKIWWFRmM-EJaioSzTYYkAs4A/viewform?usp=dialog" target="_blank">Inscreve-te aqui</a> até dia 1/10</p>
+        <p><strong>Inscrições:</strong> Até dia 1/10</p>
         
-        <p><strong>Fotos do evento:</strong> <a href="https://drive.google.com/drive/folders/1WiBirStzpvQ5X0rYB3Mxk1h-3yZLIyUk" target="_blank">Ver fotos do Banco Alimentar</a></p>
+        <div style="margin: 20px 0; display: flex; gap: 15px; flex-wrap: wrap;">
+          <button 
+            onclick="window.open('https://docs.google.com/forms/d/e/1FAIpQLSdv3m13RZTzKSw7_co7AAAFuLKIWWFRmM-EJaioSzTYYkAs4A/viewform?usp=dialog', '_blank')"
+            style="background: linear-gradient(135deg, #3b82f6, #06b6d4); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);"
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(59, 130, 246, 0.4)'"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(59, 130, 246, 0.3)'"
+          >
+            📝 Inscreve-te aqui
+          </button>
+          
+          <button 
+            onclick="window.open('https://drive.google.com/drive/folders/1WiBirStzpvQ5X0rYB3Mxk1h-3yZLIyUk', '_blank')"
+            style="background: linear-gradient(135deg, #10b981, #059669); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);"
+            onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(16, 185, 129, 0.4)'"
+            onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(16, 185, 129, 0.3)'"
+          >
+            📸 Ver fotos do evento
+          </button>
+        </div>
       `
     },
     { 
