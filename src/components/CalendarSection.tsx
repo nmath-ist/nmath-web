@@ -29,8 +29,8 @@ const upcomingEvents = [
     date: "12 Novembro, 2024",
     time: "A definir",
     location: "A definir",
-    description: "Testa os teus conhecimentos matemáticos neste quizz divertido e competitivo!",
-    type: "Competição",
+    description: "Testa os teus conhecimentos de cultura gerak neste quizz divertido e competitivo!",
+    type: "Recreativa",
     link: undefined
   },
   {
@@ -38,7 +38,7 @@ const upcomingEvents = [
     date: "21 Dezembro, 2024",
     time: "18:00",
     location: "Sala P12",
-    description: "Palestra com o Professor Bruno Jacinto da FCUL sobre a filosofia por detrás dos números ordinais.",
+    description: "Palestra com o Professor Bruno Jacinto da FCUL sobre a definição de Cantor dos números ordinais e sobre o porquê desta ser inadequada.",
     type: "Palestra",
     link: undefined
   }
@@ -51,7 +51,7 @@ const pastEvents = [
     time: "21:00",
     location: "Sala de Matemática",
     description: "Escolhe um parceiro e mostra que sabes jogar! Um momento de diversão e convívio entre estudantes.",
-    type: "Social",
+    type: "Recreativa",
     link: undefined
   },
   {
@@ -60,16 +60,16 @@ const pastEvents = [
     time: "A definir",
     location: "Avenida de Ceuta n1",
     description: "Participa nesta iniciativa solidária do NMATH. Ajuda a fazer a diferença na comunidade!",
-    type: "Social",
+    type: "Recreativa",
     link: "https://drive.google.com/drive/folders/1WiBirStzpvQ5X0rYB3Mxk1h-3yZLIyUk"
   }
 ];
 
 const getEventBadgeColor = (type: string) => {
   const colors: { [key: string]: string } = {
-    'Competição': 'border-orange-200 bg-orange-50 text-orange-700',
+    'Recreativa': 'border-orange-200 bg-orange-50 text-orange-700',
     'Palestra': 'border-purple-200 bg-purple-50 text-purple-700',
-    'Social': 'border-teal-200 bg-teal-50 text-teal-700',
+    'Eventos': 'border-teal-200 bg-teal-50 text-teal-700',
     'Workshop': 'border-blue-200 bg-blue-50 text-blue-700',
   };
   return colors[type] || 'border-blue-200 bg-blue-50 text-blue-600';

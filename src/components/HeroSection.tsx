@@ -2,7 +2,9 @@ import React from 'react';
 import { Button } from './ui/button';
 import { ArrowRight, Code, Coffee, BookOpen, Calendar } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
-// import whiteLogo from 'figma:asset/white.png';
+
+// ✅ Importa a imagem localmente (igual à TeamSection)
+import whiteLogo from '../assets/white.png';
 
 export default function HeroSection() {
   return (
@@ -20,9 +22,14 @@ export default function HeroSection() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div>
             <div className="flex justify-center lg:justify-start mb-8">
-              <img src="/src/assets/white.png" alt="NMATH Logo" className="h-48 w-48 lg:h-64 lg:w-64 object-contain" />
+              {/* ✅ Usa o import estático */}
+              <img
+                src={whiteLogo}
+                alt="NMATH Logo"
+                className="h-48 w-48 lg:h-64 lg:w-64 object-contain"
+              />
             </div>
-            
+
             <div className="text-lg mb-8 leading-relaxed">
               <p className="text-blue-100 mb-4">
                 O Núcleo de Estudantes de Matemática do Instituto Superior Técnico (NMATH) foi fundado em 2012 por alunos da Licenciatura em Matemática Aplicada e Computação (LMAC) e do Mestrado em Matemática e Aplicações (MMA).
@@ -31,39 +38,43 @@ export default function HeroSection() {
                 A sua missão é representar e apoiar o percurso académico de todos os estudantes de Matemática do IST, promover e divulgar a Matemática junto da comunidade, bem como valorizar os cursos de Matemática do IST no mercado de trabalho.
               </p>
             </div>
-            
           </div>
 
           <div className="relative">
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-8 border border-white/10">
               <div className="grid grid-cols-2 gap-4">
-                <button 
+                <button
                   className="bg-gradient-to-br from-blue-500/20 to-teal-500/20 rounded-lg p-4 border border-white/10 hover:from-blue-500/30 hover:to-teal-500/30 transition-all hover:-translate-y-1 hover:shadow-lg text-left"
-                  onClick={() => window.open('https://mega.nz/folder/S1dizQQL#He7vgZPzvSCG1nSJw1vVsQ', '_blank')}
+                  onClick={() =>
+                    window.open('https://mega.nz/folder/S1dizQQL#He7vgZPzvSCG1nSJw1vVsQ', '_blank')
+                  }
                 >
                   <Code className="h-8 w-8 text-blue-400 mb-3" />
                   <h3 className="mb-2">Repositório</h3>
                   <p className="text-blue-200 text-sm">Materiais académicos e recursos de estudo</p>
                 </button>
-                <button 
+
+                <button
                   className="bg-gradient-to-br from-teal-500/20 to-blue-500/20 rounded-lg p-4 border border-white/10 hover:from-teal-500/30 hover:to-blue-500/30 transition-all hover:-translate-y-1 hover:shadow-lg text-left"
-                  onClick={() => window.location.hash = 'events'}
+                  onClick={() => (window.location.hash = 'events')}
                 >
                   <Calendar className="h-8 w-8 text-teal-400 mb-3" />
                   <h3 className="mb-2">Eventos</h3>
                   <p className="text-blue-200 text-sm">Palestras, workshops e networking</p>
                 </button>
-                <button 
+
+                <button
                   className="bg-gradient-to-br from-blue-600/20 to-purple-500/20 rounded-lg p-4 border border-white/10 hover:from-blue-600/30 hover:to-purple-500/30 transition-all hover:-translate-y-1 hover:shadow-lg text-left"
-                  onClick={() => window.location.hash = 'magazine'}
+                  onClick={() => (window.location.hash = 'magazine')}
                 >
                   <BookOpen className="h-8 w-8 text-purple-400 mb-3" />
                   <h3 className="mb-2">Ponto Fixo</h3>
                   <p className="text-blue-200 text-sm">Revistas e publicações dos estudantes</p>
                 </button>
-                <button 
+
+                <button
                   className="bg-gradient-to-br from-purple-500/20 to-blue-600/20 rounded-lg p-4 border border-white/10 hover:from-purple-500/30 hover:to-blue-600/30 transition-all hover:-translate-y-1 hover:shadow-lg text-left"
-                  onClick={() => window.location.hash = 'photos'}
+                  onClick={() => (window.location.hash = 'photos')}
                 >
                   <Coffee className="h-8 w-8 text-orange-400 mb-3" />
                   <h3 className="mb-2">Multimédia</h3>
