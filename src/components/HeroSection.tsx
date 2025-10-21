@@ -32,12 +32,6 @@ export default function HeroSection() {
               </p>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white group" onClick={() => window.open('https://drive.google.com/drive/folders/1nmath-repo-example', '_blank')}>
-                Explorar Recursos
-                <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </div>
           </div>
 
           <div className="relative">
