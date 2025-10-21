@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Menu, X, Calendar, BookOpen, Users, Newspaper, Headphones, Instagram, HardDrive } from 'lucide-react';
-// import whiteLogo from 'figma:asset/white.png';
+import whiteLogo from '../assets/white.png';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,7 +21,7 @@ export default function Header() {
         <div className="flex items-center justify-between">
           <div className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 flex items-center justify-center">
             <img 
-              src="/src/assets/white.png" 
+              src={whiteLogo}
               alt="NMATH Symbol" 
               className="w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 object-contain"
             />
