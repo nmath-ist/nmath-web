@@ -1,7 +1,7 @@
+import React from 'react';
 import { Button } from './ui/button';
 import { ArrowRight, Code, Coffee, BookOpen, Calendar } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
-import picImage from 'figma:asset/pic.png';
 
 export default function HeroSection() {
   return (
@@ -18,14 +18,8 @@ export default function HeroSection() {
       <div className="container mx-auto px-4 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div>
-            <div className="flex items-center space-x-4 mb-6">
-              <img src={picImage} alt="NMATH Image" className="h-16 w-16 object-contain" />
-              <div>
-                <h1 className="text-4xl lg:text-5xl mb-2 leading-tight">
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-teal-300">NMATH</span>
-                </h1>
-                <span className="text-blue-200 text-lg">Núcleo de Estudantes de Matemática</span>
-              </div>
+            <div className="flex justify-center lg:justify-start mb-8">
+              <img src="/white.png" alt="NMATH Logo" className="h-48 w-48 lg:h-64 lg:w-64 object-contain" />
             </div>
             
             <div className="text-lg mb-8 leading-relaxed">
@@ -41,9 +35,6 @@ export default function HeroSection() {
               <Button size="lg" className="bg-blue-600 hover:bg-blue-700 text-white group" onClick={() => window.open('https://drive.google.com/drive/folders/1nmath-repo-example', '_blank')}>
                 Explorar Recursos
                 <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-              </Button>
-              <Button size="lg" variant="outline" className="border-white/20 text-white hover:bg-white/10" onClick={() => window.location.hash = 'team'}>
-                Conhecer a Equipa
               </Button>
             </div>
           </div>
