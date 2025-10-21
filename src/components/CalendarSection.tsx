@@ -25,29 +25,13 @@ const calendarLinks = [
 
 const upcomingEvents = [
   {
-    title: "Banco Alimentar",
-    date: "10 Outubro, 2024", 
-    time: "A definir",
-    location: "Avenida de Ceuta n1",
-    description: "Participa nesta iniciativa solidária do NMATH. Ajuda a fazer a diferença na comunidade!",
-    type: "Social",
-    link: "https://drive.google.com/drive/folders/1nmath-repo-example"
-  },
-  {
-    title: "Torneio de Sueca",
-    date: "24 Setembro, 2024",
-    time: "21:00",
-    location: "Sala de Matemática",
-    description: "Escolhe um parceiro e mostra que sabes jogar! Um momento de diversão e convívio entre estudantes.",
-    type: "Social"
-  },
-  {
     title: "Quizz Matemático",
     date: "12 Novembro, 2024",
     time: "A definir",
     location: "A definir",
     description: "Testa os teus conhecimentos matemáticos neste quizz divertido e competitivo!",
-    type: "Competição"
+    type: "Competição",
+    link: undefined
   },
   {
     title: "Filosofia dos Números Ordinais",
@@ -55,7 +39,29 @@ const upcomingEvents = [
     time: "18:00",
     location: "Sala P12",
     description: "Palestra com o Professor Bruno Jacinto da FCUL sobre a filosofia por detrás dos números ordinais.",
-    type: "Palestra"
+    type: "Palestra",
+    link: undefined
+  }
+];
+
+const pastEvents = [
+  {
+    title: "Torneio de Sueca",
+    date: "24 Setembro, 2024",
+    time: "21:00",
+    location: "Sala de Matemática",
+    description: "Escolhe um parceiro e mostra que sabes jogar! Um momento de diversão e convívio entre estudantes.",
+    type: "Social",
+    link: undefined
+  },
+  {
+    title: "Banco Alimentar",
+    date: "10 Outubro, 2024", 
+    time: "A definir",
+    location: "Avenida de Ceuta n1",
+    description: "Participa nesta iniciativa solidária do NMATH. Ajuda a fazer a diferença na comunidade!",
+    type: "Social",
+    link: "https://drive.google.com/drive/folders/1nmath-repo-example"
   }
 ];
 
@@ -98,8 +104,8 @@ export default function CalendarSection() {
         </div>
 
         {/* Próximos Eventos */}
-        <div className="max-w-5xl mx-auto">
-          <h3 className="text-2xl mb-6 text-slate-800 text-center">Próximos Eventos e Atividades</h3>
+        <div className="max-w-5xl mx-auto mb-12">
+          <h3 className="text-2xl mb-6 text-slate-800 text-center">Próximos Eventos</h3>
           <div className="grid md:grid-cols-2 gap-6">
             {upcomingEvents.map((event, idx) => (
               <Card key={idx} className="overflow-hidden border border-slate-200 hover:shadow-lg transition-all">
@@ -135,6 +141,56 @@ export default function CalendarSection() {
                         size="sm"
                         onClick={() => window.open(event.link, '_blank')}
                         className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                      >
+                        Ver Fotos
+                        <ExternalLink className="ml-1 h-3 w-3" />
+                      </Button>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+
+        {/* Eventos Passados */}
+        <div className="max-w-5xl mx-auto">
+          <h3 className="text-2xl mb-6 text-slate-800 text-center">Eventos Realizados</h3>
+          <div className="grid md:grid-cols-2 gap-6">
+            {pastEvents.map((event, idx) => (
+              <Card key={idx} className="overflow-hidden border border-slate-200 hover:shadow-lg transition-all opacity-90">
+                <CardContent className="p-6">
+                  <div className="flex items-start justify-between mb-3">
+                    <Badge variant="outline" className="border-slate-300 text-slate-600">
+                      {event.type}
+                    </Badge>
+                    <span className="text-sm text-slate-400">{event.date}</span>
+                  </div>
+                  
+                  <h4 className="text-lg mb-3 text-slate-700">{event.title}</h4>
+                  
+                  <div className="flex flex-col gap-2 mb-4 text-sm text-slate-500">
+                    <div className="flex items-center space-x-2">
+                      <Clock className="h-4 w-4" />
+                      <span>{event.time}</span>
+                    </div>
+                    <div className="flex items-center space-x-2">
+                      <MapPin className="h-4 w-4" />
+                      <span>{event.location}</span>
+                    </div>
+                  </div>
+                  
+                  <p className="text-slate-500 text-sm leading-relaxed">
+                    {event.description}
+                  </p>
+                  
+                  {event.link && (
+                    <div className="mt-4">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => window.open(event.link, '_blank')}
+                        className="text-slate-600 border-slate-300 hover:bg-slate-50"
                       >
                         Ver Fotos
                         <ExternalLink className="ml-1 h-3 w-3" />
