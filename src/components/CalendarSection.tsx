@@ -104,7 +104,7 @@ export default function CalendarSection() {
         </div>
 
         {/* Próximos Eventos */}
-        <div className="max-w-5xl mx-auto mb-12">
+        <div className="max-w-5xl mx-auto mb-12 mt-16">
           <h3 className="text-2xl mb-6 text-slate-800 text-center">Próximos Eventos</h3>
           <div className="grid md:grid-cols-2 gap-6">
             {upcomingEvents.map((event, idx) => (
