@@ -109,12 +109,23 @@ export default function NewsSection() {
           <p>A sessão será seguida de um coffee break.</p>
           <p>Mais informações disponíveis em: <a href="https://tecnico.ulisboa.pt/pt/eventos/unite-seed-fund-workshop" target="_blank">tecnico.ulisboa.pt</a></p>
           <h3>Inscrição</h3>
-          <p>Envia um email para <a href="mailto:educacao.nmath.ist@gmail.com">educacao.nmath.ist@gmail.com</a> até 17/9 às 16h, indicando:</p>
+          <p>Envia um email até 17/9 às 16h, indicando:</p>
           <ul>
             <li>O teu nome</li>
-            <li>A frase: “Quero participar”</li>
+            <li>A frase: "Quero participar"</li>
           </ul>
           <p>Apenas existem 25 vagas, com prioridade para as primeiras inscrições.</p>
+          
+          <div style="margin: 20px 0;">
+            <button 
+              onclick="window.location.href='mailto:educacao.nmath.ist@gmail.com?subject=Inscrição Evento Rede UNITE&body=Olá,%0D%0A%0D%0AO meu nome é: [INDIQUE O SEU NOME]%0D%0A%0D%0AQuero participar%0D%0A%0D%0ACumprimentos'"
+              style="background: linear-gradient(135deg, #8b5cf6, #7c3aed); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);"
+              onmouseover="this.style.transform='translateY(-2px)'; this.style.boxShadow='0 6px 16px rgba(139, 92, 246, 0.4)'"
+              onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 12px rgba(139, 92, 246, 0.3)'"
+            >
+              📧 Enviar Email de Inscrição
+            </button>
+          </div>
         `
       },
       {

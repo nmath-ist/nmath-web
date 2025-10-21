@@ -2,6 +2,7 @@ import React from 'react';
 import { Button } from './ui/button';
 import { ArrowRight, Code, Coffee, BookOpen, Calendar } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
+// import whiteLogo from 'figma:asset/white.png';
 
 export default function HeroSection() {
   return (
