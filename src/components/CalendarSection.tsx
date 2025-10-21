@@ -25,36 +25,37 @@ const calendarLinks = [
 
 const upcomingEvents = [
   {
-    title: "Workshop: Introdução ao LaTeX",
-    date: "3 Fevereiro, 2025", 
-    time: "14:00",
-    location: "Lab. Informática 1",
-    description: "Aprende a usar LaTeX para escrever documentos matemáticos profissionais",
-    type: "Workshop"
+    title: "Banco Alimentar",
+    date: "10 Outubro, 2024", 
+    time: "A definir",
+    location: "Avenida de Ceuta n1",
+    description: "Participa nesta iniciativa solidária do NMATH. Ajuda a fazer a diferença na comunidade!",
+    type: "Social",
+    link: "https://drive.google.com/drive/folders/1nmath-repo-example"
   },
   {
-    title: "Palestra: Carreiras em Data Science",
-    date: "12 Fevereiro, 2025",
-    time: "18:30",
-    location: "Anfiteatro Abreu Faro",
-    description: "Profissionais da área partilham experiências e dicas",
+    title: "Torneio de Sueca",
+    date: "24 Setembro, 2024",
+    time: "21:00",
+    location: "Sala de Matemática",
+    description: "Escolhe um parceiro e mostra que sabes jogar! Um momento de diversão e convívio entre estudantes.",
+    type: "Social"
+  },
+  {
+    title: "Quizz Matemático",
+    date: "12 Novembro, 2024",
+    time: "A definir",
+    location: "A definir",
+    description: "Testa os teus conhecimentos matemáticos neste quizz divertido e competitivo!",
+    type: "Competição"
+  },
+  {
+    title: "Filosofia dos Números Ordinais",
+    date: "21 Dezembro, 2024",
+    time: "18:00",
+    location: "Sala P12",
+    description: "Palestra com o Professor Bruno Jacinto da FCUL sobre a filosofia por detrás dos números ordinais.",
     type: "Palestra"
-  },
-  {
-    title: "Workshop: Python para Machine Learning",
-    date: "18 Fevereiro, 2025",
-    time: "14:00",
-    location: "Lab. Informática 3",
-    description: "Hands-on com scikit-learn e TensorFlow",
-    type: "Workshop"
-  },
-  {
-    title: "Seminário: Métodos Numéricos",
-    date: "30 Janeiro, 2025",
-    time: "16:00",
-    location: "Anfiteatro Abreu Faro",
-    description: "Aplicações práticas de métodos numéricos em problemas reais",
-    type: "Seminário"
   }
 ];
 
@@ -126,6 +127,20 @@ export default function CalendarSection() {
                   <p className="text-slate-600 text-sm leading-relaxed">
                     {event.description}
                   </p>
+                  
+                  {event.link && (
+                    <div className="mt-4">
+                      <Button 
+                        variant="outline" 
+                        size="sm"
+                        onClick={() => window.open(event.link, '_blank')}
+                        className="text-blue-600 border-blue-200 hover:bg-blue-50"
+                      >
+                        Ver Fotos
+                        <ExternalLink className="ml-1 h-3 w-3" />
+                      </Button>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             ))}

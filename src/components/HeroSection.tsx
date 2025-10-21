@@ -19,7 +19,7 @@ export default function HeroSection() {
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div>
             <div className="flex justify-center lg:justify-start mb-8">
-              <img src="/white.png" alt="NMATH Logo" className="h-48 w-48 lg:h-64 lg:w-64 object-contain" />
+              <img src="/build/assets/white-Di8Y-CCC.png" alt="NMATH Logo" className="h-48 w-48 lg:h-64 lg:w-64 object-contain" />
             </div>
             
             <div className="text-lg mb-8 leading-relaxed">
