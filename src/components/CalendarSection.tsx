@@ -61,7 +61,7 @@ const pastEvents = [
     location: "Avenida de Ceuta n1",
     description: "Participa nesta iniciativa solidária do NMATH. Ajuda a fazer a diferença na comunidade!",
     type: "Social",
-    link: "https://drive.google.com/drive/folders/1nmath-repo-example"
+    link: "https://drive.google.com/drive/folders/1WiBirStzpvQ5X0rYB3Mxk1h-3yZLIyUk"
   }
 ];
 

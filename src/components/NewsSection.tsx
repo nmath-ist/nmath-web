@@ -1,24 +1,69 @@
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Clock, ArrowRight, Zap, Trophy, Calendar as CalendarIcon, X } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 
-import { useState } from 'react';
-
 export default function NewsSection() {
   const [selectedArticle, setSelectedArticle] = useState<any>(null);
   const newsItems = [
-    
-      { 
-        id: 1,
-        title: "Noite de Cinema",
-        excerpt: "O NMATH traz de volta as noites de cinema com a exibição do filme Dead Poets Society no Anfiteatro AM.",
-        category: "Eventos",
-        date: "17 Set, 2025",
-        readTime: "1 min",
-        featured: true,
-        icon: CalendarIcon,
+    {
+      id: 0,
+      title: "Palestra Filosofia da Matemática",
+      excerpt: "No próximo dia 21/10 às 18h na sala PA1 irá decorrer uma palestra sobre 'Filosofia dos Números Ordinais' com o Professor Bruno Jacinto da FCUL.",
+      category: "Palestras",
+      date: "21 Out, 2024",
+      readTime: "2 min",
+      featured: true,
+      icon: CalendarIcon,
+      fullContent: `
+        <p>No próximo dia <strong>21 de outubro às 18h na sala PA1</strong> irá decorrer uma palestra de Filosofia da Matemática sobre o tópico: <strong>"Filosofia dos Números Ordinais"</strong> dada pelo Professor Bruno Jacinto da FCUL.</p>
+        
+        <p>Nesta palestra irás aprender sobre a definição de Cantor dos números ordinais e sobre o porquê desta ser inadequada. Para além disso, serão exploradas concepções alternativas de ordinais e as razões a favor destas perspectivas. O palestrante irá terminar com a sua própria visão deste tema.</p>
+        
+        <p><strong>Aparece e descobre mais sobre as ideias que moldam a matemática!</strong> No fim, haverá um coffee break!!</p>
+        
+        <p><strong>Data:</strong> 21 de outubro<br>
+        <strong>Hora:</strong> 18h00<br>
+        <strong>Local:</strong> Sala PA1<br>
+        <strong>Palestrante:</strong> Professor Bruno Jacinto da FCUL</p>
+      `
+    },
+    {
+      id: 1,
+      title: "Voluntariado Banco Alimentar",
+      excerpt: "O NMATH vai organizar uma tarde de voluntariado no Banco Alimentar no dia 10 de outubro, das 14h30 às 17h00.",
+      category: "Voluntariado",
+      date: "10 Out, 2024",
+      readTime: "1 min",
+      featured: false,
+      icon: CalendarIcon,
+      fullContent: `
+        <p>O NMATH vai organizar uma tarde de voluntariado no <strong>Banco Alimentar no dia 10 de outubro, das 14h30 às 17h00</strong>.</p>
+        
+        <p>Será uma oportunidade para participar ativamente e contribuir para apoiar quem mais precisa 💙</p>
+        
+        <p><strong>Junta-te a nós e ajuda a fazer a diferença!</strong></p>
+        
+        <p><strong>Data:</strong> 10 de outubro<br>
+        <strong>Hora:</strong> 14h30 - 17h00<br>
+        <strong>Local:</strong> Banco Alimentar</p>
+        
+        <p><strong>Inscrições:</strong> <a href="https://docs.google.com/forms/d/e/1FAIpQLSdv3m13RZTzKSw7_co7AAAFuLKIWWFRmM-EJaioSzTYYkAs4A/viewform?usp=dialog" target="_blank">Inscreve-te aqui</a> até dia 1/10</p>
+        
+        <p><strong>Fotos do evento:</strong> <a href="https://drive.google.com/drive/folders/1WiBirStzpvQ5X0rYB3Mxk1h-3yZLIyUk" target="_blank">Ver fotos do Banco Alimentar</a></p>
+      `
+    },
+    { 
+      id: 2,
+      title: "Noite de Cinema",
+      excerpt: "O NMATH traz de volta as noites de cinema com a exibição do filme Dead Poets Society no Anfiteatro AM.",
+      category: "Eventos",
+      date: "17 Set, 2025",
+      readTime: "1 min",
+      featured: false,
+      icon: CalendarIcon,
         fullContent: `
           <p>As noites de cinema do NMATH estão de volta. Se precisas de uma pausa das aulas e do estudo, aproveita para viver um fim de tarde diferente connosco.</p>
           <p>Será uma oportunidade para relaxar, divertir-te e partilhar um momento com os teus colegas.</p>
@@ -29,7 +74,7 @@ export default function NewsSection() {
         `
       },
       {
-        id: 2,
+        id: 3,
         title: "Evento Rede UNITE",
         excerpt: "Professores e alunos debatem a transição do secundário para a universidade no Departamento de Matemática.",
         category: "Eventos",
@@ -55,7 +100,7 @@ export default function NewsSection() {
         `
       },
       {
-        id: 3,
+        id: 4,
         title: "Bem vindos!",
         excerpt: "O NMATH vai marcar presença no Dia de Acolhimento, pronto para ser um dos teus principais pontos de referência aqui no Técnico.",
         category: "Eventos",
@@ -82,7 +127,7 @@ export default function NewsSection() {
     `
       },
     {
-      id: 4,
+      id: 5,
       title: "Workshop de Introdução ao JavaScript",
   excerpt: "Aprende os fundamentos do JavaScript, a linguagem essencial da Web, neste workshop prático com Rodrigo Girão Serrão.",
   category: "Workshops",
@@ -99,7 +144,7 @@ export default function NewsSection() {
   `
 },
     {
-      id: 5,
+      id: 6,
       title: "Time2Talk... Novo Formato das Jornadas",
       excerpt: "As Jornadas NMATH regressam com um conceito inovador: o Time2Talk! Três dias de aplicações práticas da matemática.",
       category: "Eventos",
