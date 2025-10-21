@@ -77,7 +77,7 @@ export default function NewsSection() {
       id: 2,
       title: "Noite de Cinema",
       excerpt: "O NMATH traz de volta as noites de cinema com a exibição do filme Dead Poets Society no Anfiteatro AM.",
-      category: "Eventos",
+      category: "Recreativa",
       date: "17 Set, 2025",
       readTime: "1 min",
       featured: false,
