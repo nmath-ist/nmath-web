@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from './ui/button';
 import { Menu, X, Calendar, BookOpen, Users, Newspaper, Headphones, Instagram, HardDrive } from 'lucide-react';
 import whiteLogo from 'figma:asset/white.png';
