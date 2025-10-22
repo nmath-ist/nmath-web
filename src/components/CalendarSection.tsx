@@ -48,7 +48,7 @@ const pastEvents = [
   },
   {
     title: "Banco Alimentar",
-    date: "10 Outubro, 2024", 
+    date: "10 Outubro, 2025", 
     time: "A definir",
     location: "Avenida de Ceuta n1",
     description: "Participa nesta iniciativa solidária do NMATH. Ajuda a fazer a diferença na comunidade!",

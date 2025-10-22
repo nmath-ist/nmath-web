@@ -25,7 +25,7 @@ const events: Event[] = [
     stats: 'Edição 2025 • Prémios',
     icon: <Trophy className="h-7 w-7" />,
     yearLinks: [
-      { year: '2025', url: 'https://www.nmath.pt/eventos/integration-bee-2025' }
+      { year: '2025', url: 'https://sites.google.com/view/integration-bee/integration-bee-2025' }
     ],
   },
   {
