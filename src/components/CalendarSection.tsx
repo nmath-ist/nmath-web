@@ -117,9 +117,9 @@ export default function CalendarSection() {
 
         {/* Próximos Eventos */}
         {upcomingEvents.length > 0 && (
-          <div className="max-w-6xl mx-auto mb-24">
-            <div className="text-center mb-12">
-              <h3 className="text-3xl mb-3 text-slate-800">Próximos Eventos</h3>
+          <div className="max-w-6xl mx-auto mb-32">
+            <div className="text-center mb-16">
+              <h3 className="text-3xl mb-4 text-slate-800">Próximos Eventos</h3>
               <div className="w-20 h-1 bg-gradient-to-r from-blue-500 to-teal-500 mx-auto rounded-full"></div>
             </div>
             <div className={`grid gap-8 ${upcomingEvents.length === 1 ? 'max-w-2xl mx-auto' : 'md:grid-cols-2'}`}>
@@ -180,8 +180,8 @@ export default function CalendarSection() {
         {/* Eventos Passados */}
         {pastEvents.length > 0 && (
           <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-12">
-              <h3 className="text-3xl mb-3 text-slate-700">Eventos Realizados</h3>
+            <div className="text-center mb-16">
+              <h3 className="text-3xl mb-4 text-slate-700">Eventos Realizados</h3>
               <div className="w-20 h-1 bg-gradient-to-r from-slate-300 to-slate-400 mx-auto rounded-full"></div>
             </div>
             <div className="grid md:grid-cols-2 gap-8">
