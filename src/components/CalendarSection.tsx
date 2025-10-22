@@ -68,110 +68,83 @@ const getEventBadgeColor = (type: string) => {
 
 export default function CalendarSection() {
   return (
-    <section id="calendar" className="py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50 relative overflow-hidden">
-      {/* Background decorative elements */}
-      <div className="absolute inset-0 opacity-5">
-        <div className="absolute top-10 left-10 w-72 h-72 bg-blue-400 rounded-full blur-3xl"></div>
-        <div className="absolute bottom-10 right-10 w-96 h-96 bg-teal-400 rounded-full blur-3xl"></div>
-      </div>
-
-      <div className="container mx-auto px-4 relative z-10">
+    <section id="calendar" className="py-20 bg-gradient-to-br from-slate-50 via-blue-50 to-teal-50">
+      <div className="container mx-auto px-4 max-w-7xl">
+        
+        {/* Header */}
         <div className="text-center mb-16">
-          <div className="inline-flex items-center space-x-2 bg-gradient-to-r from-blue-50 to-teal-50 px-5 py-2.5 rounded-full mb-6 border border-blue-100">
+          <div className="inline-flex items-center space-x-2 bg-white px-5 py-2.5 rounded-full mb-6 border border-blue-200 shadow-sm">
             <Calendar className="h-5 w-5 text-blue-600" />
             <span className="text-blue-600">Calendários Académicos</span>
           </div>
-          <h2 className="text-4xl lg:text-5xl mb-4 text-slate-800">Organiza o Teu Semestre</h2>
-          <p className="text-slate-600 max-w-2xl mx-auto text-lg">
+          <h2 className="text-4xl mb-4 text-slate-800">Organiza o Teu Semestre</h2>
+          <p className="text-slate-600 max-w-2xl mx-auto">
             Acede aos calendários específicos do teu ano de curso e fica a par dos próximos eventos.
           </p>
         </div>
 
         {/* Links para Calendários */}
-        <div className="max-w-5xl mx-auto mb-24">
+        <div className="mb-20">
           <h3 className="text-2xl mb-8 text-slate-800 text-center">Calendários por Ano</h3>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {calendarLinks.map((calendar, idx) => (
-              <Card 
-                key={calendar.year} 
-                className="overflow-hidden border-2 border-transparent bg-white/80 backdrop-blur-sm hover:border-blue-400 hover:shadow-2xl hover:shadow-blue-100 transition-all duration-300 cursor-pointer group hover:-translate-y-2"
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-4xl mx-auto">
+            {calendarLinks.map((calendar) => (
+              <button
+                key={calendar.year}
                 onClick={() => window.open(calendar.link, '_blank')}
+                className="bg-white p-6 rounded-xl border-2 border-slate-200 hover:border-blue-400 hover:shadow-lg transition-all text-center group"
               >
-                <CardContent className="p-8 text-center relative">
-                  <div className="absolute inset-0 bg-gradient-to-br from-blue-50/50 to-teal-50/50 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                  <div className="relative z-10">
-                    <div className="bg-gradient-to-br from-blue-100 to-teal-100 rounded-2xl p-4 inline-block mb-4 group-hover:scale-110 transition-transform duration-300">
-                      <Calendar className="h-10 w-10 text-blue-600" />
-                    </div>
-                    <h4 className="text-xl mb-3 text-slate-800">{calendar.year}</h4>
-                    <div className="flex items-center justify-center text-blue-600">
-                      <span>Ver Calendário</span>
-                      <ExternalLink className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
+                <Calendar className="h-10 w-10 mx-auto mb-3 text-blue-600 group-hover:scale-110 transition-transform" />
+                <div className="text-slate-800 mb-2">{calendar.year}</div>
+                <div className="text-sm text-blue-600 flex items-center justify-center gap-1">
+                  Ver Calendário
+                  <ExternalLink className="h-3 w-3" />
+                </div>
+              </button>
             ))}
           </div>
         </div>
 
         {/* Próximos Eventos */}
         {upcomingEvents.length > 0 && (
-          <div className="max-w-6xl mx-auto mb-32">
-            <div className="text-center mb-16">
-              <h3 className="text-3xl mb-4 text-slate-800">Próximos Eventos</h3>
-              <div className="w-20 h-1 bg-gradient-to-r from-blue-500 to-teal-500 mx-auto rounded-full"></div>
-            </div>
-            <div className={`grid gap-8 ${upcomingEvents.length === 1 ? 'max-w-2xl mx-auto' : 'md:grid-cols-2'}`}>
+          <div className="mb-20">
+            <h3 className="text-2xl mb-8 text-slate-800 text-center">Próximos Eventos</h3>
+            <div className="space-y-6 max-w-3xl mx-auto">
               {upcomingEvents.map((event, idx) => (
-                <Card key={idx} className="overflow-hidden border-2 border-slate-100 bg-white hover:shadow-2xl hover:shadow-blue-100/50 transition-all duration-300 hover:-translate-y-1 group">
-                  <CardContent className="p-8 relative">
-                    {/* Gradient overlay on hover */}
-                    <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-500 via-teal-500 to-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"></div>
-                    
-                    <div className="flex items-start justify-between mb-4">
-                      <Badge variant="outline" className={`${getEventBadgeColor(event.type)} border-2 px-3 py-1`}>
-                        {event.type}
-                      </Badge>
-                      <span className="text-sm text-slate-500">{event.date}</span>
+                <div key={idx} className="bg-white rounded-xl border-2 border-blue-200 p-6 hover:shadow-lg transition-shadow">
+                  <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
+                    <Badge className={`${getEventBadgeColor(event.type)} border`}>
+                      {event.type}
+                    </Badge>
+                    <span className="text-sm text-slate-500">{event.date}</span>
+                  </div>
+                  
+                  <h4 className="text-xl text-slate-800 mb-4">{event.title}</h4>
+                  
+                  <div className="space-y-2 mb-4">
+                    <div className="flex items-center gap-2 text-slate-600">
+                      <Clock className="h-4 w-4 flex-shrink-0" />
+                      <span>{event.time}</span>
                     </div>
-                    
-                    <h4 className="text-xl mb-4 text-slate-800 group-hover:text-blue-600 transition-colors">{event.title}</h4>
-                    
-                    <div className="flex flex-col gap-3 mb-5 text-slate-600">
-                      <div className="flex items-center space-x-3">
-                        <div className="bg-blue-50 p-2 rounded-lg">
-                          <Clock className="h-4 w-4 text-blue-600" />
-                        </div>
-                        <span>{event.time}</span>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <div className="bg-teal-50 p-2 rounded-lg">
-                          <MapPin className="h-4 w-4 text-teal-600" />
-                        </div>
-                        <span>{event.location}</span>
-                      </div>
+                    <div className="flex items-center gap-2 text-slate-600">
+                      <MapPin className="h-4 w-4 flex-shrink-0" />
+                      <span>{event.location}</span>
                     </div>
-                    
-                    <p className="text-slate-600 leading-relaxed">
-                      {event.description}
-                    </p>
-                    
-                    {event.link && (
-                      <div className="mt-6">
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => window.open(event.link, '_blank')}
-                          className="text-blue-600 border-blue-200 hover:bg-blue-50 hover:border-blue-400 transition-all"
-                        >
-                          Ver Fotos
-                          <ExternalLink className="ml-2 h-3 w-3" />
-                        </Button>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
+                  </div>
+                  
+                  <p className="text-slate-600 mb-4">{event.description}</p>
+                  
+                  {event.link && (
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => window.open(event.link, '_blank')}
+                      className="text-blue-600 border-blue-300 hover:bg-blue-50"
+                    >
+                      Ver Fotos
+                      <ExternalLink className="ml-2 h-3 w-3" />
+                    </Button>
+                  )}
+                </div>
               ))}
             </div>
           </div>
@@ -179,65 +152,50 @@ export default function CalendarSection() {
 
         {/* Eventos Passados */}
         {pastEvents.length > 0 && (
-          <div className="max-w-6xl mx-auto">
-            <div className="text-center mb-16">
-              <h3 className="text-3xl mb-4 text-slate-700">Eventos Realizados</h3>
-              <div className="w-20 h-1 bg-gradient-to-r from-slate-300 to-slate-400 mx-auto rounded-full"></div>
-            </div>
-            <div className="grid md:grid-cols-2 gap-8">
+          <div>
+            <h3 className="text-2xl mb-8 text-slate-800 text-center">Eventos Realizados</h3>
+            <div className="space-y-6 max-w-3xl mx-auto">
               {pastEvents.map((event, idx) => (
-                <Card key={idx} className="overflow-hidden border border-slate-200 bg-white/60 backdrop-blur-sm hover:shadow-xl hover:bg-white/80 transition-all duration-300 group">
-                  <CardContent className="p-8 relative">
-                    {/* Subtle gradient bar */}
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-slate-300 to-slate-400 opacity-50"></div>
-                    
-                    <div className="flex items-start justify-between mb-4">
-                      <Badge variant="outline" className={`${getEventBadgeColor(event.type)} opacity-75 border px-3 py-1`}>
-                        {event.type}
-                      </Badge>
-                      <span className="text-sm text-slate-400">{event.date}</span>
+                <div key={idx} className="bg-white/70 rounded-xl border border-slate-300 p-6 hover:shadow-md transition-shadow">
+                  <div className="flex flex-wrap items-start justify-between gap-4 mb-4">
+                    <Badge variant="outline" className={`${getEventBadgeColor(event.type)} border opacity-75`}>
+                      {event.type}
+                    </Badge>
+                    <span className="text-sm text-slate-400">{event.date}</span>
+                  </div>
+                  
+                  <h4 className="text-xl text-slate-700 mb-4">{event.title}</h4>
+                  
+                  <div className="space-y-2 mb-4">
+                    <div className="flex items-center gap-2 text-slate-500">
+                      <Clock className="h-4 w-4 flex-shrink-0" />
+                      <span>{event.time}</span>
                     </div>
-                    
-                    <h4 className="text-xl mb-4 text-slate-700 group-hover:text-slate-800 transition-colors">{event.title}</h4>
-                    
-                    <div className="flex flex-col gap-3 mb-5 text-slate-500">
-                      <div className="flex items-center space-x-3">
-                        <div className="bg-slate-50 p-2 rounded-lg">
-                          <Clock className="h-4 w-4 text-slate-500" />
-                        </div>
-                        <span>{event.time}</span>
-                      </div>
-                      <div className="flex items-center space-x-3">
-                        <div className="bg-slate-50 p-2 rounded-lg">
-                          <MapPin className="h-4 w-4 text-slate-500" />
-                        </div>
-                        <span>{event.location}</span>
-                      </div>
+                    <div className="flex items-center gap-2 text-slate-500">
+                      <MapPin className="h-4 w-4 flex-shrink-0" />
+                      <span>{event.location}</span>
                     </div>
-                    
-                    <p className="text-slate-500 leading-relaxed">
-                      {event.description}
-                    </p>
-                    
-                    {event.link && (
-                      <div className="mt-6">
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => window.open(event.link, '_blank')}
-                          className="text-slate-600 border-slate-300 hover:bg-slate-50 hover:border-slate-400 transition-all"
-                        >
-                          Ver Fotos
-                          <ExternalLink className="ml-2 h-3 w-3" />
-                        </Button>
-                      </div>
-                    )}
-                  </CardContent>
-                </Card>
+                  </div>
+                  
+                  <p className="text-slate-500 mb-4">{event.description}</p>
+                  
+                  {event.link && (
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      onClick={() => window.open(event.link, '_blank')}
+                      className="text-slate-600 border-slate-300 hover:bg-slate-50"
+                    >
+                      Ver Fotos
+                      <ExternalLink className="ml-2 h-3 w-3" />
+                    </Button>
+                  )}
+                </div>
               ))}
             </div>
           </div>
         )}
+        
       </div>
     </section>
   );
