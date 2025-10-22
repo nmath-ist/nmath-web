@@ -26,32 +26,24 @@ const calendarLinks = [
 const upcomingEvents = [
   {
     title: "Quizz Matemático",
-    date: "12 Novembro, 2024",
+    date: "12 Novembro, 2025",
     time: "A definir",
     location: "A definir",
     description: "Testa os teus conhecimentos de cultura gerak neste quizz divertido e competitivo!",
     type: "Recreativa",
     link: undefined
-  },
-  {
-    title: "Filosofia dos Números Ordinais",
-    date: "21 Dezembro, 2024",
-    time: "18:00",
-    location: "Sala P12",
-    description: "Palestra com o Professor Bruno Jacinto da FCUL sobre a definição de Cantor dos números ordinais e sobre o porquê desta ser inadequada.",
-    type: "Palestra",
-    link: undefined
   }
 ];
 
 const pastEvents = [
+  ,
   {
-    title: "Torneio de Sueca",
-    date: "24 Setembro, 2024",
-    time: "21:00",
-    location: "Sala de Matemática",
-    description: "Escolhe um parceiro e mostra que sabes jogar! Um momento de diversão e convívio entre estudantes.",
-    type: "Recreativa",
+    title: "Filosofia dos Números Ordinais",
+    date: "21 Dezembro, 2025",
+    time: "18:00",
+    location: "Sala P12",
+    description: "Palestra com o Professor Bruno Jacinto da FCUL sobre a definição de Cantor dos números ordinais e sobre o porquê desta ser inadequada.",
+    type: "Palestra",
     link: undefined
   },
   {
