@@ -352,7 +352,37 @@ export default function NewsSection() {
         <p>Inscrições e pagamento até 19 de dezembro. Formulário:<br>
         <a href="https://forms.gle/wALxg8npQahjTVUWA" target="_blank">https://forms.gle/wALxg8npQahjTVUWA</a></p>
       `
-    }
+    },
+    //Time2talk
+    {
+      id: 15,
+      title: "Time2Talk",
+      excerpt: "Maior evento do NMATH, com palestras, workshops e discussões sobre temas atuais em matemática e tecnologia.",
+      category: "Eventos",
+      date: "9-11 Mar, 2026",
+      readTime: "1 min",
+      featured: true,
+      icon: Trophy,
+      fullContent: `
+        <p>O Time2Talk volta para mais uma edição com novas empresas, novos temas, mas com o mesmo objetivo de unir alunos e profissionais.</p>
+        <p><strong>Quando:</strong> 9 a 11 de março, <strong>Local:</strong> Centro de Congressos do Pavilhão de Engenharia Civil.</p>
+      `
+      },
+      {
+      id: 16,
+      title: "Dia do Pi — 14 de Março",
+      excerpt: "As celebrações do aniversário do NMATH ocorreram no passado dia 16 de março, no Departamento de Matemática",
+      category: "Eventos",
+      date: "9-11 Mar, 2026",
+      readTime: "1 min",
+      featured: true,
+      icon: Trophy,
+      fullContent: `
+        <p>No passado dia 16 de março, o NMATH comemorou o Dia do Pi - o seu aniversário - através de diversas atividades que uniram estudantes, professores e docentes.</p>
+        <p>O evento contou com palestras e um bolo de aniversário temático, proporcionando um ambiente de celebração e partilha de conhecimento.</p>
+        <p><strong>Quando:</strong> 16 de março, <strong>Local:</strong> Departamento de Matemática.</p>
+      `
+      }
   ];
 
   return (
