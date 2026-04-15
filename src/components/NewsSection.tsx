@@ -327,7 +327,7 @@ export default function NewsSection() {
       category: "Palestras",
       date: "10 Dec, 2025",
       readTime: "2 min",
-      featured: true,
+      featured: false,
       icon: CalendarIcon,
       fullContent: `
         <p>O professor <strong>Florian Pausinger</strong> dá uma palestra sobre aplicações topológicas na análise de dados, cobrindo problemas de classificação, clustering e reconstrução.</p>
@@ -375,7 +375,7 @@ export default function NewsSection() {
       category: "Eventos",
       date: "9-11 Mar, 2026",
       readTime: "1 min",
-      featured: true,
+      featured: false,
       icon: Trophy,
       fullContent: `
         <p>No passado dia 16 de março, o NMATH comemorou o Dia do Pi - o seu aniversário - através de diversas atividades que uniram estudantes, professores e docentes.</p>
