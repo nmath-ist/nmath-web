@@ -5,28 +5,36 @@ import { ImageWithFallback } from './figma/ImageWithFallback';
 
 // ✅ Importa a imagem localmente (igual à TeamSection)
 import whiteLogo from '../assets/white.png';
+import tetraedro from '../assets/solidos/tetraedro.png';
+import cubo from '../assets/solidos/cubo.png';
+import dodecaedro from '../assets/solidos/dodecaedro.png';
+import icosaedro from '../assets/solidos/icosaedro.png';
 
 export default function HeroSection() {
   return (
     <section className="bg-gradient-to-br from-slate-900 via-blue-900 to-teal-800 text-white py-20 relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="grid grid-cols-12 gap-4 h-full">
-          {Array.from({ length: 48 }).map((_, i) => (
-            <div key={i} className="bg-white/5 rounded"></div>
-          ))}
-        </div>
+      {/* Signature background: the actual Platonic solids from the NMATH mark,
+          same imagery as repositorio.nmath.pt, for a consistent identity */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+        <img src={tetraedro} alt="" className="absolute -top-14 -right-10 w-64 h-64 lg:w-80 lg:h-80 object-contain opacity-[0.10]" />
+        <img src={cubo} alt="" className="absolute bottom-0 -left-14 w-56 h-56 lg:w-72 lg:h-72 object-contain opacity-[0.10]" />
+        <img src={dodecaedro} alt="" className="absolute top-1/3 right-[8%] w-36 h-36 lg:w-44 lg:h-44 object-contain opacity-[0.08]" />
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 items-center relative">
+          <img
+            src={icosaedro}
+            alt=""
+            className="hidden lg:block absolute left-[38%] top-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 xl:w-24 xl:h-24 object-contain z-20 opacity-[0.08]"
+          />
           <div>
             <div className="flex justify-center lg:justify-start mb-8">
               {/* ✅ Usa o import estático */}
               <img
                 src={whiteLogo}
                 alt="NMATH Logo"
-                className="h-48 w-48 lg:h-64 lg:w-64 object-contain"
+                className="h-64 w-64 lg:h-80 lg:w-80 object-contain"
               />
             </div>
 

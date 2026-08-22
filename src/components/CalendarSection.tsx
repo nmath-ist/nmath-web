@@ -67,7 +67,7 @@ const getEventTypeColor = (type: string) => {
       "bg-purple-100 text-purple-700 border border-purple-200",
     Eventos: "bg-teal-100 text-teal-700 border border-teal-200",
     Workshop:
-      "bg-blue-100 text-blue-700 border border-blue-200",
+      "bg-slate-100 text-slate-800 border border-slate-300",
   };
   return (
     colors[type] ||

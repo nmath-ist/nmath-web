@@ -1,4 +1,71 @@
+@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap');
+@plugin "@tailwindcss/typography";
 @custom-variant dark (&:is(.dark *));
+
+@theme {
+  /* NMATH brand palette — sampled from the official logo */
+  --color-brand-navy: #0D1E3E;
+  --color-brand-navy-light: #17305C;
+  --color-brand-teal: #128F87;
+  --color-brand-teal-deep: #0D6F68;
+  --color-brand-teal-light: #27BDB5;
+  --color-brand-teal-soft: #E4F5F3;
+
+  /* Type system — a serif display face (shared with repositorio.nmath.pt for
+     a consistent identity across NMATH properties), Inter for body text, and
+     a monospace face for dates/labels/data. */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-mono-nmath: 'IBM Plex Mono', ui-monospace, monospace;
+  --default-font-family: var(--font-sans);
+
+  /* Re-tint the default Tailwind palette so every existing blue/teal/purple/
+     etc utility class already used across the app resolves to brand colours,
+     without having to rename classes anywhere. */
+  --color-blue-50: #F2FAF9;
+  --color-blue-100: #E4F5F3;
+  --color-blue-200: #A9E4DF;
+  --color-blue-300: #7FD9D3;
+  --color-blue-400: #27BDB5;
+  --color-blue-500: #128F87;
+  --color-blue-600: #128F87;
+  --color-blue-700: #0D6F68;
+  --color-blue-800: #17305C;
+  --color-blue-900: #0D1E3E;
+
+  --color-teal-50: #F2FAF9;
+  --color-teal-100: #E4F5F3;
+  --color-teal-200: #A9E4DF;
+  --color-teal-300: #27BDB5;
+  --color-teal-400: #5DCCC5;
+  --color-teal-500: #27BDB5;
+  --color-teal-600: #27BDB5;
+  --color-teal-700: #128F87;
+  --color-teal-800: #0D6F68;
+
+  --color-slate-800: #17305C;
+  --color-slate-900: #0D1E3E;
+
+  --color-orange-400: #27BDB5;
+  --color-orange-500: #128F87;
+  --color-red-600: #128F87;
+  --color-green-500: #27BDB5;
+  --color-emerald-100: #E4F5F3;
+  --color-emerald-500: #27BDB5;
+  --color-emerald-600: #128F87;
+  --color-indigo-500: #17305C;
+  --color-indigo-600: #0D1E3E;
+  --color-purple-50: #E4F5F3;
+  --color-purple-100: #E4F5F3;
+  --color-purple-400: #17305C;
+  --color-purple-500: #17305C;
+  --color-purple-600: #0D1E3E;
+  --color-pink-500: #27BDB5;
+  --color-pink-600: #128F87;
+  --color-rose-500: #27BDB5;
+  --color-rose-600: #128F87;
+}
 
 :root {
   --font-size: 14px;
@@ -8,7 +75,7 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: #030213;
+  --primary: #0D1E3E;
   --primary-foreground: oklch(1 0 0);
   --secondary: oklch(0.95 0.0058 264.53);
   --secondary-foreground: #030213;
@@ -30,7 +97,7 @@
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 0.625rem;
+  --radius: 0.75rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.145 0 0);
   --sidebar-primary: #030213;
@@ -186,6 +253,27 @@
 
 html {
   font-size: var(--font-size);
+  scroll-behavior: smooth;
+}
+
+/* Typography personality: serif display face on every heading, sans-serif
+   body text, tabular/mono treatment for dates and short data labels. */
+@layer base {
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    letter-spacing: -0.01em;
+  }
+
+  ::selection {
+    background-color: var(--color-brand-teal-light);
+    color: var(--color-brand-navy);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 /* Custom scrollbar utilities */
