@@ -1,77 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Trophy, BookOpen, Mic, Sparkles } from 'lucide-react';
 
 interface Event {
-  id: string;
+  id: number;
   title: string;
   shortDescription: string;
-  color: string;
   category: string;
   stats?: string;
-  yearLinks?: { year: string; url: string }[]; // Links específicos para cada ano
+  yearLinks: { year: string; url: string }[];
   icon: React.ReactNode;
 }
 
-const events: Event[] = [
-  {
-    id: 'integration-bee',
-    title: 'Integration Bee',
-    shortDescription:
-      'Competição de cálculo integral que desafia estudantes a resolver integrais sob pressão de tempo.',
-    color: 'blue',
-    category: 'Competição',
-    stats: 'Edição 2025 • Prémios',
-    icon: <Trophy className="h-7 w-7" />,
-    yearLinks: [
-      { year: '2025', url: 'https://sites.google.com/view/integration-bee/integration-bee-2025' }
-    ],
-  },
-  {
-    id: 'jornadas-matematica',
-    title: 'Jornadas de Matemática',
-    shortDescription:
-      'Encontro académico com palestras, roundtables e networking.',
-    color: 'purple',
-    category: 'Conferência',
-    stats: 'Edições: 2017 • 2018 • 2019 • 2023',
-    icon: <BookOpen className="h-7 w-7" />,
-    yearLinks: [
-      { year: '2023', url: 'https://nmath.tecnico.ulisboa.pt/jmatematica23' },
-      { year: '2019', url: 'https://nmath.tecnico.ulisboa.pt/jmatematica19/' },
-      { year: '2018', url: 'https://nmath.tecnico.ulisboa.pt/jmatematica18/' },
-      { year: '2017', url: 'https://nmath.tecnico.ulisboa.pt/jmatematica17/' }
-    ],
-  },
-  {
-    id: 'enemath',
-    title: 'ENEMATH',
-    shortDescription:
-      'Encontro Nacional de Matemática.',
-    color: 'indigo',
-    category: 'ENEMATH',
-    stats: 'Edições: 2016 • 2021',
-    icon: <BookOpen className="h-7 w-7" />,
-    yearLinks: [
-      { year: '2021', url: 'https://nmath.tecnico.ulisboa.pt/enemath/' },
-      { year: '2016', url: 'https://nmath.tecnico.ulisboa.pt/enemath2016/' }
-    ],
-  },
-  {
-    id: 'time2talk',
-    title: 'Time2Talk',
-    shortDescription:
-      'Evento dedicado à divulgação do papel da Matemática no mundo empresarial com roundtables e palestras.',
-    color: 'green',
-    category: 'Palestras',
-    stats: 'Edição 2025',
-    icon: <Mic className="h-7 w-7" />,
-    yearLinks: [
-      { year: '2025', url: 'https://sites.google.com/view/time2talk-nmath/p%C3%A1gina-inicial' }
-    ],
-  },
-];
+const ICONS: Record<string, React.ReactNode> = {
+  trophy: <Trophy className="h-7 w-7" />,
+  book: <BookOpen className="h-7 w-7" />,
+  mic: <Mic className="h-7 w-7" />,
+};
+
+function parseYearLinks(raw: string): { year: string; url: string }[] {
+  return (raw || '')
+    .split('\n')
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => {
+      const [year, ...rest] = line.split('|');
+      return { year: (year || '').trim(), url: rest.join('|').trim() };
+    })
+    .filter((yl) => yl.year && yl.url);
+}
 
 function EventCard({ event }: { event: Event }) {
   return (
@@ -128,6 +86,27 @@ function EventCard({ event }: { event: Event }) {
 }
 
 export default function EventsSection() {
+  const [events, setEvents] = useState<Event[]>([]);
+
+  useEffect(() => {
+    fetch('/api/flagship-events')
+      .then((r) => r.json())
+      .then((rows) =>
+        setEvents(
+          rows.map((r: any) => ({
+            id: r.id,
+            title: r.title,
+            shortDescription: r.short_description,
+            category: r.category,
+            stats: r.stats,
+            yearLinks: parseYearLinks(r.year_links),
+            icon: ICONS[r.icon] || ICONS.trophy,
+          }))
+        )
+      )
+      .catch(() => setEvents([]));
+  }, []);
+
   return (
     <section id="events" className="py-20 bg-gradient-to-br from-slate-50 to-blue-50 relative overflow-hidden">
       <div className="absolute inset-0 overflow-hidden">

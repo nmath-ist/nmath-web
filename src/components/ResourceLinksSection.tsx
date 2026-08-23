@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { 
@@ -9,6 +10,27 @@ import {
 } from 'lucide-react';
 
 export default function ResourceLinksSection() {
+  const [latestEpisode, setLatestEpisode] = useState<{
+    title: string; duration: string; date: string; url: string;
+  } | null>(null);
+
+  useEffect(() => {
+    fetch('/api/oracle-episodes')
+      .then((r) => r.json())
+      .then((rows) => {
+        if (rows && rows.length > 0) {
+          const ep = rows[0];
+          setLatestEpisode({
+            title: ep.title,
+            duration: ep.duration,
+            date: ep.episode_date,
+            url: ep.url,
+          });
+        }
+      })
+      .catch(() => setLatestEpisode(null));
+  }, []);
+
   const externalLinks = [
     {
       id: 1,
@@ -33,14 +55,7 @@ export default function ResourceLinksSection() {
     }
   ];
 
-  // Último episódio disponível
-  const latestEpisode = {
-    title: "Como sobreviver ao meu primeiro ano em Matemática",
-    duration: "42 min",
-    date: "3 Set, 2025",
-    plays: "1.2k",
-    url: "https://open.spotify.com/episode/2U48w20Lvi7CIM5uiX9X11?si=OnYUjCw2R5aJX6xOP5E1Dw"
-  };
+  // Último episódio disponível (vem da API — ver useEffect acima)
 
   return (
     <section id="photos" className="py-16 bg-white">

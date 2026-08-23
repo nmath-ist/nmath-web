@@ -51,6 +51,32 @@ create table if not exists upcoming_events (
   created_at timestamptz not null default now()
 );
 
+-- "Eventos NMATH" — os eventos-bandeira mostrados na secção EventsSection
+-- (Integration Bee, Jornadas de Matemática, ENEMATH, Time2Talk, etc.)
+create table if not exists flagship_events (
+  id bigint generated always as identity primary key,
+  title text not null,
+  short_description text not null default '',
+  category text not null default '',
+  stats text not null default '',
+  icon text not null default 'trophy', -- 'trophy' | 'book' | 'mic'
+  year_links text not null default '', -- uma linha por ano: "2025|https://..."
+  sort_order integer not null default 0,
+  created_at timestamptz not null default now()
+);
+
+-- Episódios do podcast Oráculo (mostra-se o mais recente na secção "Conecta & Explora")
+create table if not exists oracle_episodes (
+  id bigint generated always as identity primary key,
+  title text not null,
+  duration text not null default '',
+  episode_date text not null default '',
+  plays text not null default '',
+  url text not null,
+  sort_order integer not null default 0,
+  created_at timestamptz not null default now()
+);
+
 -- Row Level Security: a chave "service role" que as funções do servidor usam
 -- ignora RLS automaticamente, por isso ativamos RLS para bloquear qualquer
 -- acesso direto ao Supabase a partir do browser (chave pública/anon) e
@@ -60,3 +86,5 @@ alter table announcements enable row level security;
 alter table magazine_editions enable row level security;
 alter table calendar_years enable row level security;
 alter table upcoming_events enable row level security;
+alter table flagship_events enable row level security;
+alter table oracle_episodes enable row level security;

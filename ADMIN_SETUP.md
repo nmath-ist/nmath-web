@@ -90,3 +90,31 @@ já com as funções em `api/` incluídas.
   Vercel com `npm i -g vercel` e correres `vercel link`) para correres o
   site com as funções `api/` a funcionar no teu computador, com as mesmas
   variáveis de ambiente num ficheiro `.env`.
+
+## Atualização: "Eventos NMATH" e "Oráculo"
+
+Se já tinhas o portal a funcionar e acabaste de atualizar o código com as
+secções **Eventos NMATH** (Integration Bee, Jornadas, ENEMATH, Time2Talk)
+e **Oráculo** (episódios do podcast), só precisas de 2 passos extra —
+**não é preciso repetir a instalação toda**:
+
+1. No Supabase → **SQL Editor** → **New query**, cola de novo o conteúdo
+   completo de `db/schema.sql` e corre. É seguro repetir: as tabelas que já
+   existiam (`announcements`, `magazine_editions`, etc.) não são apagadas
+   nem alteradas — só são criadas as 2 tabelas novas (`flagship_events` e
+   `oracle_episodes`).
+
+2. No terminal, com as variáveis `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY`
+   definidas (como antes), corre:
+   ```bash
+   npm install
+   npm run seed:new
+   ```
+   **Não uses `npm run seed`** (esse apaga e reescreve as 4 tabelas
+   originais, o que perderia qualquer edição que já tenhas feito no admin).
+   `npm run seed:new` só mexe nas 2 tabelas novas.
+
+3. Faz `git push` do código atualizado e, se o Vercel não fizer deploy
+   automático, força um com Redeploy. Não é preciso mudar nenhuma variável
+   de ambiente — são as mesmas de antes.
+

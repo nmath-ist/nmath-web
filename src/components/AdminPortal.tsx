@@ -54,6 +54,27 @@ type UpcomingEvent = {
   sort_order: number;
 };
 
+type FlagshipEvent = {
+  id?: number;
+  title: string;
+  short_description: string;
+  category: string;
+  stats: string;
+  icon: string;
+  year_links: string;
+  sort_order: number;
+};
+
+type OracleEpisode = {
+  id?: number;
+  title: string;
+  duration: string;
+  episode_date: string;
+  plays: string;
+  url: string;
+  sort_order: number;
+};
+
 // -------------------- Helpers de API --------------------
 async function apiGet<T>(url: string): Promise<T> {
   const res = await fetch(url);
@@ -176,11 +197,13 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
 
       <main className="max-w-5xl mx-auto px-4 py-8">
         <Tabs defaultValue="announcements">
-          <TabsList className="mb-6">
+          <TabsList className="mb-6 flex-wrap h-auto">
             <TabsTrigger value="announcements">Anúncios</TabsTrigger>
             <TabsTrigger value="magazine">Revista</TabsTrigger>
             <TabsTrigger value="calendar">Calendário</TabsTrigger>
             <TabsTrigger value="events">Próximos Eventos</TabsTrigger>
+            <TabsTrigger value="flagship">Eventos NMATH</TabsTrigger>
+            <TabsTrigger value="oracle">Oráculo</TabsTrigger>
           </TabsList>
 
           <TabsContent value="announcements">
@@ -194,6 +217,12 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
           </TabsContent>
           <TabsContent value="events">
             <EventsAdmin />
+          </TabsContent>
+          <TabsContent value="flagship">
+            <FlagshipEventsAdmin />
+          </TabsContent>
+          <TabsContent value="oracle">
+            <OracleAdmin />
           </TabsContent>
         </Tabs>
       </main>
@@ -757,6 +786,259 @@ function EventForm({
           <Label>Link (opcional — inscrição, etc.)</Label>
           <Input value={form.link} onChange={(e) => setForm({ ...form, link: e.target.value })} />
         </div>
+      </div>
+      {error && <p className="text-sm text-red-600">{error}</p>}
+      <div className="flex justify-end gap-2 pt-2">
+        <Button type="button" variant="outline" onClick={onCancel}>Cancelar</Button>
+        <Button type="submit" disabled={saving}>{saving ? 'A guardar...' : 'Guardar'}</Button>
+      </div>
+    </form>
+  );
+}
+
+// -------------------- Eventos NMATH (flagship) --------------------
+const emptyFlagship: FlagshipEvent = {
+  title: '', short_description: '', category: '', stats: '', icon: 'trophy', year_links: '', sort_order: 0,
+};
+
+function FlagshipEventsAdmin() {
+  const [items, setItems] = useState<FlagshipEvent[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState<FlagshipEvent | null>(null);
+  const [error, setError] = useState('');
+
+  function load() {
+    setLoading(true);
+    apiGet<FlagshipEvent[]>('/api/flagship-events')
+      .then(setItems)
+      .catch((e) => setError(e.message))
+      .finally(() => setLoading(false));
+  }
+
+  useEffect(load, []);
+
+  async function handleSave(item: FlagshipEvent) {
+    if (item.id) await apiSend('/api/flagship-events', 'PUT', item);
+    else await apiSend('/api/flagship-events', 'POST', item);
+    setEditing(null);
+    load();
+  }
+
+  async function handleDelete(item: FlagshipEvent) {
+    if (!confirmDelete(item.title)) return;
+    await apiSend(`/api/flagship-events?id=${item.id}`, 'DELETE');
+    load();
+  }
+
+  return (
+    <AdminListShell title="Eventos NMATH (Integration Bee, Jornadas, ENEMATH, Time2Talk...)" onNew={() => setEditing({ ...emptyFlagship })}>
+      {loading && <p className="text-slate-500">A carregar...</p>}
+      {error && <p className="text-red-600">{error}</p>}
+      {items.map((item) => (
+        <ItemRow
+          key={item.id}
+          title={item.title}
+          subtitle={`${item.category} · ${item.stats}`}
+          onEdit={() => setEditing(item)}
+          onDelete={() => handleDelete(item)}
+        />
+      ))}
+
+      {editing && (
+        <FormModal title={editing.id ? 'Editar evento' : 'Novo evento'} onClose={() => setEditing(null)}>
+          <FlagshipEventForm initial={editing} onCancel={() => setEditing(null)} onSave={handleSave} />
+        </FormModal>
+      )}
+    </AdminListShell>
+  );
+}
+
+function FlagshipEventForm({
+  initial,
+  onCancel,
+  onSave,
+}: {
+  initial: FlagshipEvent;
+  onCancel: () => void;
+  onSave: (item: FlagshipEvent) => Promise<void>;
+}) {
+  const [form, setForm] = useState<FlagshipEvent>(initial);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    setSaving(true);
+    setError('');
+    try {
+      await onSave(form);
+    } catch (err: any) {
+      setError(err.message || 'Erro ao guardar.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-3">
+      <div>
+        <Label>Título</Label>
+        <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required />
+      </div>
+      <div>
+        <Label>Descrição curta</Label>
+        <Textarea value={form.short_description} onChange={(e) => setForm({ ...form, short_description: e.target.value })} />
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <Label>Categoria</Label>
+          <Input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} placeholder="Competição, Conferência..." />
+        </div>
+        <div>
+          <Label>Estatística/legenda</Label>
+          <Input value={form.stats} onChange={(e) => setForm({ ...form, stats: e.target.value })} placeholder="Ex: Edição 2025 • Prémios" />
+        </div>
+      </div>
+      <div>
+        <Label>Ícone</Label>
+        <select
+          className="w-full border rounded-md h-9 px-3 bg-input-background text-sm"
+          value={form.icon}
+          onChange={(e) => setForm({ ...form, icon: e.target.value })}
+        >
+          <option value="trophy">Troféu</option>
+          <option value="book">Livro</option>
+          <option value="mic">Microfone</option>
+        </select>
+      </div>
+      <div>
+        <Label>Links por ano (um por linha, formato: Ano|URL)</Label>
+        <Textarea
+          className="min-h-24 font-mono text-xs"
+          value={form.year_links}
+          onChange={(e) => setForm({ ...form, year_links: e.target.value })}
+          placeholder={'2025|https://...\n2023|https://...'}
+        />
+        <p className="text-xs text-slate-500 mt-1">Cada linha vira um botão de ano no cartão. Exemplo: <code>2025|https://exemplo.pt</code></p>
+      </div>
+      {error && <p className="text-sm text-red-600">{error}</p>}
+      <div className="flex justify-end gap-2 pt-2">
+        <Button type="button" variant="outline" onClick={onCancel}>Cancelar</Button>
+        <Button type="submit" disabled={saving}>{saving ? 'A guardar...' : 'Guardar'}</Button>
+      </div>
+    </form>
+  );
+}
+
+// -------------------- Oráculo (episódios) --------------------
+const emptyEpisode: OracleEpisode = {
+  title: '', duration: '', episode_date: '', plays: '', url: '', sort_order: 0,
+};
+
+function OracleAdmin() {
+  const [items, setItems] = useState<OracleEpisode[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [editing, setEditing] = useState<OracleEpisode | null>(null);
+  const [error, setError] = useState('');
+
+  function load() {
+    setLoading(true);
+    apiGet<OracleEpisode[]>('/api/oracle-episodes')
+      .then(setItems)
+      .catch((e) => setError(e.message))
+      .finally(() => setLoading(false));
+  }
+
+  useEffect(load, []);
+
+  async function handleSave(item: OracleEpisode) {
+    if (item.id) await apiSend('/api/oracle-episodes', 'PUT', item);
+    else await apiSend('/api/oracle-episodes', 'POST', item);
+    setEditing(null);
+    load();
+  }
+
+  async function handleDelete(item: OracleEpisode) {
+    if (!confirmDelete(item.title)) return;
+    await apiSend(`/api/oracle-episodes?id=${item.id}`, 'DELETE');
+    load();
+  }
+
+  return (
+    <AdminListShell title="Episódios do Oráculo" onNew={() => setEditing({ ...emptyEpisode })}>
+      <p className="text-sm text-slate-500 -mt-2">
+        O site mostra sempre o episódio do topo desta lista como "Último Episódio". Para trocares qual aparece, ajusta a "Ordem" ou apaga os antigos.
+      </p>
+      {loading && <p className="text-slate-500">A carregar...</p>}
+      {error && <p className="text-red-600">{error}</p>}
+      {items.map((item) => (
+        <ItemRow
+          key={item.id}
+          title={item.title}
+          subtitle={`${item.episode_date} · ${item.duration}`}
+          onEdit={() => setEditing(item)}
+          onDelete={() => handleDelete(item)}
+        />
+      ))}
+
+      {editing && (
+        <FormModal title={editing.id ? 'Editar episódio' : 'Novo episódio'} onClose={() => setEditing(null)}>
+          <OracleForm initial={editing} onCancel={() => setEditing(null)} onSave={handleSave} />
+        </FormModal>
+      )}
+    </AdminListShell>
+  );
+}
+
+function OracleForm({
+  initial,
+  onCancel,
+  onSave,
+}: {
+  initial: OracleEpisode;
+  onCancel: () => void;
+  onSave: (item: OracleEpisode) => Promise<void>;
+}) {
+  const [form, setForm] = useState<OracleEpisode>(initial);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    setSaving(true);
+    setError('');
+    try {
+      await onSave(form);
+    } catch (err: any) {
+      setError(err.message || 'Erro ao guardar.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-3">
+      <div>
+        <Label>Título do episódio</Label>
+        <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required />
+      </div>
+      <div>
+        <Label>Link do Spotify (ou outra plataforma)</Label>
+        <Input value={form.url} onChange={(e) => setForm({ ...form, url: e.target.value })} required />
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <div>
+          <Label>Duração</Label>
+          <Input value={form.duration} onChange={(e) => setForm({ ...form, duration: e.target.value })} placeholder="42 min" />
+        </div>
+        <div>
+          <Label>Data</Label>
+          <Input value={form.episode_date} onChange={(e) => setForm({ ...form, episode_date: e.target.value })} placeholder="3 Set, 2025" />
+        </div>
+      </div>
+      <div>
+        <Label>Ordem (0 = aparece primeiro / é o "último episódio")</Label>
+        <Input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })} />
       </div>
       {error && <p className="text-sm text-red-600">{error}</p>}
       <div className="flex justify-end gap-2 pt-2">
