@@ -2,7 +2,7 @@
   "framework": "vite",
   "buildCommand": "vite build",
   "devCommand": "vite --port $PORT",
-  "outputDirectory": "dist",
+  "outputDirectory": "build",
   "rewrites": [
     { "source": "/admin", "destination": "/index.html" },
     { "source": "/admin/(.*)", "destination": "/index.html" },
