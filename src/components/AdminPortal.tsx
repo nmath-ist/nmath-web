@@ -1,12 +1,13 @@
-import { useState, useEffect, FormEvent } from 'react';
+import { useState, useEffect, useCallback, FormEvent } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Textarea } from './ui/textarea';
 import { Switch } from './ui/switch';
+import { Badge } from './ui/badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from './ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { Pencil, Trash2, Plus, LogOut, ArrowLeft, X } from 'lucide-react';
+import { Pencil, Trash2, Plus, LogOut, ArrowLeft, X, Upload } from 'lucide-react';
 
 // -------------------- Tipos --------------------
 type Announcement = {
@@ -20,6 +21,7 @@ type Announcement = {
   icon: string;
   full_content: string;
   sort_order: number;
+  published: boolean;
 };
 
 type MagazineEdition = {
@@ -33,6 +35,7 @@ type MagazineEdition = {
   link: string;
   is_current: boolean;
   sort_order: number;
+  published: boolean;
 };
 
 type CalendarYear = {
@@ -52,6 +55,7 @@ type UpcomingEvent = {
   event_type: string;
   link: string;
   sort_order: number;
+  published: boolean;
 };
 
 type FlagshipEvent = {
@@ -63,6 +67,7 @@ type FlagshipEvent = {
   icon: string;
   year_links: string;
   sort_order: number;
+  published: boolean;
 };
 
 type OracleEpisode = {
@@ -73,6 +78,15 @@ type OracleEpisode = {
   plays: string;
   url: string;
   sort_order: number;
+  published: boolean;
+};
+
+type PhotoAlbum = {
+  id?: number;
+  title: string;
+  drive_url: string;
+  sort_order: number;
+  published: boolean;
 };
 
 // -------------------- Helpers de API --------------------
@@ -92,6 +106,14 @@ async function apiSend(url: string, method: string, body?: unknown) {
   const data = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(data.error || 'Ocorreu um erro');
   return data;
+}
+
+function confirmDelete(label: string) {
+  return window.confirm(`Mover "${label}" para o lixo? Podes recuperá-lo depois na secção "Lixo".`);
+}
+
+function confirmPermanentDelete(label: string) {
+  return window.confirm(`Eliminar definitivamente "${label}"? Esta ação NÃO pode ser desfeita.`);
 }
 
 // -------------------- Componente principal --------------------
@@ -204,25 +226,84 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             <TabsTrigger value="events">Próximos Eventos</TabsTrigger>
             <TabsTrigger value="flagship">Eventos NMATH</TabsTrigger>
             <TabsTrigger value="oracle">Oráculo</TabsTrigger>
+            <TabsTrigger value="photos">Fotos</TabsTrigger>
           </TabsList>
 
           <TabsContent value="announcements">
-            <AnnouncementsAdmin />
+            <ContentSection<Announcement>
+              apiPath="/api/announcements"
+              title="Anúncios"
+              emptyItem={emptyAnnouncement}
+              renderRow={(item) => ({ title: item.title, subtitle: `${item.category} · ${item.event_date}` })}
+              FormComponent={AnnouncementForm}
+            />
           </TabsContent>
+
           <TabsContent value="magazine">
-            <MagazineAdmin />
+            <ContentSection<MagazineEdition>
+              apiPath="/api/magazine"
+              title="Edições da Revista Ponto Fixo"
+              emptyItem={emptyMagazine}
+              renderRow={(item) => ({
+                title: `${item.title} — ${item.issue}`,
+                subtitle: item.is_current ? 'Edição atual' : item.publish_date,
+              })}
+              FormComponent={MagazineForm}
+            />
           </TabsContent>
+
           <TabsContent value="calendar">
             <CalendarAdmin />
           </TabsContent>
+
           <TabsContent value="events">
-            <EventsAdmin />
+            <ContentSection<UpcomingEvent>
+              apiPath="/api/upcoming-events"
+              title="Próximos Eventos"
+              emptyItem={emptyEvent}
+              renderRow={(item) => ({ title: item.title, subtitle: `${item.event_date} · ${item.location}` })}
+              FormComponent={EventForm}
+            />
           </TabsContent>
+
           <TabsContent value="flagship">
-            <FlagshipEventsAdmin />
+            <ContentSection<FlagshipEvent>
+              apiPath="/api/flagship-events"
+              title="Eventos NMATH (Integration Bee, Jornadas, ENEMATH, Time2Talk...)"
+              emptyItem={emptyFlagship}
+              renderRow={(item) => ({ title: item.title, subtitle: `${item.category} · ${item.stats}` })}
+              FormComponent={FlagshipEventForm}
+            />
           </TabsContent>
+
           <TabsContent value="oracle">
-            <OracleAdmin />
+            <div className="mb-4 -mt-2">
+              <p className="text-sm text-slate-500">
+                O site mostra sempre o episódio do topo da lista como "Último Episódio". Ajusta a "Ordem" para trocar qual aparece.
+              </p>
+            </div>
+            <ContentSection<OracleEpisode>
+              apiPath="/api/oracle-episodes"
+              title="Episódios do Oráculo"
+              emptyItem={emptyEpisode}
+              renderRow={(item) => ({ title: item.title, subtitle: `${item.episode_date} · ${item.duration}` })}
+              FormComponent={OracleForm}
+            />
+          </TabsContent>
+
+          <TabsContent value="photos">
+            <div className="mb-4 -mt-2">
+              <p className="text-sm text-slate-500">
+                O site mostra sempre o álbum do topo da lista como "Álbum mais recente". Ajusta a "Ordem" para trocar qual aparece.
+              </p>
+            </div>
+            <ContentSection<PhotoAlbum>
+              apiPath="/api/photo-albums"
+              title="Álbuns de Fotos"
+              emptyItem={emptyAlbum}
+              renderRow={(item) => ({ title: item.title, subtitle: item.drive_url })}
+              FormComponent={PhotoAlbumForm}
+            />
           </TabsContent>
         </Tabs>
       </main>
@@ -230,57 +311,136 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   );
 }
 
-// -------------------- Bloco genérico de lista --------------------
-function AdminListShell({
-  title,
-  onNew,
-  children,
-}: {
-  title: string;
-  onNew: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg">{title}</h2>
-        <Button size="sm" onClick={onNew}>
-          <Plus className="h-4 w-4 mr-1" /> Novo
-        </Button>
-      </div>
-      {children}
-    </div>
-  );
+// -------------------- Bloco genérico: lista + lixo + rascunhos --------------------
+function useContentList(apiPath: string, trashMode: boolean) {
+  const [items, setItems] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  const load = useCallback(() => {
+    setLoading(true);
+    setError('');
+    const url = trashMode ? `${apiPath}?trash=true` : apiPath;
+    apiGet<any[]>(url)
+      .then(setItems)
+      .catch((e) => setError(e.message))
+      .finally(() => setLoading(false));
+  }, [apiPath, trashMode]);
+
+  useEffect(() => {
+    load();
+  }, [load]);
+
+  return { items, loading, error, reload: load };
 }
 
-function ItemRow({
+function ContentSection<T extends { id?: number; published?: boolean }>({
+  apiPath,
   title,
-  subtitle,
-  onEdit,
-  onDelete,
+  emptyItem,
+  renderRow,
+  FormComponent,
 }: {
+  apiPath: string;
   title: string;
-  subtitle: string;
-  onEdit: () => void;
-  onDelete: () => void;
+  emptyItem: T;
+  renderRow: (item: T) => { title: string; subtitle: string };
+  FormComponent: React.ComponentType<{ initial: T; onCancel: () => void; onSave: (item: T) => Promise<void> }>;
 }) {
+  const [trashMode, setTrashMode] = useState(false);
+  const { items, loading, error, reload } = useContentList(apiPath, trashMode);
+  const [editing, setEditing] = useState<T | null>(null);
+
+  async function handleSave(item: T) {
+    if (item.id) await apiSend(apiPath, 'PUT', item);
+    else await apiSend(apiPath, 'POST', item);
+    setEditing(null);
+    reload();
+  }
+
+  async function handleTrash(item: T) {
+    if (!confirmDelete(renderRow(item).title)) return;
+    await apiSend(`${apiPath}?id=${item.id}`, 'DELETE');
+    reload();
+  }
+
+  async function handleRestore(item: T) {
+    await apiSend(apiPath, 'PUT', { id: item.id, action: 'restore' });
+    reload();
+  }
+
+  async function handlePermanentDelete(item: T) {
+    if (!confirmPermanentDelete(renderRow(item).title)) return;
+    await apiSend(`${apiPath}?id=${item.id}&permanent=true`, 'DELETE');
+    reload();
+  }
+
   return (
-    <Card>
-      <CardContent className="flex items-center justify-between py-4">
-        <div>
-          <p className="font-medium">{title}</p>
-          <p className="text-sm text-slate-500">{subtitle}</p>
-        </div>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <h2 className="text-lg">{title}{trashMode ? ' — Lixo' : ''}</h2>
         <div className="flex gap-2">
-          <Button size="icon" variant="outline" onClick={onEdit}>
-            <Pencil className="h-4 w-4" />
+          <Button size="sm" variant="outline" onClick={() => setTrashMode((v) => !v)}>
+            {trashMode ? 'Ver ativos' : 'Lixo'}
           </Button>
-          <Button size="icon" variant="outline" onClick={onDelete}>
-            <Trash2 className="h-4 w-4" />
-          </Button>
+          {!trashMode && (
+            <Button size="sm" onClick={() => setEditing({ ...emptyItem })}>
+              <Plus className="h-4 w-4 mr-1" /> Novo
+            </Button>
+          )}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+
+      {loading && <p className="text-slate-500">A carregar...</p>}
+      {error && <p className="text-red-600">{error}</p>}
+      {!loading && items.length === 0 && (
+        <p className="text-slate-500 text-sm">{trashMode ? 'O lixo está vazio.' : 'Ainda não há nada aqui.'}</p>
+      )}
+
+      {items.map((item) => {
+        const row = renderRow(item);
+        return (
+          <Card key={item.id}>
+            <CardContent className="flex items-center justify-between py-4 gap-4">
+              <div className="min-w-0">
+                <p className="font-medium flex items-center gap-2 flex-wrap">
+                  <span className="truncate">{row.title}</span>
+                  {!trashMode && item.published === false && (
+                    <Badge variant="outline" className="text-xs shrink-0">Rascunho</Badge>
+                  )}
+                </p>
+                <p className="text-sm text-slate-500 truncate">{row.subtitle}</p>
+              </div>
+              <div className="flex gap-2 shrink-0">
+                {trashMode ? (
+                  <>
+                    <Button size="sm" variant="outline" onClick={() => handleRestore(item)}>Repor</Button>
+                    <Button size="sm" variant="outline" onClick={() => handlePermanentDelete(item)}>
+                      Eliminar
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Button size="icon" variant="outline" onClick={() => setEditing(item)}>
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                    <Button size="icon" variant="outline" onClick={() => handleTrash(item)}>
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        );
+      })}
+
+      {editing && (
+        <FormModal title={editing.id ? 'Editar' : 'Novo'} onClose={() => setEditing(null)}>
+          <FormComponent initial={editing} onCancel={() => setEditing(null)} onSave={handleSave} />
+        </FormModal>
+      )}
+    </div>
   );
 }
 
@@ -300,67 +460,20 @@ function FormModal({ title, onClose, children }: { title: string; onClose: () =>
   );
 }
 
-function confirmDelete(label: string) {
-  return window.confirm(`Tens a certeza que queres eliminar "${label}"? Esta ação não pode ser desfeita.`);
+function PublishedToggle({ checked, onChange }: { checked: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <div className="flex items-center gap-2 pt-1">
+      <Switch checked={checked} onCheckedChange={onChange} />
+      <Label>{checked ? 'Publicado (visível no site)' : 'Rascunho (só visível aqui no admin)'}</Label>
+    </div>
+  );
 }
 
 // -------------------- Anúncios --------------------
 const emptyAnnouncement: Announcement = {
   title: '', excerpt: '', category: 'Eventos', event_date: '', read_time: '2 min',
-  featured: false, icon: 'calendar', full_content: '', sort_order: 0,
+  featured: false, icon: 'calendar', full_content: '', sort_order: 0, published: true,
 };
-
-function AnnouncementsAdmin() {
-  const [items, setItems] = useState<Announcement[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState<Announcement | null>(null);
-  const [error, setError] = useState('');
-
-  function load() {
-    setLoading(true);
-    apiGet<Announcement[]>('/api/announcements')
-      .then(setItems)
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
-  }
-
-  useEffect(load, []);
-
-  async function handleSave(item: Announcement) {
-    if (item.id) await apiSend('/api/announcements', 'PUT', item);
-    else await apiSend('/api/announcements', 'POST', item);
-    setEditing(null);
-    load();
-  }
-
-  async function handleDelete(item: Announcement) {
-    if (!confirmDelete(item.title)) return;
-    await apiSend(`/api/announcements?id=${item.id}`, 'DELETE');
-    load();
-  }
-
-  return (
-    <AdminListShell title="Anúncios" onNew={() => setEditing({ ...emptyAnnouncement })}>
-      {loading && <p className="text-slate-500">A carregar...</p>}
-      {error && <p className="text-red-600">{error}</p>}
-      {items.map((item) => (
-        <ItemRow
-          key={item.id}
-          title={item.title}
-          subtitle={`${item.category} · ${item.event_date}`}
-          onEdit={() => setEditing(item)}
-          onDelete={() => handleDelete(item)}
-        />
-      ))}
-
-      {editing && (
-        <FormModal title={editing.id ? 'Editar anúncio' : 'Novo anúncio'} onClose={() => setEditing(null)}>
-          <AnnouncementForm initial={editing} onCancel={() => setEditing(null)} onSave={handleSave} />
-        </FormModal>
-      )}
-    </AdminListShell>
-  );
-}
 
 function AnnouncementForm({
   initial,
@@ -438,6 +551,7 @@ function AnnouncementForm({
         <Switch checked={form.featured} onCheckedChange={(v) => setForm({ ...form, featured: v })} />
         <Label>Destacar este anúncio</Label>
       </div>
+      <PublishedToggle checked={form.published} onChange={(v) => setForm({ ...form, published: v })} />
       {error && <p className="text-sm text-red-600">{error}</p>}
       <div className="flex justify-end gap-2 pt-2">
         <Button type="button" variant="outline" onClick={onCancel}>Cancelar</Button>
@@ -450,58 +564,63 @@ function AnnouncementForm({
 // -------------------- Revista --------------------
 const emptyMagazine: MagazineEdition = {
   title: '', issue: '', cover_image_url: '', description: '', highlights: '',
-  publish_date: '', link: '', is_current: false, sort_order: 0,
+  publish_date: '', link: '', is_current: false, sort_order: 0, published: true,
 };
 
-function MagazineAdmin() {
-  const [items, setItems] = useState<MagazineEdition[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState<MagazineEdition | null>(null);
+function ImageUploadField({ value, onChange }: { value: string; onChange: (url: string) => void }) {
+  const [uploading, setUploading] = useState(false);
   const [error, setError] = useState('');
 
-  function load() {
-    setLoading(true);
-    apiGet<MagazineEdition[]>('/api/magazine')
-      .then(setItems)
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
-  }
+  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setError('');
+    setUploading(true);
+    try {
+      const dataBase64: string = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const result = reader.result as string;
+          resolve(result.split(',')[1] || '');
+        };
+        reader.onerror = () => reject(new Error('Não foi possível ler o ficheiro.'));
+        reader.readAsDataURL(file);
+      });
 
-  useEffect(load, []);
-
-  async function handleSave(item: MagazineEdition) {
-    if (item.id) await apiSend('/api/magazine', 'PUT', item);
-    else await apiSend('/api/magazine', 'POST', item);
-    setEditing(null);
-    load();
-  }
-
-  async function handleDelete(item: MagazineEdition) {
-    if (!confirmDelete(item.title)) return;
-    await apiSend(`/api/magazine?id=${item.id}`, 'DELETE');
-    load();
+      const data = await apiSend('/api/upload', 'POST', {
+        filename: file.name,
+        contentType: file.type,
+        dataBase64,
+      });
+      onChange(data.url);
+    } catch (err: any) {
+      setError(err.message || 'Erro ao fazer upload.');
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
   }
 
   return (
-    <AdminListShell title="Edições da Revista Ponto Fixo" onNew={() => setEditing({ ...emptyMagazine })}>
-      {loading && <p className="text-slate-500">A carregar...</p>}
-      {error && <p className="text-red-600">{error}</p>}
-      {items.map((item) => (
-        <ItemRow
-          key={item.id}
-          title={`${item.title} — ${item.issue}`}
-          subtitle={item.is_current ? 'Edição atual' : item.publish_date}
-          onEdit={() => setEditing(item)}
-          onDelete={() => handleDelete(item)}
-        />
-      ))}
-
-      {editing && (
-        <FormModal title={editing.id ? 'Editar edição' : 'Nova edição'} onClose={() => setEditing(null)}>
-          <MagazineForm initial={editing} onCancel={() => setEditing(null)} onSave={handleSave} />
-        </FormModal>
-      )}
-    </AdminListShell>
+    <div className="space-y-2">
+      <Input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder="https://... (ou faz upload abaixo)"
+        required
+      />
+      <div className="flex items-center gap-2">
+        <label className="inline-flex items-center gap-2 text-sm border rounded-md px-3 py-1.5 cursor-pointer hover:bg-slate-50">
+          <Upload className="h-3.5 w-3.5" />
+          {uploading ? 'A enviar...' : 'Fazer upload de uma imagem'}
+          <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" className="hidden" onChange={handleFile} disabled={uploading} />
+        </label>
+        {value && (
+          <img src={value} alt="Pré-visualização" className="h-12 w-9 object-cover rounded border border-slate-200" />
+        )}
+      </div>
+      {error && <p className="text-xs text-red-600">{error}</p>}
+    </div>
   );
 }
 
@@ -544,16 +663,8 @@ function MagazineForm({
         </div>
       </div>
       <div>
-        <Label>URL da imagem de capa</Label>
-        <Input
-          value={form.cover_image_url}
-          onChange={(e) => setForm({ ...form, cover_image_url: e.target.value })}
-          placeholder="https://... (usa um link direto para a imagem)"
-          required
-        />
-        <p className="text-xs text-slate-500 mt-1">
-          Podes fazer upload da imagem ao Google Drive/Imgur e colar aqui o link direto, ou pedir a um developer para a adicionar à pasta public/magazine do site.
-        </p>
+        <Label>Imagem de capa</Label>
+        <ImageUploadField value={form.cover_image_url} onChange={(url) => setForm({ ...form, cover_image_url: url })} />
       </div>
       <div>
         <Label>Descrição</Label>
@@ -577,6 +688,7 @@ function MagazineForm({
         <Switch checked={form.is_current} onCheckedChange={(v) => setForm({ ...form, is_current: v })} />
         <Label>Esta é a edição atual (aparece em destaque)</Label>
       </div>
+      <PublishedToggle checked={form.published} onChange={(v) => setForm({ ...form, published: v })} />
       {error && <p className="text-sm text-red-600">{error}</p>}
       <div className="flex justify-end gap-2 pt-2">
         <Button type="button" variant="outline" onClick={onCancel}>Cancelar</Button>
@@ -586,7 +698,7 @@ function MagazineForm({
   );
 }
 
-// -------------------- Calendário --------------------
+// -------------------- Calendário (sem lixo/rascunho — são só links por ano) --------------------
 const emptyCalendarYear: CalendarYear = { year_label: '', calendar_link: '', sort_order: 0 };
 
 function CalendarAdmin() {
@@ -613,23 +725,38 @@ function CalendarAdmin() {
   }
 
   async function handleDelete(item: CalendarYear) {
-    if (!confirmDelete(item.year_label)) return;
+    if (!window.confirm(`Eliminar "${item.year_label}"? Esta ação não pode ser desfeita.`)) return;
     await apiSend(`/api/calendar-years?id=${item.id}`, 'DELETE');
     load();
   }
 
   return (
-    <AdminListShell title="Links dos Calendários por Ano" onNew={() => setEditing({ ...emptyCalendarYear })}>
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg">Links dos Calendários por Ano</h2>
+        <Button size="sm" onClick={() => setEditing({ ...emptyCalendarYear })}>
+          <Plus className="h-4 w-4 mr-1" /> Novo
+        </Button>
+      </div>
       {loading && <p className="text-slate-500">A carregar...</p>}
       {error && <p className="text-red-600">{error}</p>}
       {items.map((item) => (
-        <ItemRow
-          key={item.id}
-          title={item.year_label}
-          subtitle={item.calendar_link}
-          onEdit={() => setEditing(item)}
-          onDelete={() => handleDelete(item)}
-        />
+        <Card key={item.id}>
+          <CardContent className="flex items-center justify-between py-4">
+            <div>
+              <p className="font-medium">{item.year_label}</p>
+              <p className="text-sm text-slate-500">{item.calendar_link}</p>
+            </div>
+            <div className="flex gap-2">
+              <Button size="icon" variant="outline" onClick={() => setEditing(item)}>
+                <Pencil className="h-4 w-4" />
+              </Button>
+              <Button size="icon" variant="outline" onClick={() => handleDelete(item)}>
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       ))}
 
       {editing && (
@@ -665,67 +792,15 @@ function CalendarAdmin() {
           </form>
         </FormModal>
       )}
-    </AdminListShell>
+    </div>
   );
 }
 
 // -------------------- Próximos Eventos --------------------
 const emptyEvent: UpcomingEvent = {
   title: '', event_date: '', event_time: '', location: '', description: '',
-  event_type: 'Eventos', link: '', sort_order: 0,
+  event_type: 'Eventos', link: '', sort_order: 0, published: true,
 };
-
-function EventsAdmin() {
-  const [items, setItems] = useState<UpcomingEvent[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState<UpcomingEvent | null>(null);
-  const [error, setError] = useState('');
-
-  function load() {
-    setLoading(true);
-    apiGet<UpcomingEvent[]>('/api/upcoming-events')
-      .then(setItems)
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
-  }
-
-  useEffect(load, []);
-
-  async function handleSave(item: UpcomingEvent) {
-    if (item.id) await apiSend('/api/upcoming-events', 'PUT', item);
-    else await apiSend('/api/upcoming-events', 'POST', item);
-    setEditing(null);
-    load();
-  }
-
-  async function handleDelete(item: UpcomingEvent) {
-    if (!confirmDelete(item.title)) return;
-    await apiSend(`/api/upcoming-events?id=${item.id}`, 'DELETE');
-    load();
-  }
-
-  return (
-    <AdminListShell title="Próximos Eventos" onNew={() => setEditing({ ...emptyEvent })}>
-      {loading && <p className="text-slate-500">A carregar...</p>}
-      {error && <p className="text-red-600">{error}</p>}
-      {items.map((item) => (
-        <ItemRow
-          key={item.id}
-          title={item.title}
-          subtitle={`${item.event_date} · ${item.location}`}
-          onEdit={() => setEditing(item)}
-          onDelete={() => handleDelete(item)}
-        />
-      ))}
-
-      {editing && (
-        <FormModal title={editing.id ? 'Editar evento' : 'Novo evento'} onClose={() => setEditing(null)}>
-          <EventForm initial={editing} onCancel={() => setEditing(null)} onSave={handleSave} />
-        </FormModal>
-      )}
-    </AdminListShell>
-  );
-}
 
 function EventForm({
   initial,
@@ -787,6 +862,7 @@ function EventForm({
           <Input value={form.link} onChange={(e) => setForm({ ...form, link: e.target.value })} />
         </div>
       </div>
+      <PublishedToggle checked={form.published} onChange={(v) => setForm({ ...form, published: v })} />
       {error && <p className="text-sm text-red-600">{error}</p>}
       <div className="flex justify-end gap-2 pt-2">
         <Button type="button" variant="outline" onClick={onCancel}>Cancelar</Button>
@@ -798,60 +874,8 @@ function EventForm({
 
 // -------------------- Eventos NMATH (flagship) --------------------
 const emptyFlagship: FlagshipEvent = {
-  title: '', short_description: '', category: '', stats: '', icon: 'trophy', year_links: '', sort_order: 0,
+  title: '', short_description: '', category: '', stats: '', icon: 'trophy', year_links: '', sort_order: 0, published: true,
 };
-
-function FlagshipEventsAdmin() {
-  const [items, setItems] = useState<FlagshipEvent[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState<FlagshipEvent | null>(null);
-  const [error, setError] = useState('');
-
-  function load() {
-    setLoading(true);
-    apiGet<FlagshipEvent[]>('/api/flagship-events')
-      .then(setItems)
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
-  }
-
-  useEffect(load, []);
-
-  async function handleSave(item: FlagshipEvent) {
-    if (item.id) await apiSend('/api/flagship-events', 'PUT', item);
-    else await apiSend('/api/flagship-events', 'POST', item);
-    setEditing(null);
-    load();
-  }
-
-  async function handleDelete(item: FlagshipEvent) {
-    if (!confirmDelete(item.title)) return;
-    await apiSend(`/api/flagship-events?id=${item.id}`, 'DELETE');
-    load();
-  }
-
-  return (
-    <AdminListShell title="Eventos NMATH (Integration Bee, Jornadas, ENEMATH, Time2Talk...)" onNew={() => setEditing({ ...emptyFlagship })}>
-      {loading && <p className="text-slate-500">A carregar...</p>}
-      {error && <p className="text-red-600">{error}</p>}
-      {items.map((item) => (
-        <ItemRow
-          key={item.id}
-          title={item.title}
-          subtitle={`${item.category} · ${item.stats}`}
-          onEdit={() => setEditing(item)}
-          onDelete={() => handleDelete(item)}
-        />
-      ))}
-
-      {editing && (
-        <FormModal title={editing.id ? 'Editar evento' : 'Novo evento'} onClose={() => setEditing(null)}>
-          <FlagshipEventForm initial={editing} onCancel={() => setEditing(null)} onSave={handleSave} />
-        </FormModal>
-      )}
-    </AdminListShell>
-  );
-}
 
 function FlagshipEventForm({
   initial,
@@ -921,6 +945,7 @@ function FlagshipEventForm({
         />
         <p className="text-xs text-slate-500 mt-1">Cada linha vira um botão de ano no cartão. Exemplo: <code>2025|https://exemplo.pt</code></p>
       </div>
+      <PublishedToggle checked={form.published} onChange={(v) => setForm({ ...form, published: v })} />
       {error && <p className="text-sm text-red-600">{error}</p>}
       <div className="flex justify-end gap-2 pt-2">
         <Button type="button" variant="outline" onClick={onCancel}>Cancelar</Button>
@@ -932,63 +957,8 @@ function FlagshipEventForm({
 
 // -------------------- Oráculo (episódios) --------------------
 const emptyEpisode: OracleEpisode = {
-  title: '', duration: '', episode_date: '', plays: '', url: '', sort_order: 0,
+  title: '', duration: '', episode_date: '', plays: '', url: '', sort_order: 0, published: true,
 };
-
-function OracleAdmin() {
-  const [items, setItems] = useState<OracleEpisode[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState<OracleEpisode | null>(null);
-  const [error, setError] = useState('');
-
-  function load() {
-    setLoading(true);
-    apiGet<OracleEpisode[]>('/api/oracle-episodes')
-      .then(setItems)
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
-  }
-
-  useEffect(load, []);
-
-  async function handleSave(item: OracleEpisode) {
-    if (item.id) await apiSend('/api/oracle-episodes', 'PUT', item);
-    else await apiSend('/api/oracle-episodes', 'POST', item);
-    setEditing(null);
-    load();
-  }
-
-  async function handleDelete(item: OracleEpisode) {
-    if (!confirmDelete(item.title)) return;
-    await apiSend(`/api/oracle-episodes?id=${item.id}`, 'DELETE');
-    load();
-  }
-
-  return (
-    <AdminListShell title="Episódios do Oráculo" onNew={() => setEditing({ ...emptyEpisode })}>
-      <p className="text-sm text-slate-500 -mt-2">
-        O site mostra sempre o episódio do topo desta lista como "Último Episódio". Para trocares qual aparece, ajusta a "Ordem" ou apaga os antigos.
-      </p>
-      {loading && <p className="text-slate-500">A carregar...</p>}
-      {error && <p className="text-red-600">{error}</p>}
-      {items.map((item) => (
-        <ItemRow
-          key={item.id}
-          title={item.title}
-          subtitle={`${item.episode_date} · ${item.duration}`}
-          onEdit={() => setEditing(item)}
-          onDelete={() => handleDelete(item)}
-        />
-      ))}
-
-      {editing && (
-        <FormModal title={editing.id ? 'Editar episódio' : 'Novo episódio'} onClose={() => setEditing(null)}>
-          <OracleForm initial={editing} onCancel={() => setEditing(null)} onSave={handleSave} />
-        </FormModal>
-      )}
-    </AdminListShell>
-  );
-}
 
 function OracleForm({
   initial,
@@ -1040,6 +1010,62 @@ function OracleForm({
         <Label>Ordem (0 = aparece primeiro / é o "último episódio")</Label>
         <Input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })} />
       </div>
+      <PublishedToggle checked={form.published} onChange={(v) => setForm({ ...form, published: v })} />
+      {error && <p className="text-sm text-red-600">{error}</p>}
+      <div className="flex justify-end gap-2 pt-2">
+        <Button type="button" variant="outline" onClick={onCancel}>Cancelar</Button>
+        <Button type="submit" disabled={saving}>{saving ? 'A guardar...' : 'Guardar'}</Button>
+      </div>
+    </form>
+  );
+}
+
+// -------------------- Fotos (álbuns) --------------------
+const emptyAlbum: PhotoAlbum = {
+  title: '', drive_url: '', sort_order: 0, published: true,
+};
+
+function PhotoAlbumForm({
+  initial,
+  onCancel,
+  onSave,
+}: {
+  initial: PhotoAlbum;
+  onCancel: () => void;
+  onSave: (item: PhotoAlbum) => Promise<void>;
+}) {
+  const [form, setForm] = useState<PhotoAlbum>(initial);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    setSaving(true);
+    setError('');
+    try {
+      await onSave(form);
+    } catch (err: any) {
+      setError(err.message || 'Erro ao guardar.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-3">
+      <div>
+        <Label>Título do álbum</Label>
+        <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="Ex: Jornadas de Matemática 2025" required />
+      </div>
+      <div>
+        <Label>Link da pasta do Drive</Label>
+        <Input value={form.drive_url} onChange={(e) => setForm({ ...form, drive_url: e.target.value })} placeholder="https://drive.google.com/drive/folders/..." required />
+      </div>
+      <div>
+        <Label>Ordem (0 = aparece primeiro / é o "álbum mais recente")</Label>
+        <Input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })} />
+      </div>
+      <PublishedToggle checked={form.published} onChange={(v) => setForm({ ...form, published: v })} />
       {error && <p className="text-sm text-red-600">{error}</p>}
       <div className="flex justify-end gap-2 pt-2">
         <Button type="button" variant="outline" onClick={onCancel}>Cancelar</Button>

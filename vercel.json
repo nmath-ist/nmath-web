@@ -1,5 +1,18 @@
 {
+  "framework": "vite",
+  "buildCommand": "vite build",
+  "devCommand": "vite --port $PORT",
+  "outputDirectory": "dist",
   "rewrites": [
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+    { "source": "/admin", "destination": "/index.html" },
+    { "source": "/admin/(.*)", "destination": "/index.html" },
+    { "source": "/anuncios", "destination": "/index.html" },
+    { "source": "/anuncios/(.*)", "destination": "/index.html" },
+    { "source": "/revista", "destination": "/index.html" },
+    { "source": "/revista/(.*)", "destination": "/index.html" },
+    { "source": "/oraculo", "destination": "/index.html" },
+    { "source": "/oraculo/(.*)", "destination": "/index.html" },
+    { "source": "/fotos", "destination": "/index.html" },
+   { "source": "/fotos/(.*)", "destination": "/index.html" }
   ]
 }

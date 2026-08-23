@@ -118,3 +118,36 @@ e **Oráculo** (episódios do podcast), só precisas de 2 passos extra —
    automático, força um com Redeploy. Não é preciso mudar nenhuma variável
    de ambiente — são as mesmas de antes.
 
+## Atualização: páginas de arquivo, rascunhos, lixo e upload de imagens
+
+Se já tinhas o portal com "Eventos NMATH" e "Oráculo" a funcionar e acabaste
+de atualizar outra vez o código, aqui está o que mudou e o que fazer:
+
+**O que é novo:**
+- `/anuncios` — página com o arquivo completo de todos os anúncios (a
+  homepage passou a mostrar só os mais recentes, com um botão "Ver todos")
+- `/revista` — página com o arquivo completo de edições da revista (a
+  homepage mostra só a edição atual, com um botão "Ver arquivo completo")
+- Cada item (anúncios, revista, eventos NMATH, próximos eventos, Oráculo)
+  tem agora um interruptor **Publicado / Rascunho** — um rascunho fica
+  guardado mas não aparece no site até ativares "Publicado"
+- Ao apagar algo no admin, ele vai para o **Lixo** em vez de desaparecer
+  logo — há um botão "Lixo" em cada secção para o veres, repor, ou eliminar
+  definitivamente
+- No formulário da Revista já dá para fazer **upload direto de uma imagem**
+  em vez de teres de arranjar um link à parte
+
+**O que precisas de fazer:**
+
+1. No Supabase → SQL Editor, cola de novo o `db/schema.sql` completo e
+   corre. É seguro repetir — só acrescenta as colunas novas
+   (`published`, `deleted_at`) às tabelas existentes e cria o espaço de
+   armazenamento para as imagens (`nmath-uploads`). Nada é apagado.
+2. **Não precisas de correr nenhum seed novo** — os anúncios, revista, etc.
+   que já tinhas ficam automaticamente marcados como "Publicado".
+3. `git push` do código novo e confirma o deploy no Vercel.
+4. Testa: no `/admin`, confirma que consegues marcar algo como rascunho e
+   que deixa de aparecer no site; apaga um item de teste e confirma que
+   aparece no "Lixo" com opção de repor.
+
+

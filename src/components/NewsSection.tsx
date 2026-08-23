@@ -136,57 +136,57 @@ export default function NewsSection() {
             </div>
 
             <div>
-              <h3 className="text-xl mb-4 text-slate-800">Outros Anúncios (por data)</h3>
-              <div className="relative">
-                <div className="flex space-x-6 overflow-x-auto pb-6 scrollbar-hide" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
-                {newsItems
-                  .filter(item => !item.featured)
-                  .slice()
-                  .reverse()
-                  .map((item) => (
-
-                    <Card 
-                      key={item.id} 
-                      className="flex-shrink-0 w-80 overflow-hidden border border-slate-200 hover:shadow-lg transition-all cursor-pointer hover:-translate-y-1 group"
-                      onClick={() => setSelectedArticle(item)}
-                    >
-                      <CardContent className="p-6">
-                        <div className="flex items-start space-x-4">
-                          <div className="flex-shrink-0">
-                            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-teal-500 rounded-lg flex items-center justify-center">
-                              <item.icon className="h-6 w-6 text-white" />
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-xl text-slate-800">Outros Anúncios (por data)</h3>
+                <a href="/anuncios">
+                  <Button variant="outline" size="sm">
+                    Ver todos os anúncios
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </a>
+              </div>
+              {(() => {
+                const others = newsItems.filter(item => !item.featured).slice().reverse().slice(0, 4);
+                if (others.length === 0) return null;
+                return (
+                  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    {others.map((item) => (
+                      <Card
+                        key={item.id}
+                        className="overflow-hidden border border-slate-200 hover:shadow-lg transition-all cursor-pointer hover:-translate-y-1 group"
+                        onClick={() => setSelectedArticle(item)}
+                      >
+                        <CardContent className="p-6">
+                          <div className="flex items-start space-x-4">
+                            <div className="flex-shrink-0">
+                              <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-teal-500 rounded-lg flex items-center justify-center">
+                                <item.icon className="h-6 w-6 text-white" />
+                              </div>
+                            </div>
+                            <div className="flex-1">
+                              <div className="flex items-center space-x-2 mb-2">
+                                <Badge variant="outline" className="border-blue-200 text-blue-600">
+                                  {item.category}
+                                </Badge>
+                              </div>
+                              <h3 className="mb-2 leading-tight hover:text-blue-600 transition-colors">
+                                {item.title}
+                              </h3>
+                              <p className="text-slate-600 text-sm mb-3 leading-relaxed">
+                                {item.excerpt}
+                              </p>
+                              <div className="flex items-center justify-between text-sm text-slate-500">
+                                <span>{item.date}</span>
+                                <ArrowRight className="h-4 w-4 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                              </div>
                             </div>
                           </div>
-                          <div className="flex-1">
-                            <div className="flex items-center space-x-2 mb-2">
-                              <Badge variant="outline" className="border-blue-200 text-blue-600">
-                                {item.category}
-                              </Badge>
-                            </div>
-                            <h3 className="mb-2 leading-tight hover:text-blue-600 transition-colors">
-                              {item.title}
-                            </h3>
-                            <p className="text-slate-600 text-sm mb-3 leading-relaxed">
-                              {item.excerpt}
-                            </p>
-                            <div className="flex items-center justify-between text-sm text-slate-500">
-                              <span>{item.date}</span>
-                              <ArrowRight className="h-4 w-4 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-                
-                <div className="absolute left-0 top-0 bottom-6 w-8 bg-gradient-to-r from-slate-50 to-transparent pointer-events-none"></div>
-                <div className="absolute right-0 top-0 bottom-6 w-8 bg-gradient-to-l from-slate-50 to-transparent pointer-events-none"></div>
-              </div>
-              
-              <div className="text-center mt-4">
-                <p className="text-sm text-slate-500">← Desliza para ver mais anúncios →</p>
-              </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                );
+              })()}
             </div>
           </div>
         )}

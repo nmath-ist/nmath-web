@@ -1,4 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv'; 
+dotenv.config({ path: '.env.local' });
 
 // Usa a "service role key" — só existe no servidor (funções Vercel), nunca
 // é enviada ao browser. É esta chave que ignora as regras de RLS e permite

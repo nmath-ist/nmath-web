@@ -13,6 +13,7 @@ export default function ResourceLinksSection() {
   const [latestEpisode, setLatestEpisode] = useState<{
     title: string; duration: string; date: string; url: string;
   } | null>(null);
+  const [latestAlbum, setLatestAlbum] = useState<{ title: string; url: string } | null>(null);
 
   useEffect(() => {
     fetch('/api/oracle-episodes')
@@ -29,6 +30,16 @@ export default function ResourceLinksSection() {
         }
       })
       .catch(() => setLatestEpisode(null));
+
+    fetch('/api/photo-albums')
+      .then((r) => r.json())
+      .then((rows) => {
+        if (rows && rows.length > 0) {
+          const album = rows[0];
+          setLatestAlbum({ title: album.title, url: album.drive_url });
+        }
+      })
+      .catch(() => setLatestAlbum(null));
   }, []);
 
   const externalLinks = [
@@ -37,7 +48,7 @@ export default function ResourceLinksSection() {
       title: "Álbum de Fotos",
       description: "Explora as memórias dos nossos eventos e atividades",
       icon: Camera,
-      url: "https://drive.google.com/drive/folders/1UCcJhlosNg9WY2-VhXz3bD7F3Gz0R3eU",
+      url: latestAlbum?.url || "https://drive.google.com/drive/folders/1UCcJhlosNg9WY2-VhXz3bD7F3Gz0R3eU",
       color: "from-teal-600 to-blue-700",
       highlights: ["Hackathon 2024", "Cerimónia de Graduação", "Atividades do Núcleo", "Eventos do Campus"],
       action: "Ver Fotos"
@@ -88,13 +99,17 @@ export default function ResourceLinksSection() {
                       {link.description}
                     </p>
 
-                    <Button 
-                      className="w-full bg-white/20 hover:bg-white/30 text-white border-0 group-hover:bg-white group-hover:text-slate-800 transition-all"
-                      onClick={() => window.open(link.url, '_blank')}
-                    >
-                      {link.action}
-                      <ExternalLink className="ml-2 h-4 w-4" />
-                    </Button>
+                <Button 
+                className="w-full bg-white/20 hover:bg-white/30 text-white border-0 group-hover:bg-white group-hover:text-slate-800 transition-all"
+                onClick={() =>
+                  link.id === 1
+                    ? (window.location.href = '/fotos')
+                    : window.open(link.url, '_blank')
+                }
+              >
+                {link.action}
+                <ExternalLink className="ml-2 h-4 w-4" />
+              </Button>
                   </div>
                 </div>
 
@@ -133,6 +148,32 @@ export default function ResourceLinksSection() {
                         </Button>
                       </div>
                     </div>
+                    <a href="/oraculo" className="block text-center text-sm text-teal-700 hover:text-teal-800 mt-3">
+                      Ver todos os episódios →
+                    </a>
+                  </div>
+                )}
+
+                {/* Extra section apenas para as Fotos */}
+                {link.id === 1 && latestAlbum && (
+                  <div className="p-6 bg-slate-50">
+                    <h4 className="mb-4 text-slate-800">📷 Álbum mais recente</h4>
+                    <div
+                      className="p-4 bg-white rounded-lg border border-slate-200 hover:shadow-md hover:bg-slate-100 cursor-pointer transition"
+                      onClick={() => window.open(latestAlbum.url, '_blank')}
+                    >
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                          <Camera className="h-5 w-5 text-blue-700" />
+                        </div>
+                        <div className="flex-1">
+                          <p className="font-medium text-sm leading-tight">{latestAlbum.title}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <a href="/fotos" className="block text-center text-sm text-teal-700 hover:text-teal-800 mt-3">
+                      Ver todas as fotos →
+                    </a>
                   </div>
                 )}
               </CardContent>

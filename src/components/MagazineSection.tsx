@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { 
   BookOpen, 
   ExternalLink,
+  ArrowRight,
 } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 
@@ -46,7 +46,6 @@ export default function MagazineSection() {
   }, []);
 
   const currentEdition = editions.find((e) => e.isCurrent) || editions[0];
-  const pastEditions = editions.filter((e) => e.id !== currentEdition?.id);
 
   const handleEditionClick = (link: string) => {
     window.open(link, '_blank', 'noopener,noreferrer');
@@ -69,19 +68,8 @@ export default function MagazineSection() {
         {!currentEdition ? (
           <p className="text-center text-slate-500">A carregar edições...</p>
         ) : (
-        <Tabs defaultValue="current" className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8 bg-slate-100">
-            <TabsTrigger value="current" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
-              Edição Atual
-            </TabsTrigger>
-            <TabsTrigger value="archive" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
-              Arquivo
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="current">
-            {/* Featured Current Edition */}
-            <Card className="overflow-hidden border border-slate-200 shadow-xl bg-white mb-8 cursor-pointer hover:shadow-2xl transition-all">
+          <>
+            <Card className="overflow-hidden border border-slate-200 shadow-xl bg-white mb-6 cursor-pointer hover:shadow-2xl transition-all max-w-4xl mx-auto">
               <div className="grid lg:grid-cols-2 gap-0" onClick={() => handleEditionClick(currentEdition.link)}>
                 <div className="aspect-[3/4] bg-slate-100 relative overflow-hidden">
                   <ImageWithFallback 
@@ -111,7 +99,6 @@ export default function MagazineSection() {
                       {currentEdition.description}
                     </p>
 
-                    {/* Highlights */}
                     {currentEdition.highlights.length > 0 && (
                       <div className="mb-6">
                         <h4 className="mb-3 text-slate-800">Destaques desta Edição</h4>
@@ -126,7 +113,6 @@ export default function MagazineSection() {
                       </div>
                     )}
 
-                    {/* Actions */}
                     <div className="flex space-x-3">
                       <Button 
                         className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
@@ -143,60 +129,16 @@ export default function MagazineSection() {
                 </div>
               </div>
             </Card>
-          </TabsContent>
 
-          <TabsContent value="archive">
-            {/* Past Editions Horizontal Scroll */}
-            <div className="relative">
-              <div className="flex space-x-6 overflow-x-auto pb-6 scrollbar-hide" style={{scrollbarWidth: 'none', msOverflowStyle: 'none'}}>
-                {pastEditions.map((edition) => (
-                  <Card 
-                    key={edition.id} 
-                    className="flex-shrink-0 w-72 overflow-hidden border border-slate-200 hover:shadow-lg transition-all hover:-translate-y-1 cursor-pointer"
-                    onClick={() => handleEditionClick(edition.link)}
-                  >
-                    <div className="aspect-[3/4] bg-slate-100 relative overflow-hidden">
-                      <ImageWithFallback 
-                        src={edition.coverImage}
-                        alt={edition.title}
-                        className="w-full h-full object-contain"
-                        loading="lazy"
-                      />
-                    </div>
-
-                    <CardContent className="p-4">
-                      <h3 className="mb-1 leading-tight">{edition.title}</h3>
-                      <p className="text-sm text-slate-600 mb-4">{edition.issue}</p>
-
-                      <div className="flex space-x-2">
-                        <Button 
-                          size="sm" 
-                          variant="outline" 
-                          className="flex-1 text-xs"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleEditionClick(edition.link);
-                          }}
-                        >
-                          <ExternalLink className="mr-1 h-3 w-3" />
-                          Ler
-                        </Button>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-              
-              {/* Gradient fade effects */}
-              <div className="absolute left-0 top-0 bottom-6 w-8 bg-gradient-to-r from-slate-50 to-transparent pointer-events-none"></div>
-              <div className="absolute right-0 top-0 bottom-6 w-8 bg-gradient-to-l from-slate-50 to-transparent pointer-events-none"></div>
+            <div className="text-center">
+              <a href="/revista">
+                <Button variant="outline">
+                  Ver arquivo completo
+                  <ArrowRight className="ml-2 h-4 w-4" />
+                </Button>
+              </a>
             </div>
-            
-            <div className="text-center mt-4">
-              <p className="text-sm text-slate-500 mb-4">← Desliza para ver mais edições →</p>
-            </div>
-          </TabsContent>
-        </Tabs>
+          </>
         )}
       </div>
     </section>

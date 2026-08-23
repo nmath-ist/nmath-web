@@ -7,9 +7,9 @@ export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const navItems = [
-    { icon: Newspaper, label: 'Notícias', href: '#news' },
-    { icon: Calendar, label: 'Calendário', href: '#calendar' },
-    { icon: Users, label: 'Equipa', href: '#team' },
+    { icon: Newspaper, label: 'Anúncios', href: '/anuncios' },
+    { icon: Calendar, label: 'Calendário', href: '/#calendar' },
+    { icon: Users, label: 'Equipa', href: '/#team' },
     { icon: Headphones, label: 'Oráculo', href: 'https://open.spotify.com/show/2yqzMLv5S0W5kaiDGJ6Fa7?si=537cde4120b3435c', external: true },
     { icon: HardDrive, label: 'Repositório', href: 'https://repositorio.nmath.pt' },
     { icon: Instagram, label: 'Instagram', href: 'https://instagram.com/nmath_ist', external: true },

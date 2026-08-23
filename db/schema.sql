@@ -77,6 +77,16 @@ create table if not exists oracle_episodes (
   created_at timestamptz not null default now()
 );
 
+-- Álbuns de fotos (cada um é um link para uma pasta do Drive, com título)
+-- Mostra-se o mais recente na secção "Conecta & Explora", tal como o Oráculo.
+create table if not exists photo_albums (
+  id bigint generated always as identity primary key,
+  title text not null,
+  drive_url text not null,
+  sort_order integer not null default 0,
+  created_at timestamptz not null default now()
+);
+
 -- Row Level Security: a chave "service role" que as funções do servidor usam
 -- ignora RLS automaticamente, por isso ativamos RLS para bloquear qualquer
 -- acesso direto ao Supabase a partir do browser (chave pública/anon) e
@@ -88,3 +98,37 @@ alter table calendar_years enable row level security;
 alter table upcoming_events enable row level security;
 alter table flagship_events enable row level security;
 alter table oracle_episodes enable row level security;
+alter table photo_albums enable row level security;
+
+-- Rascunhos + "lixo" (soft delete). Seguro de correr mais do que uma vez.
+alter table announcements add column if not exists published boolean not null default true;
+alter table announcements add column if not exists deleted_at timestamptz;
+
+alter table magazine_editions add column if not exists published boolean not null default true;
+alter table magazine_editions add column if not exists deleted_at timestamptz;
+
+alter table flagship_events add column if not exists published boolean not null default true;
+alter table flagship_events add column if not exists deleted_at timestamptz;
+
+alter table oracle_episodes add column if not exists published boolean not null default true;
+alter table oracle_episodes add column if not exists deleted_at timestamptz;
+
+alter table photo_albums add column if not exists published boolean not null default true;
+alter table photo_albums add column if not exists deleted_at timestamptz;
+
+alter table upcoming_events add column if not exists published boolean not null default true;
+alter table upcoming_events add column if not exists deleted_at timestamptz;
+
+-- Espaço de armazenamento para imagens que a equipa fizer upload no admin
+-- (ex: capas de revistas novas). Fica público para leitura (para as imagens
+-- aparecerem no site) mas só a chave service_role (usada pelas funções do
+-- servidor) consegue escrever lá — nunca o browser diretamente.
+insert into storage.buckets (id, name, public)
+values ('nmath-uploads', 'nmath-uploads', true)
+on conflict (id) do nothing;
+
+drop policy if exists "Leitura pública nmath-uploads" on storage.objects;
+create policy "Leitura pública nmath-uploads"
+  on storage.objects for select
+  using (bucket_id = 'nmath-uploads');
+
