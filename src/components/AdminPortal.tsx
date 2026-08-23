@@ -94,9 +94,9 @@ type PhotoAlbum = {
   id?: number;
   title: string;
   drive_url: string;
+  album_date: string;
   sort_order: number;
   published: boolean;
-  album_date: string;
 };
 
 // -------------------- Helpers de API --------------------

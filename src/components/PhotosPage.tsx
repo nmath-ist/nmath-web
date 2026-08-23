@@ -7,7 +7,7 @@ function formatShortDate(dateStr: string): string {
   if (!dateStr) return '';
   const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
   const [ano, mes, dia] = dateStr.split('-').map(Number);
-  if (!ano || !mes || !dia) return dateStr; // fallback se não vier no formato esperado
+  if (!ano || !mes || !dia) return dateStr;
   return `${dia} ${meses[mes - 1]} ${ano}`;
 }
 
@@ -20,13 +20,15 @@ export default function PhotosPage() {
       .then((r) => r.json())
       .then((rows) =>
         setAlbums(
-          rows.map((r: any) => ({
-            id: r.id,
-            title: r.title,
-            url: r.drive_url,
-            date: formatShortDate(r.album_date),
-            rawDate: r.album_date,
-          }))
+          rows
+            .map((r: any) => ({
+              id: r.id,
+              title: r.title,
+              url: r.drive_url,
+              date: formatShortDate(r.album_date),
+              rawDate: r.album_date,
+            }))
+            .sort((a, b) => new Date(b.rawDate).getTime() - new Date(a.rawDate).getTime())
         )
       )
       .catch(() => setAlbums([]))
@@ -77,9 +79,12 @@ export default function PhotosPage() {
                     <h3 className="mb-1 leading-tight group-hover:text-blue-600 transition-colors">
                       {album.title}
                     </h3>
-                    <span className="inline-flex items-center gap-1 text-sm text-slate-500">
-                      Abrir no Drive <ExternalLink className="h-3.5 w-3.5" />
-                    </span>
+                    <div className="flex items-center gap-3 text-sm text-slate-500">
+                      <span className="inline-flex items-center gap-1">
+                        Abrir no Drive <ExternalLink className="h-3.5 w-3.5" />
+                      </span>
+                      {album.date && <span>· {album.date}</span>}
+                    </div>
                   </div>
                 </div>
               </CardContent>
