@@ -72,21 +72,21 @@ export default function HeroSection() {
                 </button>
 
                 <button
-                  className="bg-gradient-to-br from-blue-600/20 to-purple-500/20 rounded-lg p-4 border border-white/10 hover:from-blue-600/30 hover:to-purple-500/30 transition-all hover:-translate-y-1 hover:shadow-lg text-left"
+                  className="bg-gradient-to-br from-blue-600/20 to-teal-600/20 rounded-lg p-4 border border-white/10 hover:from-blue-600/30 hover:to-teal-600/30 transition-all hover:-translate-y-1 hover:shadow-lg text-left"
                   onClick={() => (window.location.hash = 'magazine')}
                 >
-                  <BookOpen className="h-8 w-8 text-purple-400 mb-3" />
+                  <BookOpen className="h-8 w-8 text-blue-300 mb-3" />
                   <h3 className="mb-2">Ponto Fixo</h3>
                   <p className="text-blue-200 text-sm">Revistas e publicações dos estudantes</p>
                 </button>
 
                 <button
-                  className="bg-gradient-to-br from-purple-500/20 to-blue-600/20 rounded-lg p-4 border border-white/10 hover:from-purple-500/30 hover:to-blue-600/30 transition-all hover:-translate-y-1 hover:shadow-lg text-left"
+                  className="bg-gradient-to-br from-teal-600/20 to-blue-500/20 rounded-lg p-4 border border-white/10 hover:from-teal-600/30 hover:to-blue-500/30 transition-all hover:-translate-y-1 hover:shadow-lg text-left"
                   onClick={() => (window.location.hash = 'photos')}
                 >
-                  <Coffee className="h-8 w-8 text-orange-400 mb-3" />
-                  <h3 className="mb-2">Multimédia</h3>
-                  <p className="text-blue-200 text-sm">Álbum de fotos e conteúdo visual</p>
+                  <Coffee className="h-8 w-8 text-teal-300 mb-3" />
+                  <h3 className="mb-2">Fotos & Oráculo</h3>
+                  <p className="text-blue-200 text-sm">Álbum de fotos e o nosso podcast</p>
                 </button>
               </div>
             </div>

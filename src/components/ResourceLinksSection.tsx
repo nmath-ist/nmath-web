@@ -16,7 +16,7 @@ export default function ResourceLinksSection() {
       description: "Explora as memórias dos nossos eventos e atividades",
       icon: Camera,
       url: "https://drive.google.com/drive/folders/1UCcJhlosNg9WY2-VhXz3bD7F3Gz0R3eU",
-      color: "from-pink-500 to-rose-600",
+      color: "from-teal-600 to-blue-700",
       highlights: ["Hackathon 2024", "Cerimónia de Graduação", "Atividades do Núcleo", "Eventos do Campus"],
       action: "Ver Fotos"
     },
@@ -26,7 +26,7 @@ export default function ResourceLinksSection() {
       description: "Se aprender Matemática é bom, ouvir Matemática é ainda melhor.",
       icon: Headphones,
       url: "https://open.spotify.com/show/2yqzMLv5S0W5kaiDGJ6Fa7?si=537cde4120b3435c",
-      color: "from-purple-500 to-indigo-600",
+      color: "from-blue-700 to-teal-600",
       stats: "Lançamentos mensais",
       highlights: ["Dicas", "Entrevistas", "Insights de alunos"],
       action: "Ouvir Agora"
@@ -92,8 +92,8 @@ export default function ResourceLinksSection() {
                       onClick={() => window.open(latestEpisode.url, '_blank')}
                     >
                       <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
-                          <Play className="h-5 w-5 text-purple-600" />
+                        <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
+                          <Play className="h-5 w-5 text-teal-700" />
                         </div>
                         <div className="flex-1">
                           <p className="font-medium text-sm leading-tight">{latestEpisode.title}</p>
@@ -108,7 +108,7 @@ export default function ResourceLinksSection() {
                         <Button 
                           size="sm" 
                           variant="ghost" 
-                          className="text-purple-600 hover:bg-purple-50"
+                          className="text-teal-700 hover:bg-teal-50"
                           onClick={(e) => {
                             e.stopPropagation(); // Evita abrir o cartão duas vezes
                             window.open(latestEpisode.url, '_blank');

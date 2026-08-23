@@ -7,14 +7,12 @@ import EventsSection from './EventsSection';
 import MagazineSection from './MagazineSection';
 import ResourceLinksSection from './ResourceLinksSection';
 import { 
-  Facebook, 
- 
+  Facebook,
   Instagram, 
-  Linkedin, 
+  Linkedin,
   Music,
   Mail,
   MapPin,
-  Phone, 
   FileText
 } from 'lucide-react';
 
@@ -27,13 +25,13 @@ function Footer() {
           <div>
             <h3 className="text-xl mb-4">NMATH</h3>
             <div className="flex space-x-3">
-              <a href="#" className="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors">
+              <a href="https://www.facebook.com/nmathist/" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors">
                 <Facebook className="h-4 w-4" />
               </a>
               <a href="https://instagram.com/nmath_ist" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors">
                 <Instagram className="h-4 w-4" />
               </a>
-              <a href="#" className="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors">
+              <a href="https://pt.linkedin.com/company/nmath-ist" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors">
                 <Linkedin className="h-4 w-4" />
               </a>
               <a href="https://open.spotify.com/show/2yqzMLv5S0W5kaiDGJ6Fa7?si=a4ee8e15ca244417" target="_blank" rel="noopener noreferrer" className="w-8 h-8 bg-slate-800 rounded-lg flex items-center justify-center hover:bg-blue-600 transition-colors">

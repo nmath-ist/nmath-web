@@ -105,6 +105,7 @@ const pastEditions = [
                     src={currentEdition.coverImage}
                     alt={currentEdition.title}
                     className="w-full h-full object-contain"
+                    loading="lazy"
                   />
                   <div className="absolute top-4 left-4">
                     <Badge className="bg-red-500 text-white border-0">
@@ -174,6 +175,7 @@ const pastEditions = [
                         src={edition.coverImage}
                         alt={edition.title}
                         className="w-full h-full object-contain"
+                        loading="lazy"
                       />
                     </div>
 

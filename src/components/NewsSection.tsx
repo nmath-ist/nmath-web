@@ -2,7 +2,6 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Clock, ArrowRight, Zap, Trophy, Calendar as CalendarIcon, X } from 'lucide-react';
-import { ImageWithFallback } from './figma/ImageWithFallback';
 
 import { useState } from 'react';
 
@@ -391,7 +390,7 @@ export default function NewsSection() {
         <div className="text-center mb-12">
           <h2 className="text-4xl mb-4 text-slate-800">Anúncios</h2>
           <p className="text-slate-600 max-w-2xl mx-auto">
-            Mantém-te informado com os anúncios e oportunidades do NMATH — organizados por data.
+            Mantém-te informado com os anúncios e oportunidades do NMATH, organizados por data.
           </p>
         </div>
 
