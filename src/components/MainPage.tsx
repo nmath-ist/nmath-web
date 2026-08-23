@@ -99,6 +99,9 @@ function Footer() {
 
         <div className="border-t border-slate-800 mt-8 pt-8 text-center text-slate-400">
           <p>© Copyright 2025. Todos os direitos reservados. NMATH - Núcleo de Estudantes de Matemática do IST</p>
+          <a href="/admin" className="inline-block mt-3 text-xs text-slate-500 hover:text-slate-300 transition-colors">
+            Administrador
+          </a>
         </div>
       </div>
     </footer>

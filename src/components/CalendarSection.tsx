@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "./ui/card";
 import {
   Calendar,
@@ -7,57 +7,17 @@ import {
   ExternalLink,
 } from "lucide-react";
 
-const calendarLinks = [
-  {
-    year: "1º Ano",
-    link: "https://calendar.google.com/calendar/embed?src=41360b00598829ff1846efe90919834ed507b2353b126df1dd19302f495b2759%40group.calendar.google.com&ctz=Europe/Lisbon",
-  },
-  {
-    year: "2º Ano",
-    link: "https://calendar.google.com/calendar/embed?src=eb00b377c1894a6f74a819e275182d0d910214d616c852dc61a78ec0d7a1c6b3%40group.calendar.google.com&ctz=Europe/Lisbon",
-  },
-  {
-    year: "3º Ano",
-    link: "https://calendar.google.com/calendar/embed?src=6db57e8fd203da0ec88a436a0ce4f74ff8f34e9337329d81dba89131b7f6c387%40group.calendar.google.com&ctz=Europe/Lisbon",
-  },
-  {
-    year: "Mestrado",
-    link: "https://calendar.google.com/calendar/embed?src=f6f9b2919de8bcf8296174bc8016b07943c15ff037657f3c33db0aa37f28042e%40group.calendar.google.com&ctz=Europe/Lisbon",
-  },
-];
-
-const upcomingEvents = [
-  {
-    title: "What Happens When Topology Meets Data Analysis",
-    date: "10 Dezembro, 2025",
-    time: "18:00",
-    location: "Sala PA1",
-    description:
-      "Palestra com o Professor Florian Pausinger sobre aplicações topológicas em classificação, clustering e reconstrução de dados.",
-    type: "Palestra",
-    link: undefined,
-  },
-  {
-    title: "Jantar de Reis",
-    date: "9 Janeiro, 2026",
-    time: "20:30",
-    location: "Cantina do Social",
-    description:
-      "O tradicional Jantar de Reis que junta alunos e professores do Departamento de Matemática! Inclui entrada, prato, bebida à discrição e buffet de sobremesas. Preço: 7,5€",
-    type: "Eventos",
-    link: "https://forms.gle/wALxg8npQahjTVUWA",
-  },
-  // Adiciona mais eventos aqui seguindo o mesmo formato:
-  // {
-  //   title: "Nome do Evento",
-  //   date: "DD Mês, AAAA",
-  //   time: "HH:MM",
-  //   location: "Local",
-  //   description: "Descrição do evento...",
-  //   type: "Recreativa" ou "Palestra" ou "Workshop" ou "Eventos",
-  //   link: "https://..." ou undefined
-  // }
-];
+type CalendarLink = { id?: number; year: string; link: string };
+type UpcomingEvent = {
+  id?: number;
+  title: string;
+  date: string;
+  time: string;
+  location: string;
+  description: string;
+  type: string;
+  link?: string;
+};
 
 const getEventTypeColor = (type: string) => {
   const colors: { [key: string]: string } = {
@@ -76,6 +36,36 @@ const getEventTypeColor = (type: string) => {
 };
 
 export default function CalendarSection() {
+  const [calendarLinks, setCalendarLinks] = useState<CalendarLink[]>([]);
+  const [upcomingEvents, setUpcomingEvents] = useState<UpcomingEvent[]>([]);
+
+  useEffect(() => {
+    fetch("/api/calendar-years")
+      .then((r) => r.json())
+      .then((rows) =>
+        setCalendarLinks(rows.map((r: any) => ({ id: r.id, year: r.year_label, link: r.calendar_link })))
+      )
+      .catch(() => setCalendarLinks([]));
+
+    fetch("/api/upcoming-events")
+      .then((r) => r.json())
+      .then((rows) =>
+        setUpcomingEvents(
+          rows.map((r: any) => ({
+            id: r.id,
+            title: r.title,
+            date: r.event_date,
+            time: r.event_time,
+            location: r.location,
+            description: r.description,
+            type: r.event_type,
+            link: r.link || undefined,
+          }))
+        )
+      )
+      .catch(() => setUpcomingEvents([]));
+  }, []);
+
   return (
     <section
       id="calendar"

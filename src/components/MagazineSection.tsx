@@ -1,72 +1,52 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
-import pf25 from 'figma:asset/pf25.png';
-import pf22 from 'figma:asset/pf22.png';
-import pf21 from 'figma:asset/pf21.png';
-import pf20 from 'figma:asset/pf20.png';
-import pf19 from 'figma:asset/pf19.png';
 import { 
   BookOpen, 
   ExternalLink,
-  TrendingUp
 } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 
-export default function MagazineSection() {
-  const currentEdition = {
-  id: 1,
-  title: "#5",
-  issue: "Edição 2025",
-  coverImage: pf25,
-  description: "Depois de dois anos, o Ponto Fixo regressa com uma edição cheia de novas camadas — artigos intemporais, entrevistas inspiradoras e reflexões sobre o futuro académico.",
-  featured: true,
-  publishDate: "2025",
-  highlights: [
-    "Matemática na Música",
-    "Medalhas Fields",
-    "Entrevistas a Alumni: Doutoramento ou não?",
-    "Artigos de Professores e Estudantes"
-  ],
-  link: "https://drive.google.com/file/d/1BFNrqOkf0h0LX_CqUx5XrICrJli21Hvc/view"
+type Edition = {
+  id: number;
+  title: string;
+  issue: string;
+  coverImage: string;
+  description: string;
+  publishDate: string;
+  highlights: string[];
+  link: string;
+  isCurrent: boolean;
 };
 
-const pastEditions = [
-  {
-    id: 2,
-    title: "#4",
-    issue: "Edição 2022",
-    coverImage: pf22,
-    publishDate: "2022",
-    link: "https://nmath.tecnico.ulisboa.pt/wp-content/uploads/2022/08/pf_2022.pdf"
-  },
-  {
-    id: 3,
-    title: "#3",
-    issue: "Edição 2021",
-    coverImage: pf21,
-    publishDate: "2021",
-    link: "https://nmath.tecnico.ulisboa.pt/wp-content/uploads/2021/06/pf_2021.pdf"
-  },
-  {
-    id: 4,
-    title: "#2",
-    issue: "Edição 2020",
-    coverImage: pf20,
-    publishDate: "2020",
-    link: "https://nmath.tecnico.ulisboa.pt/pf2020.pdf"
-  },
-  {
-    id: 5,
-    title: "#1",
-    issue: "Edição 2019",
-    coverImage:  pf19,
-    publishDate: "2019",
-    link: "https://nmath.tecnico.ulisboa.pt/pf2019.pdf"
-  }
-];
+export default function MagazineSection() {
+  const [editions, setEditions] = useState<Edition[]>([]);
+
+  useEffect(() => {
+    fetch('/api/magazine')
+      .then((r) => r.json())
+      .then((rows) =>
+        setEditions(
+          rows.map((r: any) => ({
+            id: r.id,
+            title: r.title,
+            issue: r.issue,
+            coverImage: r.cover_image_url,
+            description: r.description,
+            publishDate: r.publish_date,
+            highlights: (r.highlights || '').split('\n').filter(Boolean),
+            link: r.link,
+            isCurrent: !!r.is_current,
+          }))
+        )
+      )
+      .catch(() => setEditions([]));
+  }, []);
+
+  const currentEdition = editions.find((e) => e.isCurrent) || editions[0];
+  const pastEditions = editions.filter((e) => e.id !== currentEdition?.id);
 
   const handleEditionClick = (link: string) => {
     window.open(link, '_blank', 'noopener,noreferrer');
@@ -86,6 +66,9 @@ const pastEditions = [
           </p>
         </div>
 
+        {!currentEdition ? (
+          <p className="text-center text-slate-500">A carregar edições...</p>
+        ) : (
         <Tabs defaultValue="current" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-8 bg-slate-100">
             <TabsTrigger value="current" className="data-[state=active]:bg-white data-[state=active]:shadow-sm">
@@ -129,17 +112,19 @@ const pastEditions = [
                     </p>
 
                     {/* Highlights */}
-                    <div className="mb-6">
-                      <h4 className="mb-3 text-slate-800">Destaques desta Edição</h4>
-                      <ul className="space-y-2">
-                        {currentEdition.highlights.map((highlight, index) => (
-                          <li key={index} className="flex items-center space-x-2">
-                            <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0"></div>
-                            <span className="text-sm text-slate-600">{highlight}</span>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                    {currentEdition.highlights.length > 0 && (
+                      <div className="mb-6">
+                        <h4 className="mb-3 text-slate-800">Destaques desta Edição</h4>
+                        <ul className="space-y-2">
+                          {currentEdition.highlights.map((highlight, index) => (
+                            <li key={index} className="flex items-center space-x-2">
+                              <div className="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0"></div>
+                              <span className="text-sm text-slate-600">{highlight}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
 
                     {/* Actions */}
                     <div className="flex space-x-3">
@@ -212,6 +197,7 @@ const pastEditions = [
             </div>
           </TabsContent>
         </Tabs>
+        )}
       </div>
     </section>
   );
