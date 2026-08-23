@@ -1016,10 +1016,7 @@ function OracleForm({
           <Input type="date" value={form.episode_date} onChange={(e) => setForm({ ...form, episode_date: e.target.value })} required />
         </div>
       </div>
-      <div>
-        <Label>Ordem (0 = aparece primeiro / é o "último episódio")</Label>
-        <Input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })} />
-      </div>
+     
       <PublishedToggle checked={form.published} onChange={(v) => setForm({ ...form, published: v })} />
       {error && <p className="text-sm text-red-600">{error}</p>}
       <div className="flex justify-end gap-2 pt-2">
@@ -1075,10 +1072,7 @@ function PhotoAlbumForm({
   <Label>Data</Label>
   <Input type="date" value={form.album_date} onChange={(e) => setForm({ ...form, album_date: e.target.value })} required />
 </div>
-      <div>
-        <Label>Ordem (0 = aparece primeiro / é o "álbum mais recente")</Label>
-        <Input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })} />
-      </div>
+
       <PublishedToggle checked={form.published} onChange={(v) => setForm({ ...form, published: v })} />
       {error && <p className="text-sm text-red-600">{error}</p>}
       <div className="flex justify-end gap-2 pt-2">
