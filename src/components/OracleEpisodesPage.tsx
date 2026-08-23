@@ -4,28 +4,40 @@ import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import { ArrowLeft, Play, Clock, Headphones } from 'lucide-react';
 
+
+function formatShortDate(dateStr: string): string {
+  if (!dateStr) return '';
+  const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+  const [ano, mes, dia] = dateStr.split('-').map(Number);
+  if (!ano || !mes || !dia) return dateStr; // fallback se não vier no formato esperado
+  return `${dia} ${meses[mes - 1]} ${ano}`;
+}
+
 export default function OracleEpisodesPage() {
   const [episodes, setEpisodes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetch('/api/oracle-episodes')
-      .then((r) => r.json())
-      .then((rows) =>
-        setEpisodes(
-          rows.map((r: any) => ({
+useEffect(() => {
+  fetch('/api/oracle-episodes')
+    .then((r) => r.json())
+    .then((rows) =>
+      setEpisodes(
+        rows
+          .map((r: any) => ({
             id: r.id,
             title: r.title,
             duration: r.duration,
-            date: r.episode_date,
+            date: formatShortDate(r.episode_date),
+            rawDate: r.episode_date, // guardamos o original para ordenar
             plays: r.plays,
             url: r.url,
-          })).reverse()
-        )
+          }))
+          .sort((a, b) => new Date(b.rawDate).getTime() - new Date(a.rawDate).getTime())
       )
-      .catch(() => setEpisodes([]))
-      .finally(() => setLoading(false));
-  }, []);
+    )
+    .catch(() => setEpisodes([]))
+    .finally(() => setLoading(false));
+}, []);
 
   return (
     <div className="min-h-screen bg-white">

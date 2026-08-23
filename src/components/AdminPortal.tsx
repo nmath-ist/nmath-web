@@ -9,6 +9,15 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from './ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Pencil, Trash2, Plus, LogOut, ArrowLeft, X, Upload } from 'lucide-react';
 
+
+function formatShortDate(dateStr: string): string {
+  if (!dateStr) return '';
+  const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+  const [ano, mes, dia] = dateStr.split('-').map(Number);
+  if (!ano || !mes || !dia) return dateStr; // fallback se não vier no formato esperado
+  return `${dia} ${meses[mes - 1]} ${ano}`;
+}
+
 // -------------------- Tipos --------------------
 type Announcement = {
   id?: number;
@@ -279,14 +288,14 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
           <TabsContent value="oracle">
             <div className="mb-4 -mt-2">
               <p className="text-sm text-slate-500">
-                O site mostra sempre o episódio do topo da lista como "Último Episódio". Ajusta a "Ordem" para trocar qual aparece.
+                O site mostra sempre o episódio mais recente (pela data) como "Último Episódio".
               </p>
             </div>
             <ContentSection<OracleEpisode>
               apiPath="/api/oracle-episodes"
               title="Episódios do Oráculo"
               emptyItem={emptyEpisode}
-              renderRow={(item) => ({ title: item.title, subtitle: `${item.episode_date} · ${item.duration}` })}
+              renderRow={(item) => ({ title: item.title, subtitle: `${formatShortDate(item.episode_date)} · ${item.duration}` })}
               FormComponent={OracleForm}
             />
           </TabsContent>
@@ -1003,7 +1012,7 @@ function OracleForm({
         </div>
         <div>
           <Label>Data</Label>
-          <Input value={form.episode_date} onChange={(e) => setForm({ ...form, episode_date: e.target.value })} placeholder="3 Set, 2025" />
+          <Input type="date" value={form.episode_date} onChange={(e) => setForm({ ...form, episode_date: e.target.value })} required />
         </div>
       </div>
       <div>

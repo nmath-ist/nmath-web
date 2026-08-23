@@ -9,6 +9,14 @@ import {
   Clock
 } from 'lucide-react';
 
+function formatShortDate(dateStr: string): string {
+  if (!dateStr) return '';
+  const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+  const [ano, mes, dia] = dateStr.split('-').map(Number);
+  if (!ano || !mes || !dia) return dateStr; // fallback se não vier no formato esperado
+  return `${dia} ${meses[mes - 1]} ${ano}`;
+}
+
 export default function ResourceLinksSection() {
   const [latestEpisode, setLatestEpisode] = useState<{
     title: string; duration: string; date: string; url: string;
@@ -20,11 +28,14 @@ export default function ResourceLinksSection() {
       .then((r) => r.json())
       .then((rows) => {
         if (rows && rows.length > 0) {
-          const ep = rows[0];
+          const sorted = [...rows].sort(
+            (a, b) => new Date(b.episode_date).getTime() - new Date(a.episode_date).getTime()
+          );
+          const ep = sorted[0];
           setLatestEpisode({
             title: ep.title,
             duration: ep.duration,
-            date: ep.episode_date,
+            date: formatShortDate(ep.episode_date),
             url: ep.url,
           });
         }
