@@ -96,6 +96,7 @@ type PhotoAlbum = {
   drive_url: string;
   sort_order: number;
   published: boolean;
+  album_date: string;
 };
 
 // -------------------- Helpers de API --------------------
@@ -1031,7 +1032,7 @@ function OracleForm({
 
 // -------------------- Fotos (álbuns) --------------------
 const emptyAlbum: PhotoAlbum = {
-  title: '', drive_url: '', sort_order: 0, published: true,
+  title: '', drive_url: '', album_date: '', sort_order: 0, published: true,
 };
 
 function PhotoAlbumForm({
@@ -1070,6 +1071,10 @@ function PhotoAlbumForm({
         <Label>Link da pasta do Drive</Label>
         <Input value={form.drive_url} onChange={(e) => setForm({ ...form, drive_url: e.target.value })} placeholder="https://drive.google.com/drive/folders/..." required />
       </div>
+      <div>
+  <Label>Data</Label>
+  <Input type="date" value={form.album_date} onChange={(e) => setForm({ ...form, album_date: e.target.value })} required />
+</div>
       <div>
         <Label>Ordem (0 = aparece primeiro / é o "álbum mais recente")</Label>
         <Input type="number" value={form.sort_order} onChange={(e) => setForm({ ...form, sort_order: Number(e.target.value) })} />

@@ -43,14 +43,17 @@ export default function ResourceLinksSection() {
       .catch(() => setLatestEpisode(null));
 
     fetch('/api/photo-albums')
-      .then((r) => r.json())
-      .then((rows) => {
-        if (rows && rows.length > 0) {
-          const album = rows[0];
-          setLatestAlbum({ title: album.title, url: album.drive_url });
-        }
-      })
-      .catch(() => setLatestAlbum(null));
+  .then((r) => r.json())
+  .then((rows) => {
+    if (rows && rows.length > 0) {
+      const sorted = [...rows].sort(
+        (a, b) => new Date(b.album_date).getTime() - new Date(a.album_date).getTime()
+      );
+      const album = sorted[0];
+      setLatestAlbum({ title: album.title, url: album.drive_url });
+    }
+  })
+  .catch(() => setLatestAlbum(null));
   }, []);
 
   const externalLinks = [

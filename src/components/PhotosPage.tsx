@@ -3,6 +3,14 @@ import Header from './Header';
 import { Card, CardContent } from './ui/card';
 import { ArrowLeft, ExternalLink, Camera } from 'lucide-react';
 
+function formatShortDate(dateStr: string): string {
+  if (!dateStr) return '';
+  const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+  const [ano, mes, dia] = dateStr.split('-').map(Number);
+  if (!ano || !mes || !dia) return dateStr; // fallback se não vier no formato esperado
+  return `${dia} ${meses[mes - 1]} ${ano}`;
+}
+
 export default function PhotosPage() {
   const [albums, setAlbums] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -16,6 +24,8 @@ export default function PhotosPage() {
             id: r.id,
             title: r.title,
             url: r.drive_url,
+            date: formatShortDate(r.album_date),
+            rawDate: r.album_date,
           }))
         )
       )
