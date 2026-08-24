@@ -131,9 +131,11 @@ export default function ResourceLinksSection() {
                 {link.id === 2 && latestEpisode && (
                   <div className="p-6 bg-slate-50">
                     <h4 className="mb-4 text-slate-800">🎧 Último Episódio</h4>
-                    <div 
-                      className="p-4 bg-white rounded-lg border border-slate-200 hover:shadow-md hover:bg-slate-100 cursor-pointer transition"
-                      onClick={() => window.open(latestEpisode.url, '_blank')}
+                    <a
+                      href={latestEpisode.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-4 bg-white rounded-lg border border-slate-200 hover:shadow-md hover:bg-slate-100 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
                     >
                       <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 bg-teal-100 rounded-lg flex items-center justify-center">
@@ -149,19 +151,8 @@ export default function ResourceLinksSection() {
                             <span>{latestEpisode.date}</span>
                           </div>
                         </div>
-                        <Button 
-                          size="sm" 
-                          variant="ghost" 
-                          className="text-teal-700 hover:bg-teal-50"
-                          onClick={(e) => {
-                            e.stopPropagation(); // Evita abrir o cartão duas vezes
-                            window.open(latestEpisode.url, '_blank');
-                          }}
-                        >
-                          <Play className="h-3 w-3" />
-                        </Button>
                       </div>
-                    </div>
+                    </a>
                     <a href="/oraculo" className="block text-center text-sm text-teal-700 hover:text-teal-800 mt-3">
                       Ver todos os episódios →
                     </a>
@@ -172,9 +163,11 @@ export default function ResourceLinksSection() {
                 {link.id === 1 && latestAlbum && (
                   <div className="p-6 bg-slate-50">
                     <h4 className="mb-4 text-slate-800">📷 Álbum mais recente</h4>
-                    <div
-                      className="p-4 bg-white rounded-lg border border-slate-200 hover:shadow-md hover:bg-slate-100 cursor-pointer transition"
-                      onClick={() => window.open(latestAlbum.url, '_blank')}
+                    <a
+                      href={latestAlbum.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="block p-4 bg-white rounded-lg border border-slate-200 hover:shadow-md hover:bg-slate-100 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
                     >
                       <div className="flex items-center space-x-3">
                         <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
@@ -184,7 +177,7 @@ export default function ResourceLinksSection() {
                           <p className="font-medium text-sm leading-tight">{latestAlbum.title}</p>
                         </div>
                       </div>
-                    </div>
+                    </a>
                     <a href="/fotos" className="block text-center text-sm text-teal-700 hover:text-teal-800 mt-3">
                       Ver todas as fotos →
                     </a>

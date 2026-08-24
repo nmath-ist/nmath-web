@@ -1,17 +1,26 @@
 import { useState, useEffect, useMemo } from 'react';
 import Header from './Header';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
-import { ArrowLeft, ArrowRight, Zap, Trophy, Calendar as CalendarIcon, X } from 'lucide-react';
+import { Input } from './ui/input';
+import { ArrowLeft, ArrowRight, Zap, Trophy, Calendar as CalendarIcon, Search } from 'lucide-react';
+import { announcementUrl } from './slug';
+import { CardSkeletonGrid } from './CardSkeleton';
+import { toast } from 'sonner';
 
 const ICONS: Record<string, any> = { calendar: CalendarIcon, trophy: Trophy, zap: Zap };
+
+function getInitialParam(name: string, fallback: string): string {
+  if (typeof window === 'undefined') return fallback;
+  return new URLSearchParams(window.location.search).get(name) || fallback;
+}
 
 export default function AnnouncementsPage() {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [category, setCategory] = useState<string>('Todos');
-  const [selected, setSelected] = useState<any>(null);
+  const [category, setCategory] = useState<string>(() => getInitialParam('categoria', 'Todos'));
+  const [query, setQuery] = useState<string>(() => getInitialParam('q', ''));
 
   useEffect(() => {
     fetch('/api/announcements')
@@ -31,16 +40,40 @@ export default function AnnouncementsPage() {
           })).reverse()
         )
       )
-      .catch(() => setItems([]))
+      .catch(() => {
+        setItems([]);
+        toast.error('Não foi possível carregar os anúncios. Tenta recarregar a página.');
+      })
       .finally(() => setLoading(false));
   }, []);
+
+  // Mantém o filtro/pesquisa na URL, para poderes partilhar o link já filtrado.
+  useEffect(() => {
+    const params = new URLSearchParams();
+    if (category && category !== 'Todos') params.set('categoria', category);
+    if (query) params.set('q', query);
+    const qs = params.toString();
+    const newUrl = window.location.pathname + (qs ? `?${qs}` : '');
+    window.history.replaceState(null, '', newUrl);
+  }, [category, query]);
 
   const categories = useMemo(() => {
     const set = new Set(items.map((i) => i.category).filter(Boolean));
     return ['Todos', ...Array.from(set)];
   }, [items]);
 
-  const filtered = category === 'Todos' ? items : items.filter((i) => i.category === category);
+  const filtered = useMemo(() => {
+    let result = category === 'Todos' ? items : items.filter((i) => i.category === category);
+    if (query.trim()) {
+      const q = query.trim().toLowerCase();
+      result = result.filter(
+        (i) =>
+          i.title?.toLowerCase().includes(q) ||
+          i.excerpt?.toLowerCase().includes(q)
+      );
+    }
+    return result;
+  }, [items, category, query]);
 
   return (
     <div className="min-h-screen bg-white">
@@ -58,64 +91,74 @@ export default function AnnouncementsPage() {
           </p>
         </div>
 
-        {selected ? (
-          <div className="max-w-4xl mx-auto">
-            <Card className="border border-slate-200 shadow-xl">
-              <div className="p-8">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center space-x-3">
-                    <Badge variant="outline" className="border-blue-200 text-blue-600">
-                      {selected.category}
-                    </Badge>
-                    <span className="text-sm text-slate-500">{selected.date}</span>
-                  </div>
-                  <Button variant="ghost" size="sm" onClick={() => setSelected(null)}>
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-                <h1 className="text-4xl mb-6 text-slate-800">{selected.title}</h1>
-                <div className="prose prose-slate max-w-none">
-                  <div
-                    dangerouslySetInnerHTML={{ __html: selected.fullContent || selected.excerpt }}
-                    className="space-y-4"
-                  />
-                </div>
-                <div className="flex items-center justify-end mt-8 pt-4 border-t border-slate-200">
-                  <Button onClick={() => setSelected(null)}>Voltar à lista</Button>
-                </div>
-              </div>
-            </Card>
+        <div className="mb-6 max-w-md">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+            <Input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Pesquisar anúncios..."
+              className="pl-9"
+              aria-label="Pesquisar anúncios"
+            />
           </div>
-        ) : (
-          <>
-            <div className="flex flex-wrap gap-2 mb-8">
-              {categories.map((c) => (
-                <button
-                  key={c}
-                  onClick={() => setCategory(c)}
-                  className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${
-                    category === c
-                      ? 'bg-blue-600 text-white border-blue-600'
-                      : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300'
-                  }`}
-                >
-                  {c}
-                </button>
-              ))}
-            </div>
+        </div>
 
-            {loading && <p className="text-slate-500">A carregar...</p>}
-            {!loading && filtered.length === 0 && (
-              <p className="text-slate-500">Não há anúncios nesta categoria.</p>
-            )}
+        <div className="flex flex-wrap gap-2 mb-8">
+          {categories.map((c) => (
+            <button
+              key={c}
+              onClick={() => setCategory(c)}
+              className={`px-3 py-1.5 rounded-full text-sm border transition-colors ${
+                category === c
+                  ? 'bg-blue-600 text-white border-blue-600'
+                  : 'bg-white text-slate-600 border-slate-200 hover:border-blue-300'
+              }`}
+            >
+              {c}
+            </button>
+          ))}
+        </div>
 
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filtered.map((item) => (
-                <Card
-                  key={item.id}
-                  className="overflow-hidden border border-slate-200 hover:shadow-lg transition-all cursor-pointer hover:-translate-y-1 group"
-                  onClick={() => setSelected(item)}
-                >
+        {loading && <CardSkeletonGrid count={6} />}
+
+        {!loading && (
+          <p className="text-sm text-slate-500 mb-4">
+            {filtered.length} {filtered.length === 1 ? 'anúncio encontrado' : 'anúncios encontrados'}
+          </p>
+        )}
+
+        {!loading && filtered.length === 0 && items.length > 0 && (
+          <p className="text-slate-500">
+            Não há anúncios que correspondam à tua pesquisa. Experimenta outro termo ou{' '}
+            <button
+              onClick={() => { setQuery(''); setCategory('Todos'); }}
+              className="text-blue-600 hover:underline"
+            >
+              limpa os filtros
+            </button>
+            .
+          </p>
+        )}
+        {!loading && items.length === 0 && (
+          <p className="text-slate-500">
+            Ainda não há anúncios publicados — segue-nos no{' '}
+            <a href="https://instagram.com/nmath_ist" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+              Instagram
+            </a>{' '}
+            para novidades.
+          </p>
+        )}
+
+        {!loading && filtered.length > 0 && (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filtered.map((item) => (
+              <a
+                key={item.id}
+                href={announcementUrl(item)}
+                className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-xl"
+              >
+                <Card className="overflow-hidden border border-slate-200 hover:shadow-lg transition-all cursor-pointer hover:-translate-y-1 group h-full">
                   <CardContent className="p-6">
                     <div className="flex items-start space-x-4">
                       <div className="flex-shrink-0">
@@ -146,9 +189,9 @@ export default function AnnouncementsPage() {
                     </div>
                   </CardContent>
                 </Card>
-              ))}
-            </div>
-          </>
+              </a>
+            ))}
+          </div>
         )}
       </div>
     </div>

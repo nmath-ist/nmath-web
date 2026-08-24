@@ -1,15 +1,17 @@
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
-import { Clock, ArrowRight, Zap, Trophy, Calendar as CalendarIcon, X } from 'lucide-react';
-
+import { ArrowRight, Zap, Trophy, Calendar as CalendarIcon } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { announcementUrl } from './slug';
+import { CardSkeletonGrid } from './CardSkeleton';
+import { toast } from 'sonner';
 
 const ICONS: Record<string, any> = { calendar: CalendarIcon, trophy: Trophy, zap: Zap };
 
 export default function NewsSection() {
-  const [selectedArticle, setSelectedArticle] = useState<any>(null);
   const [newsItems, setNewsItems] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch('/api/announcements')
@@ -29,9 +31,15 @@ export default function NewsSection() {
           }))
         )
       )
-      .catch(() => setNewsItems([]));
+      .catch(() => {
+        setNewsItems([]);
+        toast.error('Não foi possível carregar os anúncios. Tenta recarregar a página.');
+      })
+      .finally(() => setLoading(false));
   }, []);
 
+  const featured = newsItems.filter((item) => item.featured).slice().reverse();
+  const others = newsItems.filter((item) => !item.featured).slice().reverse().slice(0, 4);
 
   return (
     <section id="news" className="py-16 bg-gradient-to-br from-slate-50 to-blue-50">
@@ -43,56 +51,12 @@ export default function NewsSection() {
           </p>
         </div>
 
-        {selectedArticle ? (
-          <div className="max-w-4xl mx-auto">
-            <Card className="border border-slate-200 shadow-xl">
-              <div className="p-8">
-                <div className="flex items-center justify-between mb-6">
-                  <div className="flex items-center space-x-3">
-                    <Badge variant="outline" className="border-blue-200 text-blue-600">
-                      {selectedArticle.category}
-                    </Badge>
-                    <span className="text-sm text-slate-500">{selectedArticle.date}</span>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setSelectedArticle(null)}
-                  >
-                    <X className="h-4 w-4" />
-                  </Button>
-                </div>
-                
-                <h1 className="text-4xl mb-6 text-slate-800">
-                  {selectedArticle.title}
-                </h1>
-                
-                <div className="prose prose-slate max-w-none">
-                  <div 
-                    dangerouslySetInnerHTML={{ 
-                      __html: selectedArticle.fullContent || selectedArticle.excerpt 
-                    }}
-                    className="space-y-4"
-                  />
-                </div>
-                
-                <div className="flex items-center justify-end mt-8 pt-4 border-t border-slate-200">
-                  <Button onClick={() => setSelectedArticle(null)}>
-                    Voltar aos Anúncios
-                  </Button>
-                </div>
-              </div>
-            </Card>
-          </div>
+        {loading ? (
+          <CardSkeletonGrid count={5} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6" />
         ) : (
           <div>
             <div className="mb-8">
-            {newsItems
-                .filter(item => item.featured)
-                .slice()
-                .reverse()
-                .map((item) => (
-
+              {featured.map((item) => (
                 <Card key={item.id} className="overflow-hidden border-0 shadow-xl bg-gradient-to-br from-blue-600 to-teal-600 text-white">
                   <div className="p-8">
                     <div className="flex items-center space-x-4 mb-6">
@@ -103,31 +67,32 @@ export default function NewsSection() {
                         {item.category}
                       </Badge>
                     </div>
-                    
+
                     <CardHeader className="p-0 mb-4">
                       <CardTitle className="text-3xl leading-tight">
                         {item.title}
                       </CardTitle>
                     </CardHeader>
-                    
+
                     <CardContent className="p-0">
                       <p className="text-blue-100 text-lg mb-6 leading-relaxed">
                         {item.excerpt}
                       </p>
-                      
+
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4 text-blue-200">
                           <span>{item.date}</span>
                         </div>
-                        
-                        <Button 
-                          variant="secondary" 
-                          className="bg-white/20 text-white border-0 hover:bg-white/30 group"
-                          onClick={() => setSelectedArticle(item)}
-                        >
-                          Ler Mais
-                          <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                        </Button>
+
+                        <a href={announcementUrl(item)}>
+                          <Button
+                            variant="secondary"
+                            className="bg-white/20 text-white border-0 hover:bg-white/30 group"
+                          >
+                            Ler Mais
+                            <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                          </Button>
+                        </a>
                       </div>
                     </CardContent>
                   </div>
@@ -145,17 +110,15 @@ export default function NewsSection() {
                   </Button>
                 </a>
               </div>
-              {(() => {
-                const others = newsItems.filter(item => !item.featured).slice().reverse().slice(0, 4);
-                if (others.length === 0) return null;
-                return (
-                  <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                    {others.map((item) => (
-                      <Card
-                        key={item.id}
-                        className="overflow-hidden border border-slate-200 hover:shadow-lg transition-all cursor-pointer hover:-translate-y-1 group"
-                        onClick={() => setSelectedArticle(item)}
-                      >
+              {others.length > 0 && (
+                <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                  {others.map((item) => (
+                    <a
+                      key={item.id}
+                      href={announcementUrl(item)}
+                      className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-xl"
+                    >
+                      <Card className="overflow-hidden border border-slate-200 hover:shadow-lg transition-all cursor-pointer hover:-translate-y-1 group h-full">
                         <CardContent className="p-6">
                           <div className="flex items-start space-x-4">
                             <div className="flex-shrink-0">
@@ -169,7 +132,7 @@ export default function NewsSection() {
                                   {item.category}
                                 </Badge>
                               </div>
-                              <h3 className="mb-2 leading-tight hover:text-blue-600 transition-colors">
+                              <h3 className="mb-2 leading-tight group-hover:text-blue-600 transition-colors">
                                 {item.title}
                               </h3>
                               <p className="text-slate-600 text-sm mb-3 leading-relaxed">
@@ -183,10 +146,10 @@ export default function NewsSection() {
                           </div>
                         </CardContent>
                       </Card>
-                    ))}
-                  </div>
-                );
-              })()}
+                    </a>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}

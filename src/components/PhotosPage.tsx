@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import Header from './Header';
 import { Card, CardContent } from './ui/card';
 import { ArrowLeft, ExternalLink, Camera } from 'lucide-react';
+import { CardSkeletonGrid } from './CardSkeleton';
+import { toast } from 'sonner';
 
 function formatShortDate(dateStr: string): string {
   if (!dateStr) return '';
@@ -31,7 +33,10 @@ export default function PhotosPage() {
             .sort((a, b) => new Date(b.rawDate).getTime() - new Date(a.rawDate).getTime())
         )
       )
-      .catch(() => setAlbums([]))
+      .catch(() => {
+        setAlbums([]);
+        toast.error('Não foi possível carregar os álbuns. Tenta recarregar a página.');
+      })
       .finally(() => setLoading(false));
   }, []);
 
@@ -56,41 +61,54 @@ export default function PhotosPage() {
           </div>
         </div>
 
-        {loading && <p className="text-slate-500">A carregar...</p>}
+        {loading && <CardSkeletonGrid count={6} />}
+
         {!loading && albums.length === 0 && (
-          <p className="text-slate-500">Ainda não há álbuns publicados.</p>
+          <p className="text-slate-500">
+            Ainda não há álbuns publicados — segue-nos no{' '}
+            <a href="https://instagram.com/nmath_ist" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+              Instagram
+            </a>{' '}
+            para veres as fotos mais recentes dos eventos.
+          </p>
         )}
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {albums.map((album) => (
-            <Card
-              key={album.id}
-              className="overflow-hidden border border-slate-200 hover:shadow-lg transition-all cursor-pointer hover:-translate-y-1 group"
-              onClick={() => window.open(album.url, '_blank')}
-            >
-              <CardContent className="p-6">
-                <div className="flex items-center space-x-4">
-                  <div className="flex-shrink-0">
-                    <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-blue-500 rounded-lg flex items-center justify-center">
-                      <Camera className="h-5 w-5 text-white" />
+        {!loading && albums.length > 0 && (
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {albums.map((album) => (
+              <a
+                key={album.id}
+                href={album.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 rounded-xl"
+              >
+                <Card className="overflow-hidden border border-slate-200 hover:shadow-lg transition-all cursor-pointer hover:-translate-y-1 group h-full">
+                  <CardContent className="p-6">
+                    <div className="flex items-center space-x-4">
+                      <div className="flex-shrink-0">
+                        <div className="w-12 h-12 bg-gradient-to-br from-teal-500 to-blue-500 rounded-lg flex items-center justify-center">
+                          <Camera className="h-5 w-5 text-white" />
+                        </div>
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="mb-1 leading-tight group-hover:text-blue-600 transition-colors">
+                          {album.title}
+                        </h3>
+                        <div className="flex items-center gap-3 text-sm text-slate-500">
+                          <span className="inline-flex items-center gap-1">
+                            Abrir no Drive <ExternalLink className="h-3.5 w-3.5" />
+                          </span>
+                          {album.date && <span>· {album.date}</span>}
+                        </div>
+                      </div>
                     </div>
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="mb-1 leading-tight group-hover:text-blue-600 transition-colors">
-                      {album.title}
-                    </h3>
-                    <div className="flex items-center gap-3 text-sm text-slate-500">
-                      <span className="inline-flex items-center gap-1">
-                        Abrir no Drive <ExternalLink className="h-3.5 w-3.5" />
-                      </span>
-                      {album.date && <span>· {album.date}</span>}
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
+                  </CardContent>
+                </Card>
+              </a>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

@@ -128,13 +128,23 @@ export default function EventsSection() {
         </div>
 
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {events.map((event) => (
-              <div key={event.id} className="h-full">
-                <EventCard event={event} />
-              </div>
-            ))}
-          </div>
+          {events.length === 0 ? (
+            <p className="text-center text-slate-500">
+              Ainda não há eventos publicados aqui — segue-nos no{' '}
+              <a href="https://instagram.com/nmath_ist" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">
+                Instagram
+              </a>{' '}
+              para novidades.
+            </p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {events.map((event) => (
+                <div key={event.id} className="h-full">
+                  <EventCard event={event} />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>

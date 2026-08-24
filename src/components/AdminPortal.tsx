@@ -304,14 +304,14 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
           <TabsContent value="photos">
             <div className="mb-4 -mt-2">
               <p className="text-sm text-slate-500">
-                O site mostra sempre o álbum do topo da lista como "Álbum mais recente". Ajusta a "Ordem" para trocar qual aparece.
+                O site mostra sempre o álbum mais recente (pela data) como "Álbum mais recente".
               </p>
             </div>
             <ContentSection<PhotoAlbum>
               apiPath="/api/photo-albums"
               title="Álbuns de Fotos"
               emptyItem={emptyAlbum}
-              renderRow={(item) => ({ title: item.title, subtitle: item.drive_url })}
+              renderRow={(item) => ({ title: item.title, subtitle: `${formatShortDate(item.album_date)} · ${item.drive_url}` })}
               FormComponent={PhotoAlbumForm}
             />
           </TabsContent>
@@ -431,10 +431,10 @@ function ContentSection<T extends { id?: number; published?: boolean }>({
                   </>
                 ) : (
                   <>
-                    <Button size="icon" variant="outline" onClick={() => setEditing(item)}>
+                    <Button size="icon" variant="outline" onClick={() => setEditing(item)} aria-label="Editar">
                       <Pencil className="h-4 w-4" />
                     </Button>
-                    <Button size="icon" variant="outline" onClick={() => handleTrash(item)}>
+                    <Button size="icon" variant="outline" onClick={() => handleTrash(item)} aria-label="Mover para o lixo">
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </>
@@ -460,7 +460,7 @@ function FormModal({ title, onClose, children }: { title: string; onClose: () =>
       <Card className="w-full max-w-lg my-8">
         <CardHeader className="flex flex-row items-center justify-between space-y-0">
           <CardTitle>{title}</CardTitle>
-          <Button size="icon" variant="ghost" onClick={onClose}>
+          <Button size="icon" variant="ghost" onClick={onClose} aria-label="Fechar">
             <X className="h-4 w-4" />
           </Button>
         </CardHeader>
@@ -758,10 +758,10 @@ function CalendarAdmin() {
               <p className="text-sm text-slate-500">{item.calendar_link}</p>
             </div>
             <div className="flex gap-2">
-              <Button size="icon" variant="outline" onClick={() => setEditing(item)}>
+              <Button size="icon" variant="outline" onClick={() => setEditing(item)} aria-label="Editar">
                 <Pencil className="h-4 w-4" />
               </Button>
-              <Button size="icon" variant="outline" onClick={() => handleDelete(item)}>
+              <Button size="icon" variant="outline" onClick={() => handleDelete(item)} aria-label="Eliminar">
                 <Trash2 className="h-4 w-4" />
               </Button>
             </div>
