@@ -8,6 +8,7 @@ import { ArrowLeft, ArrowRight, Zap, Trophy, Calendar as CalendarIcon, Search } 
 import { announcementUrl } from './slug';
 import { CardSkeletonGrid } from './CardSkeleton';
 import { toast } from 'sonner';
+import { sortByDateDesc, formatDateRange } from './dateUtils';
 
 const ICONS: Record<string, any> = { calendar: CalendarIcon, trophy: Trophy, zap: Zap };
 
@@ -27,17 +28,16 @@ export default function AnnouncementsPage() {
       .then((r) => r.json())
       .then((rows) =>
         setItems(
-          rows.map((r: any) => ({
+          sortByDateDesc(rows, (r: any) => r.event_date, (r: any) => r.event_end_date).map((r: any) => ({
             id: r.id,
             title: r.title,
             excerpt: r.excerpt,
             category: r.category,
-            date: r.event_date,
-            readTime: r.read_time,
+            date: formatDateRange(r.event_date, r.event_end_date),
             featured: r.featured,
             icon: ICONS[r.icon] || CalendarIcon,
             fullContent: r.full_content,
-          })).reverse()
+          }))
         )
       )
       .catch(() => {

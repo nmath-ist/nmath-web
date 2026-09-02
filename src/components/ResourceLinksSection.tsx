@@ -65,7 +65,6 @@ export default function ResourceLinksSection() {
       url: latestAlbum?.url || "https://drive.google.com/drive/folders/1UCcJhlosNg9WY2-VhXz3bD7F3Gz0R3eU",
       color: "from-teal-600 to-blue-700",
       highlights: ["Hackathon 2024", "Cerimónia de Graduação", "Atividades do Núcleo", "Eventos do Campus"],
-      action: "Ver Fotos"
     },
     {
       id: 2,
@@ -76,7 +75,6 @@ export default function ResourceLinksSection() {
       color: "from-blue-700 to-teal-600",
       stats: "Lançamentos mensais",
       highlights: ["Dicas", "Entrevistas", "Insights de alunos"],
-      action: "Ouvir Agora"
     }
   ];
 
@@ -97,7 +95,10 @@ export default function ResourceLinksSection() {
           {externalLinks.map((link) => (
             <Card key={link.id} className="overflow-hidden border border-slate-200 hover:shadow-xl transition-all hover:-translate-y-2 group">
               <CardContent className="p-0">
-                <div className={`bg-gradient-to-br ${link.color} p-8 text-white relative overflow-hidden`}>
+                <div
+                  className={`bg-gradient-to-br ${link.color} p-8 text-white relative overflow-hidden ${link.id === 1 ? 'cursor-pointer' : ''}`}
+                  onClick={link.id === 1 ? () => (window.location.href = '/fotos') : undefined}
+                >
                   <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
                   <div className="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-12 -translate-x-12"></div>
                   
@@ -113,17 +114,15 @@ export default function ResourceLinksSection() {
                       {link.description}
                     </p>
 
-                <Button 
-                className="w-full bg-white/20 hover:bg-white/30 text-white border-0 group-hover:bg-white group-hover:text-slate-800 transition-all"
-                onClick={() =>
-                  link.id === 1
-                    ? (window.location.href = '/fotos')
-                    : window.open(link.url, '_blank')
-                }
-              >
-                {link.action}
-                <ExternalLink className="ml-2 h-4 w-4" />
-              </Button>
+                {link.id === 2 && (
+                  <Button
+                    className="w-full bg-white/20 hover:bg-white/30 text-white border-0 group-hover:bg-white group-hover:text-slate-800 transition-all"
+                    onClick={() => window.open(link.url, '_blank')}
+                  >
+                    Ouvir Agora
+                    <ExternalLink className="ml-2 h-4 w-4" />
+                  </Button>
+                )}
                   </div>
                 </div>
 

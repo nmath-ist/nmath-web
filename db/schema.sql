@@ -119,6 +119,27 @@ alter table photo_albums add column if not exists deleted_at timestamptz;
 alter table upcoming_events add column if not exists published boolean not null default true;
 alter table upcoming_events add column if not exists deleted_at timestamptz;
 
+-- Datas de fim opcionais, para anúncios/eventos que duram mais do que um dia
+-- (ex: "9 a 11 de Março"). Continuam a guardar-se como texto (formato ISO
+-- AAAA-MM-DD vindo do seletor de data do admin), tal como event_date.
+alter table announcements add column if not exists event_end_date text;
+alter table upcoming_events add column if not exists event_end_date text;
+
+-- O "tempo de leitura" deixou de ser mostrado nos anúncios.
+alter table announcements drop column if exists read_time;
+
+-- Link de recrutamento (o botão "Candidata-te" da secção da Equipa).
+-- Só uma linha (id fixo = 1), tal como um "calendar_years" com uma entrada só.
+create table if not exists recruitment_link (
+  id bigint primary key default 1,
+  link text not null default 'https://docs.google.com/forms/d/1UKR38c0HM9hxx9y8zUOMKr5mfEOwozNLDsRNEIOJlSQ/edit',
+  constraint recruitment_link_singleton check (id = 1)
+);
+insert into recruitment_link (id, link)
+values (1, 'https://docs.google.com/forms/d/1UKR38c0HM9hxx9y8zUOMKr5mfEOwozNLDsRNEIOJlSQ/edit')
+on conflict (id) do nothing;
+alter table recruitment_link enable row level security;
+
 -- Espaço de armazenamento para imagens que a equipa fizer upload no admin
 -- (ex: capas de revistas novas). Fica público para leitura (para as imagens
 -- aparecerem no site) mas só a chave service_role (usada pelas funções do

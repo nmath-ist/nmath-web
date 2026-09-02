@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Users, ExternalLink } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
+
+const FALLBACK_RECRUITMENT_LINK = 'https://docs.google.com/forms/d/1UKR38c0HM9hxx9y8zUOMKr5mfEOwozNLDsRNEIOJlSQ/edit';
 
 // IMPORTA AQUI AS FOTOS LOCAIS (coloca-as em src/assets/team/ - instruções abaixo)
 // Exemplo:
@@ -16,6 +18,17 @@ import catiaImg from '../assets/team/catia.jpg';
 import luisaImg from '../assets/team/luisa.jpg';
 
 export default function TeamSection() {
+  const [recruitmentLink, setRecruitmentLink] = useState(FALLBACK_RECRUITMENT_LINK);
+
+  useEffect(() => {
+    fetch('/api/recruitment-link')
+      .then((r) => r.json())
+      .then((data) => {
+        if (data?.link) setRecruitmentLink(data.link);
+      })
+      .catch(() => {});
+  }, []);
+
   const teamMembers = [
     { id: 1, name: "Matilde Variz", role: "Presidente", year: "3º Ano - LMAC", image: matildeImg },
     { id: 2, name: "Leonor Lourenço", role: "Vice Presidente", year: "3º Ano - LMAC", image: leonorImg },
@@ -101,7 +114,7 @@ export default function TeamSection() {
               </p>
               <Button
                 className="bg-blue-600 hover:bg-blue-700 text-white"
-                onClick={() => window.open('https://docs.google.com/forms/d/1UKR38c0HM9hxx9y8zUOMKr5mfEOwozNLDsRNEIOJlSQ/edit')}
+                onClick={() => window.open(recruitmentLink)}
               >
                 Candidata-te
                 <ExternalLink className="ml-2 h-4 w-4" />

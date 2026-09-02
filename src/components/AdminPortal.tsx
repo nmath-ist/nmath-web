@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, FormEvent } from 'react';
+import { useState, useEffect, useCallback, useMemo, FormEvent } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
@@ -8,6 +8,7 @@ import { Badge } from './ui/badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from './ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Pencil, Trash2, Plus, LogOut, ArrowLeft, X, Upload } from 'lucide-react';
+import { sortableTimestamp, sortableCreatedAt } from './dateUtils';
 
 
 function formatShortDate(dateStr: string): string {
@@ -25,7 +26,7 @@ type Announcement = {
   excerpt: string;
   category: string;
   event_date: string;
-  read_time: string;
+  event_end_date: string;
   featured: boolean;
   icon: string;
   full_content: string;
@@ -54,10 +55,16 @@ type CalendarYear = {
   sort_order: number;
 };
 
+type RecruitmentLink = {
+  id?: number;
+  link: string;
+};
+
 type UpcomingEvent = {
   id?: number;
   title: string;
   event_date: string;
+  event_end_date: string;
   event_time: string;
   location: string;
   description: string;
@@ -233,6 +240,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             <TabsTrigger value="announcements">Anúncios</TabsTrigger>
             <TabsTrigger value="magazine">Revista</TabsTrigger>
             <TabsTrigger value="calendar">Calendário</TabsTrigger>
+            <TabsTrigger value="recruitment">Recrutamento</TabsTrigger>
             <TabsTrigger value="events">Próximos Eventos</TabsTrigger>
             <TabsTrigger value="flagship">Eventos NMATH</TabsTrigger>
             <TabsTrigger value="oracle">Oráculo</TabsTrigger>
@@ -244,8 +252,9 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
               apiPath="/api/announcements"
               title="Anúncios"
               emptyItem={emptyAnnouncement}
-              renderRow={(item) => ({ title: item.title, subtitle: `${item.category} · ${item.event_date}` })}
+              renderRow={(item) => ({ title: item.title, subtitle: `${item.category} · ${formatShortDate(item.event_date) || item.event_date}` })}
               FormComponent={AnnouncementForm}
+              sortKey={(item) => sortableTimestamp(item.event_date, item.event_end_date)}
             />
           </TabsContent>
 
@@ -259,6 +268,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
                 subtitle: item.is_current ? 'Edição atual' : item.publish_date,
               })}
               FormComponent={MagazineForm}
+              sortKey={(item) => sortableTimestamp(item.publish_date)}
             />
           </TabsContent>
 
@@ -266,13 +276,18 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             <CalendarAdmin />
           </TabsContent>
 
+          <TabsContent value="recruitment">
+            <RecruitmentAdmin />
+          </TabsContent>
+
           <TabsContent value="events">
             <ContentSection<UpcomingEvent>
               apiPath="/api/upcoming-events"
               title="Próximos Eventos"
               emptyItem={emptyEvent}
-              renderRow={(item) => ({ title: item.title, subtitle: `${item.event_date} · ${item.location}` })}
+              renderRow={(item) => ({ title: item.title, subtitle: `${formatShortDate(item.event_date) || item.event_date} · ${item.location}` })}
               FormComponent={EventForm}
+              sortKey={(item) => sortableTimestamp(item.event_date, item.event_end_date)}
             />
           </TabsContent>
 
@@ -283,6 +298,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
               emptyItem={emptyFlagship}
               renderRow={(item) => ({ title: item.title, subtitle: `${item.category} · ${item.stats}` })}
               FormComponent={FlagshipEventForm}
+              sortKey={(item: any) => sortableCreatedAt(item.created_at)}
             />
           </TabsContent>
 
@@ -298,6 +314,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
               emptyItem={emptyEpisode}
               renderRow={(item) => ({ title: item.title, subtitle: `${formatShortDate(item.episode_date)} · ${item.duration}` })}
               FormComponent={OracleForm}
+              sortKey={(item) => sortableTimestamp(item.episode_date)}
             />
           </TabsContent>
 
@@ -313,6 +330,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
               emptyItem={emptyAlbum}
               renderRow={(item) => ({ title: item.title, subtitle: `${formatShortDate(item.album_date)} · ${item.drive_url}` })}
               FormComponent={PhotoAlbumForm}
+              sortKey={(item) => sortableTimestamp(item.album_date)}
             />
           </TabsContent>
         </Tabs>
@@ -350,15 +368,24 @@ function ContentSection<T extends { id?: number; published?: boolean }>({
   emptyItem,
   renderRow,
   FormComponent,
+  sortKey,
 }: {
   apiPath: string;
   title: string;
   emptyItem: T;
   renderRow: (item: T) => { title: string; subtitle: string };
   FormComponent: React.ComponentType<{ initial: T; onCancel: () => void; onSave: (item: T) => Promise<void> }>;
+  // Opcional: dá uma "pontuação" cronológica a cada item (maior = mais recente).
+  // A lista é sempre mostrada com os mais recentes em cima. Sem isto, mantém
+  // a ordem que a API devolveu (usado pelo lixo, que já vem ordenado por data de remoção).
+  sortKey?: (item: T) => number;
 }) {
   const [trashMode, setTrashMode] = useState(false);
-  const { items, loading, error, reload } = useContentList(apiPath, trashMode);
+  const { items: rawItems, loading, error, reload } = useContentList(apiPath, trashMode);
+  const items = useMemo(() => {
+    if (trashMode || !sortKey) return rawItems;
+    return [...rawItems].sort((a, b) => sortKey(b) - sortKey(a));
+  }, [rawItems, trashMode, sortKey]);
   const [editing, setEditing] = useState<T | null>(null);
 
   async function handleSave(item: T) {
@@ -481,7 +508,7 @@ function PublishedToggle({ checked, onChange }: { checked: boolean; onChange: (v
 
 // -------------------- Anúncios --------------------
 const emptyAnnouncement: Announcement = {
-  title: '', excerpt: '', category: 'Eventos', event_date: '', read_time: '2 min',
+  title: '', excerpt: '', category: 'Eventos', event_date: '', event_end_date: '',
   featured: false, icon: 'calendar', full_content: '', sort_order: 0, published: true,
 };
 
@@ -527,14 +554,14 @@ function AnnouncementForm({
           <Input value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} placeholder="Eventos, Workshops, Palestras..." />
         </div>
         <div>
-          <Label>Data (texto livre)</Label>
-          <Input value={form.event_date} onChange={(e) => setForm({ ...form, event_date: e.target.value })} placeholder="Ex: 10 Dez, 2025" required />
+          <Label>Data</Label>
+          <Input type="date" value={form.event_date} onChange={(e) => setForm({ ...form, event_date: e.target.value })} required />
         </div>
       </div>
       <div className="grid grid-cols-2 gap-3">
         <div>
-          <Label>Tempo de leitura</Label>
-          <Input value={form.read_time} onChange={(e) => setForm({ ...form, read_time: e.target.value })} placeholder="2 min" />
+          <Label>Data de fim (opcional — só para algo que dura mais do que um dia)</Label>
+          <Input type="date" value={form.event_end_date} onChange={(e) => setForm({ ...form, event_end_date: e.target.value })} />
         </div>
         <div>
           <Label>Ícone</Label>
@@ -806,9 +833,88 @@ function CalendarAdmin() {
   );
 }
 
+// -------------------- Recrutamento (link do botão "Candidata-te") --------------------
+function RecruitmentAdmin() {
+  const [current, setCurrent] = useState<RecruitmentLink | null>(null);
+  const [editing, setEditing] = useState<RecruitmentLink | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+  const [saving, setSaving] = useState(false);
+
+  function load() {
+    setLoading(true);
+    apiGet<RecruitmentLink>('/api/recruitment-link')
+      .then(setCurrent)
+      .catch((e) => setError(e.message))
+      .finally(() => setLoading(false));
+  }
+
+  useEffect(load, []);
+
+  async function handleSave(e: FormEvent) {
+    e.preventDefault();
+    if (!editing) return;
+    setSaving(true);
+    setError('');
+    try {
+      await apiSend('/api/recruitment-link', 'PUT', { link: editing.link });
+      setEditing(null);
+      load();
+    } catch (err: any) {
+      setError(err.message || 'Erro ao guardar.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-lg">Link de Recrutamento</h2>
+      </div>
+      <p className="text-sm text-slate-500 -mt-2">
+        Este é o link usado pelo botão "Candidata-te" na secção da Equipa do site.
+      </p>
+      {loading && <p className="text-slate-500">A carregar...</p>}
+      {error && <p className="text-red-600">{error}</p>}
+      {!loading && current && (
+        <Card>
+          <CardContent className="flex items-center justify-between py-4 gap-4">
+            <p className="text-sm text-slate-700 truncate">{current.link}</p>
+            <Button size="icon" variant="outline" onClick={() => setEditing({ ...current })} aria-label="Editar">
+              <Pencil className="h-4 w-4" />
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {editing && (
+        <FormModal title="Editar link de recrutamento" onClose={() => setEditing(null)}>
+          <form className="space-y-3" onSubmit={handleSave}>
+            <div>
+              <Label>Link do formulário de candidatura</Label>
+              <Input
+                value={editing.link}
+                onChange={(e) => setEditing({ ...editing, link: e.target.value })}
+                placeholder="https://docs.google.com/forms/..."
+                required
+              />
+            </div>
+            {error && <p className="text-sm text-red-600">{error}</p>}
+            <div className="flex justify-end gap-2 pt-2">
+              <Button type="button" variant="outline" onClick={() => setEditing(null)}>Cancelar</Button>
+              <Button type="submit" disabled={saving}>{saving ? 'A guardar...' : 'Guardar'}</Button>
+            </div>
+          </form>
+        </FormModal>
+      )}
+    </div>
+  );
+}
+
 // -------------------- Próximos Eventos --------------------
 const emptyEvent: UpcomingEvent = {
-  title: '', event_date: '', event_time: '', location: '', description: '',
+  title: '', event_date: '', event_end_date: '', event_time: '', location: '', description: '',
   event_type: 'Eventos', link: '', sort_order: 0, published: true,
 };
 
@@ -847,12 +953,16 @@ function EventForm({
       <div className="grid grid-cols-2 gap-3">
         <div>
           <Label>Data</Label>
-          <Input value={form.event_date} onChange={(e) => setForm({ ...form, event_date: e.target.value })} placeholder="Ex: 9 Janeiro, 2026" required />
+          <Input type="date" value={form.event_date} onChange={(e) => setForm({ ...form, event_date: e.target.value })} required />
         </div>
         <div>
           <Label>Hora</Label>
           <Input value={form.event_time} onChange={(e) => setForm({ ...form, event_time: e.target.value })} placeholder="20:30" />
         </div>
+      </div>
+      <div>
+        <Label>Data de fim (opcional — só para algo que dura mais do que um dia)</Label>
+        <Input type="date" value={form.event_end_date} onChange={(e) => setForm({ ...form, event_end_date: e.target.value })} />
       </div>
       <div>
         <Label>Local</Label>

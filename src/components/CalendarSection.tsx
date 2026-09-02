@@ -6,12 +6,14 @@ import {
   MapPin,
   ExternalLink,
 } from "lucide-react";
+import { sortableTimestamp, formatDateRange } from "./dateUtils";
 
 type CalendarLink = { id?: number; year: string; link: string };
 type UpcomingEvent = {
   id?: number;
   title: string;
   date: string;
+  endDate: string;
   time: string;
   location: string;
   description: string;
@@ -51,16 +53,20 @@ export default function CalendarSection() {
       .then((r) => r.json())
       .then((rows) =>
         setUpcomingEvents(
-          rows.map((r: any) => ({
-            id: r.id,
-            title: r.title,
-            date: r.event_date,
-            time: r.event_time,
-            location: r.location,
-            description: r.description,
-            type: r.event_type,
-            link: r.link || undefined,
-          }))
+          rows
+            .map((r: any) => ({
+              id: r.id,
+              title: r.title,
+              date: r.event_date,
+              endDate: r.event_end_date,
+              time: r.event_time,
+              location: r.location,
+              description: r.description,
+              type: r.event_type,
+              link: r.link || undefined,
+            }))
+            // Próximos eventos: o mais próximo primeiro.
+            .sort((a: any, b: any) => sortableTimestamp(a.date, a.endDate) - sortableTimestamp(b.date, b.endDate))
         )
       )
       .catch(() => setUpcomingEvents([]));
@@ -148,7 +154,7 @@ export default function CalendarSection() {
                         {event.type}
                       </span>
                       <span className="text-slate-500">
-                        {event.date}
+                        {formatDateRange(event.date, event.endDate)}
                       </span>
                     </div>
 

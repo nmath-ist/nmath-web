@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { announcementUrl } from './slug';
 import { CardSkeletonGrid } from './CardSkeleton';
 import { toast } from 'sonner';
+import { sortByDateDesc, formatDateRange } from './dateUtils';
 
 const ICONS: Record<string, any> = { calendar: CalendarIcon, trophy: Trophy, zap: Zap };
 
@@ -18,13 +19,12 @@ export default function NewsSection() {
       .then((r) => r.json())
       .then((rows) =>
         setNewsItems(
-          rows.map((r: any) => ({
+          sortByDateDesc(rows, (r: any) => r.event_date, (r: any) => r.event_end_date).map((r: any) => ({
             id: r.id,
             title: r.title,
             excerpt: r.excerpt,
             category: r.category,
-            date: r.event_date,
-            readTime: r.read_time,
+            date: formatDateRange(r.event_date, r.event_end_date),
             featured: r.featured,
             icon: ICONS[r.icon] || CalendarIcon,
             fullContent: r.full_content,
@@ -38,8 +38,9 @@ export default function NewsSection() {
       .finally(() => setLoading(false));
   }, []);
 
-  const featured = newsItems.filter((item) => item.featured).slice().reverse();
-  const others = newsItems.filter((item) => !item.featured).slice().reverse().slice(0, 4);
+  // newsItems já vem ordenado do mais recente para o mais antigo.
+  const featured = newsItems.filter((item) => item.featured);
+  const others = newsItems.filter((item) => !item.featured).slice(0, 4);
 
   return (
     <section id="news" className="py-16 bg-gradient-to-br from-slate-50 to-blue-50">

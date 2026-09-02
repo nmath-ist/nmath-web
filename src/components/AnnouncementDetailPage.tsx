@@ -7,6 +7,7 @@ import { ArrowLeft } from 'lucide-react';
 import { useDocumentMeta } from './useDocumentMeta';
 import { CardSkeleton } from './CardSkeleton';
 import { toast } from 'sonner';
+import { formatDateRange } from './dateUtils';
 
 // Página de detalhe de um anúncio, com URL própria (/anuncios/:id-slug).
 // Isto permite partilhar o link de um anúncio específico (Instagram,
@@ -75,7 +76,7 @@ export default function AnnouncementDetailPage({ id }: { id: number }) {
                   <Badge variant="outline" className="border-blue-200 text-blue-600">
                     {item.category}
                   </Badge>
-                  <span className="text-sm text-slate-500">{item.event_date}</span>
+                  <span className="text-sm text-slate-500">{formatDateRange(item.event_date, item.event_end_date)}</span>
                 </div>
 
                 <h1 className="text-4xl mb-6 text-slate-800">{item.title}</h1>
