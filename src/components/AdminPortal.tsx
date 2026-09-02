@@ -843,7 +843,7 @@ function RecruitmentAdmin() {
 
   function load() {
     setLoading(true);
-    apiGet<RecruitmentLink>('/api/recruitment-link')
+    apiGet<RecruitmentLink>('/api/calendar-years?resource=recruitment')
       .then(setCurrent)
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
@@ -857,7 +857,7 @@ function RecruitmentAdmin() {
     setSaving(true);
     setError('');
     try {
-      await apiSend('/api/recruitment-link', 'PUT', { link: editing.link });
+      await apiSend('/api/calendar-years?resource=recruitment', 'PUT', { link: editing.link });
       setEditing(null);
       load();
     } catch (err: any) {

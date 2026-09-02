@@ -21,7 +21,7 @@ export default function TeamSection() {
   const [recruitmentLink, setRecruitmentLink] = useState(FALLBACK_RECRUITMENT_LINK);
 
   useEffect(() => {
-    fetch('/api/recruitment-link')
+    fetch('/api/calendar-years?resource=recruitment')
       .then((r) => r.json())
       .then((data) => {
         if (data?.link) setRecruitmentLink(data.link);
