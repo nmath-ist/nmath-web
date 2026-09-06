@@ -91,7 +91,7 @@ export default function CalendarSection() {
           </h2>
           <p className="text-slate-600 max-w-2xl mx-auto">
             Acede aos calendários específicos do teu ano de
-            curso e fica a par dos próximos eventos.
+            curso e fica a par das próximas avaliações.
           </p>
         </div>
 

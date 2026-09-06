@@ -45,12 +45,8 @@ function Footer() {
           <div>
             <h4 className="mb-4">Acesso Rápido</h4>
             <ul className="space-y-2 text-slate-400">
-              <li><a href="#news" className="hover:text-white transition-colors">Anúncios</a></li>
-              <li><a href="https://repositorio.nmath.pt" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Repositório</a></li>
-              <li><a href="#calendar" className="hover:text-white transition-colors">Calendário de Eventos</a></li>
-              <li><a href="#team" className="hover:text-white transition-colors">Equipa</a></li>
-              <li><a href="#magazine" className="hover:text-white transition-colors">Ponto Fixo</a></li>
-              <li><a href="https://drive.google.com/drive/folders/1naDV4YMTDx_qFfSumzlt8i7dZNW982fI" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Atas</a></li>
+              <li><a href="/anuncios" className="hover:text-white transition-colors">Anúncios</a></li>
+              <li><a href="https://repositorio.nmath.pt" className="hover:text-white transition-colors">Repositório</a></li>
               <li>
                 <a 
                   href="https://drive.google.com/file/d/1bz51RRJGDGnmMCrDUdgws43MKJ7kxvdz/view?usp=share_link" 
@@ -98,7 +94,7 @@ function Footer() {
         </div>
 
         <div className="border-t border-slate-800 mt-8 pt-8 text-center text-slate-400">
-          <p>© Copyright 2025. Todos os direitos reservados. NMATH - Núcleo de Estudantes de Matemática do IST</p>
+          <p>© Copyright 2026. Todos os direitos reservados. NMATH - Núcleo de Estudantes de Matemática do IST</p>
           <a href="/admin" className="inline-block mt-3 text-xs text-slate-500 hover:text-slate-300 transition-colors">
             Administrador
           </a>

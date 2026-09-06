@@ -200,7 +200,7 @@ export default function ResourceLinksSection() {
                 <Button 
                   variant="secondary" 
                   className="bg-white/20 text-white border-0 hover:bg-white hover:text-slate-800"
-                  onClick={() => window.open('mailto:nmath.geral@gmail.com?subject=Contacto NMATH&body=Olá! Gostaria de entrar em contacto convosco.', '_blank')}
+                  onClick={() => { window.location.href = 'mailto:nmath.geral@gmail.com?subject=Contacto NMATH&body=Olá! Gostaria de entrar em contacto convosco.'; }}
                 >
                   Contacta-nos
                   <ExternalLink className="ml-2 h-4 w-4" />

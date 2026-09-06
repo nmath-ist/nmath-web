@@ -43,7 +43,7 @@ const announcements = [
         </ul>
         <p>Vem conhecer-nos e dar início a uma jornada académica inesquecível. Estamos à tua espera!</p>
       ` },
-  { title: "Noite de Cinema — Dead Poets Society", excerpt: "O NMATH traz de volta as noites de cinema com a exibição do filme Dead Poets Society no Anfiteatro AM.", category: "Recreativa", event_date: "17 Set, 2025", read_time: "1 min", featured: false, icon: "calendar", sort_order: 2, full_content: `
+  { title: "Noite de Cinema — Dead Poets Society", excerpt: "O NMATH traz de volta as noites de cinema com a exibição do filme Dead Poets Society no Anfiteatro AM.", category: "Eventos", event_date: "17 Set, 2025", read_time: "1 min", featured: false, icon: "calendar", sort_order: 2, full_content: `
         <p>As noites de cinema do NMATH estão de volta. Se precisas de uma pausa das aulas e do estudo, aproveita para viver um fim de tarde diferente connosco.</p>
         <p>Será uma oportunidade para relaxar, divertir-te e partilhar um momento com os teus colegas.</p>
         <p><strong>Data:</strong> Quarta-feira, 17 de setembro<br>

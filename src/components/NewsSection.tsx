@@ -48,7 +48,7 @@ export default function NewsSection() {
         <div className="text-center mb-12">
           <h2 className="text-4xl mb-4 text-slate-800">Anúncios</h2>
           <p className="text-slate-600 max-w-2xl mx-auto">
-            Mantém-te informado com os anúncios e oportunidades do NMATH — organizados por data.
+            Mantém-te informado com os anúncios e oportunidades do NMATH.
           </p>
         </div>
 

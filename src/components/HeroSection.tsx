@@ -54,7 +54,7 @@ export default function HeroSection() {
                 <button
                   className="bg-gradient-to-br from-blue-500/20 to-teal-500/20 rounded-lg p-4 border border-white/10 hover:from-blue-500/30 hover:to-teal-500/30 transition-all hover:-translate-y-1 hover:shadow-lg text-left"
                   onClick={() =>
-                    window.open('https://repositorio.nmath.pt', '_blank')
+                    (window.location.href = 'https://repositorio.nmath.pt')
                   }
                 >
                   <Code className="h-8 w-8 text-blue-400 mb-3" />
