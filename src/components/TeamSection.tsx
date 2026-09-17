@@ -9,13 +9,13 @@ const FALLBACK_RECRUITMENT_LINK = 'https://docs.google.com/forms/d/1UKR38c0HM9hx
 
 // IMPORTA AQUI AS FOTOS LOCAIS (coloca-as em src/assets/team/ - instruções abaixo)
 // Exemplo:
-import bernardoImg from '../assets/team/Bernardo.jpg';
-import relvasImg from '../assets/team/Relvas.jpg';
-import gabrielaImg from '../assets/team/Gabriela.jpg';
-import ptImg from '../assets/team/Pedro.jpg';
-import matildeImg from '../assets/team/Matilde.jpg';
-import madalenaImg from '../assets/team/Madalena.jpg';
-import duarteImg from '../assets/team/Duarte.jpg';
+import bernardoImg from '../assets/team/Bernardo.jpeg';
+import relvasImg from '../assets/team/Relvas.jpeg';
+import gabrielaImg from '../assets/team/Gabriela.jpeg';
+import ptImg from '../assets/team/Pedro.jpeg';
+import matildeImg from '../assets/team/Matilde.jpeg';
+import madalenaImg from '../assets/team/Madalena.jpeg';
+import duarteImg from '../assets/team/Duarte.jpeg';
 
 export default function TeamSection() {
   const [recruitmentLink, setRecruitmentLink] = useState(FALLBACK_RECRUITMENT_LINK);
