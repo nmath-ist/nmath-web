@@ -9,13 +9,13 @@ const FALLBACK_RECRUITMENT_LINK = 'https://docs.google.com/forms/d/1UKR38c0HM9hx
 
 // IMPORTA AQUI AS FOTOS LOCAIS (coloca-as em src/assets/team/ - instruções abaixo)
 // Exemplo:
-import matildeImg from '../assets/team/matilde.jpg';
-import leonorImg from '../assets/team/leonor.jpg';
-import catarinaImg from '../assets/team/catarina.jpg';
-import joaoImg from '../assets/team/joao.jpg';
-import franciscoImg from '../assets/team/francisco.jpg';
-import catiaImg from '../assets/team/catia.jpg';
-import luisaImg from '../assets/team/luisa.jpg';
+import bernardoImg from '../assets/team/Bernardo.jpg';
+import relvasImg from '../assets/team/Relvas.jpg';
+import gabrielaImg from '../assets/team/Gabriela.jpg';
+import ptImg from '../assets/team/Pedro.jpg';
+import matildeImg from '../assets/team/Matilde.jpg';
+import madalenaImg from '../assets/team/Madalena.jpg';
+import duarteImg from '../assets/team/Duarte.jpg';
 
 export default function TeamSection() {
   const [recruitmentLink, setRecruitmentLink] = useState(FALLBACK_RECRUITMENT_LINK);
@@ -30,13 +30,13 @@ export default function TeamSection() {
   }, []);
 
   const teamMembers = [
-    { id: 1, name: "Matilde Variz", role: "Presidente", year: "3º Ano - LMAC", image: matildeImg },
-    { id: 2, name: "Leonor Lourenço", role: "Vice Presidente", year: "3º Ano - LMAC", image: leonorImg },
-    { id: 3, name: "Catarina Franco", role: "Tesoureira", year: "2º Ano - MMAC", image: catarinaImg },
-    { id: 4, name: "João Cordeiro", role: "Coordenador da Educação", year: "1º Ano - MMAC", image: joaoImg },
-    { id: 5, name: "Francisco Relvas", role: "Coordenador de Eventos e Relações Empresariais", year: "1º Ano - MMAC", image: franciscoImg },
-    { id: 6, name: "Cátia Mendes", role: "Coordenadora do Marketing", year: "3º Ano - LMAC", image: catiaImg },
-    { id: 7, name: "Luisa Marcelino", role: "Coordenadora da Recreativa", year: "3º Ano - LMAC", image: luisaImg },
+    { id: 1, name: "Bernardo Alves", role: "Presidente", year: "2º Ano - MMAC", image: bernardoImg },
+    { id: 2, name: "Francisco Relvas", role: "Vice Presidente", year: "2º Ano - MMAC", image: relvasImg },
+    { id: 3, name: "Gabriela Barros", role: "Tesoureira", year: "2º Ano - MMAC", image: gabrielaImg },
+    { id: 4, name: "Pedro Coelho", role: "Coordenador da Educação", year: "1º Ano - MMAC", image: ptImg },
+    { id: 5, name: "Matilde Neri", role: "Coordenador de Eventos e Relações Empresariais", year: "1º Ano - MECD", image: matildeImg },
+    { id: 6, name: "Madalena Oliveira", role: "Coordenadora do Marketing", year: "2º Ano - MMAC", image: madalenaImg },
+    { id: 7, name: "Duarte Serra", role: "Coordenadora da Recreativa", year: "1º Ano - MECD", image: duarteImg },
   ];
 
   const MemberCard = ({ member }: { member: typeof teamMembers[0] }) => (
