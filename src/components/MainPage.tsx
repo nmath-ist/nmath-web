@@ -2,6 +2,7 @@ import Header from './Header';
 import HeroSection from './HeroSection';
 import NewsSection from './NewsSection';
 import CalendarSection from './CalendarSection';
+import PsiLeagueSection from './PsiLeagueSection';
 import TeamSection from './TeamSection';
 import EventsSection from './EventsSection';
 import MagazineSection from './MagazineSection';
@@ -112,6 +113,7 @@ export default function MainPage() {
       <NewsSection />
       <EventsSection />
       <CalendarSection />
+      <PsiLeagueSection />
       <MagazineSection />
       <ResourceLinksSection />
       <TeamSection />

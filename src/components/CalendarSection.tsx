@@ -90,41 +90,26 @@ export default function CalendarSection() {
             Organiza o Teu Semestre
           </h2>
           <p className="text-slate-600 max-w-2xl mx-auto">
-            Acede aos calendários específicos do teu ano de
-            curso e fica a par das próximas avaliações.
+            Acede ao calendário e fica a par dos nossos
+            próximos eventos!
           </p>
         </div>
 
-        {/* Calendários Grid */}
-        <div className="max-w-5xl mx-auto mb-16 md:mb-20">
-          <h3 className="text-2xl mb-8 text-slate-800 text-center">
-            Calendários por Ano
-          </h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-            {calendarLinks.map((calendar) => (
-              <Card
-                key={calendar.year}
-                className="border-2 border-slate-200 bg-white hover:border-blue-400 hover:shadow-xl transition-all duration-300 cursor-pointer group"
-                onClick={() =>
-                  window.open(calendar.link, "_blank")
-                }
-              >
-                <CardContent className="p-6 text-center">
-                  <div className="bg-gradient-to-br from-blue-100 to-teal-100 rounded-2xl p-4 inline-block mb-4 group-hover:scale-110 transition-transform duration-300">
-                    <Calendar className="h-10 w-10 text-blue-600" />
-                  </div>
-                  <h4 className="text-xl mb-3 text-slate-800">
-                    {calendar.year}
-                  </h4>
-                  <div className="flex items-center justify-center gap-2 text-blue-600">
-                    <span>Ver Calendário</span>
-                    <ExternalLink className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+        {/* Calendário */}
+        {calendarLinks.length > 0 && (
+          <div className="max-w-5xl mx-auto mb-16 md:mb-20 text-center">
+            <a
+              href={calendarLinks[0].link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-3 bg-gradient-to-r from-blue-600 to-teal-600 hover:from-blue-700 hover:to-teal-700 text-white px-8 py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group"
+            >
+              <Calendar className="h-6 w-6" />
+              <span className="text-lg">Ver Calendário</span>
+              <ExternalLink className="h-5 w-5 group-hover:translate-x-1 transition-transform" />
+            </a>
           </div>
-        </div>
+        )}
 
         {/* Próximos Eventos */}
         {upcomingEvents.length > 0 && (
