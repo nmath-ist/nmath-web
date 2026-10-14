@@ -4,15 +4,53 @@
   "devCommand": "vite --port $PORT",
   "outputDirectory": "build",
   "rewrites": [
-    { "source": "/admin", "destination": "/index.html" },
-    { "source": "/admin/(.*)", "destination": "/index.html" },
-    { "source": "/anuncios", "destination": "/index.html" },
-    { "source": "/anuncios/(.*)", "destination": "/index.html" },
-    { "source": "/revista", "destination": "/index.html" },
-    { "source": "/revista/(.*)", "destination": "/index.html" },
-    { "source": "/oraculo", "destination": "/index.html" },
-    { "source": "/oraculo/(.*)", "destination": "/index.html" },
-    { "source": "/fotos", "destination": "/index.html" },
-   { "source": "/fotos/(.*)", "destination": "/index.html" }
+    {
+      "source": "/admin",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/admin/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/anuncios",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/anuncios/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/revista",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/revista/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/oraculo",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/oraculo/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/fotos",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/fotos/(.*)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/integration-bee",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/integration-bee/(.*)",
+      "destination": "/index.html"
+    }
   ]
 }
