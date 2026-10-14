@@ -6,6 +6,7 @@ import AnnouncementDetailPage from './AnnouncementDetailPage';
 import MagazinePage from './MagazinePage';
 import OracleEpisodesPage from './OracleEpisodesPage';
 import PhotosPage from './PhotosPage';
+import IntegrationBeePage from './IntegrationBeePage';
 import { parseIdFromSlug } from './slug';
 
 export default function Router() {
@@ -38,6 +39,9 @@ export default function Router() {
   }
   if (path.startsWith('/fotos')) {
     return <PhotosPage />;
+  }
+  if (path.startsWith('/integration-bee')) {
+    return <IntegrationBeePage />;
   }
 
   return <MainPage />;

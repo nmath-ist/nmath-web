@@ -69,8 +69,7 @@ function EventCard({ event }: { event: Event }) {
                 <a
                   key={index}
                   href={yearLink.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  {...(yearLink.url.startsWith('/') ? {} : { target: '_blank', rel: 'noopener noreferrer' })}
                   onClick={(e) => e.stopPropagation()}
                   className="inline-flex items-center px-2 py-1 bg-blue-50 hover:bg-blue-100 text-blue-600 hover:text-blue-700 text-xs rounded border border-blue-200 hover:border-blue-300 transition-colors"
                 >
