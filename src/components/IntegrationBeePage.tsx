@@ -1,26 +1,25 @@
-import type React from 'react';
+import { useState } from 'react';
 import Header from './Header';
 import { Card, CardContent } from './ui/card';
 import { ArrowLeft, Trophy, MapPin, CalendarDays, Users, ExternalLink } from 'lucide-react';
 import { useDocumentMeta } from './useDocumentMeta';
 
-// Coloca estas imagens em public/integration-bee/ (descarregadas do site de 2025).
-const P = '/integration-bee/';
+// Imagens em public/integration-bee/. Aceita .jpg, .png, .webp, .jpeg ou .svg (o nome é o que conta).
+const EXTS = ['jpg', 'png', 'webp', 'jpeg', 'svg'];
 
-const PHOTOS = {
-  scranton: P + 'scranton-2019.jpg',
-  westVirginia: P + 'west-virginia-2022.jpg',
-  salaIA: P + 'sala-ia.jpg',
-  anfQA: P + 'anfiteatro-qa.jpg',
-  escrita: P + 'fase-escrita.jpg',
-  aoVivo: P + 'meias-finais-e-final.jpg',
-  gal: [P + 'galeria-1.jpg', P + 'galeria-2.jpg', P + 'galeria-3.jpg'],
-};
-
-// Se uma imagem não existir, esconde-a em vez de mostrar o ícone partido.
-const hideBroken = (e: React.SyntheticEvent<HTMLImageElement>) => {
-  e.currentTarget.style.display = 'none';
-};
+function Img({ name, alt, className }: { name: string; alt: string; className?: string }) {
+  const [i, setI] = useState(0);
+  if (i >= EXTS.length) return null;
+  return (
+    <img
+      src={`/integration-bee/${name}.${EXTS[i]}`}
+      alt={alt}
+      loading="lazy"
+      onError={() => setI(i + 1)}
+      className={className}
+    />
+  );
+}
 
 const WINNERS = [
   { place: '1º', name: 'Francisco Alves', prize: '1000€' },
@@ -29,12 +28,12 @@ const WINNERS = [
   { place: '4º', name: 'Jing Xu', prize: 'Vale de 50€ para a loja da SPM' },
 ];
 
-// Quando tiveres os PDFs das soluções, preenche o "url" de cada fase.
-const SOLUTIONS: { label: string; url?: string }[] = [
-  { label: 'Fase escrita' },
-  { label: 'Disputa pelo 3º, 4º e 5º lugares' },
-  { label: 'Meia-final' },
-  { label: 'Final' },
+// PDFs em public/integration-bee/solucoes/
+const SOLUTIONS = [
+  { label: 'Fase escrita', url: '/integration-bee/solucoes/fase-escrita.pdf' },
+  { label: 'Disputa pelo 3º, 4º e 5º lugares', url: '/integration-bee/solucoes/3-4-5.pdf' },
+  { label: 'Meia-final', url: '/integration-bee/solucoes/meia-final.pdf' },
+  { label: 'Final', url: '/integration-bee/solucoes/final.pdf' },
 ];
 
 const STEPS = [
@@ -45,9 +44,9 @@ const STEPS = [
 ];
 
 const SPONSORS = [
-  'Caixa Geral de Depósitos',
-  'Departamento de Matemática do IST',
-  'SPM – Sociedade Portuguesa de Matemática',
+  { name: 'Caixa Geral de Depósitos', logo: 'galeria-4' },
+  { name: 'Departamento de Matemática do IST', logo: 'galeria-3' },
+  { name: 'SPM – Sociedade Portuguesa de Matemática', logo: 'galeria-1' },
 ];
 
 export default function IntegrationBeePage() {
@@ -72,6 +71,7 @@ export default function IntegrationBeePage() {
           <a href="/#events" className="inline-flex items-center gap-1 text-sm text-blue-200 hover:text-white mb-6">
             <ArrowLeft className="h-3.5 w-3.5" /> Voltar aos eventos
           </a>
+          <Img name="galeria-2" alt="Logótipo do Integration Bee" className="h-20 w-auto rounded-lg bg-white p-2 mb-6" />
           <h1 className="text-5xl md:text-7xl mb-5">Integration Bee 2026</h1>
           <p className="text-lg md:text-xl text-blue-100 max-w-2xl mb-3">
             A competição de cálculo de integrais do NMATH, no Instituto Superior Técnico.
@@ -108,19 +108,15 @@ export default function IntegrationBeePage() {
         {/* Soluções */}
         <section className="py-14 border-t border-slate-200">
           <h2 className="text-3xl mb-3 text-slate-800">Soluções</h2>
-          <p className="text-slate-600 mb-8">As soluções de cada fase vão ficar disponíveis aqui.</p>
+          <p className="text-slate-600 mb-8">Soluções de cada fase da competição.</p>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {SOLUTIONS.map((s) => (
               <Card key={s.label} className="border border-slate-200">
                 <CardContent className="p-5">
                   <div className="mb-2">{s.label}</div>
-                  {s.url ? (
-                    <a href={s.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline">
-                      Abrir soluções <ExternalLink className="h-3.5 w-3.5" />
-                    </a>
-                  ) : (
-                    <span className="text-sm text-slate-500">Em breve</span>
-                  )}
+                  <a href={s.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 text-sm text-blue-600 hover:underline">
+                    Abrir soluções (PDF) <ExternalLink className="h-3.5 w-3.5" />
+                  </a>
                 </CardContent>
               </Card>
             ))}
@@ -144,11 +140,11 @@ export default function IntegrationBeePage() {
           </ol>
           <div className="grid sm:grid-cols-2 gap-5 mb-6">
             <figure>
-              <img src={PHOTOS.escrita} alt="Fase escrita" loading="lazy" onError={hideBroken} className="w-full rounded-lg" />
+              <Img name="fase-escrita" alt="Fase escrita" className="w-full rounded-lg" />
               <figcaption className="text-sm text-slate-500 mt-2">Fase escrita</figcaption>
             </figure>
             <figure>
-              <img src={PHOTOS.aoVivo} alt="Meias-finais e final" loading="lazy" onError={hideBroken} className="w-full rounded-lg" />
+              <Img name="meias-finais-e-final" alt="Meias-finais e final" className="w-full rounded-lg" />
               <figcaption className="text-sm text-slate-500 mt-2">Meias-finais e final</figcaption>
             </figure>
           </div>
@@ -163,11 +159,11 @@ export default function IntegrationBeePage() {
           </p>
           <div className="grid sm:grid-cols-2 gap-5">
             <figure>
-              <img src={PHOTOS.scranton} alt="Integration Bee 2019 na University of Scranton" loading="lazy" onError={hideBroken} className="w-full rounded-lg" />
+              <Img name="scranton-2019" alt="Integration Bee 2019 na University of Scranton" className="w-full rounded-lg" />
               <figcaption className="text-sm text-slate-500 mt-2">Integration Bee 2019, University of Scranton</figcaption>
             </figure>
             <figure>
-              <img src={PHOTOS.westVirginia} alt="Integration Bee 2022 na West Virginia University" loading="lazy" onError={hideBroken} className="w-full rounded-lg" />
+              <Img name="west-virginia-2022" alt="Integration Bee 2022 na West Virginia University" className="w-full rounded-lg" />
               <figcaption className="text-sm text-slate-500 mt-2">Integration Bee 2022, West Virginia University</figcaption>
             </figure>
           </div>
@@ -186,11 +182,11 @@ export default function IntegrationBeePage() {
           </p>
           <div className="grid sm:grid-cols-2 gap-5">
             <figure>
-              <img src={PHOTOS.salaIA} alt="Sala IA" loading="lazy" onError={hideBroken} className="w-full rounded-lg" />
+              <Img name="sala-ia" alt="Sala IA" className="w-full rounded-lg" />
               <figcaption className="text-sm text-slate-500 mt-2">Fase escrita: Sala IA</figcaption>
             </figure>
             <figure>
-              <img src={PHOTOS.anfQA} alt="Anfiteatro QA" loading="lazy" onError={hideBroken} className="w-full rounded-lg" />
+              <Img name="anfiteatro-qa" alt="Anfiteatro QA" className="w-full rounded-lg" />
               <figcaption className="text-sm text-slate-500 mt-2">Fases ao vivo: Anfiteatro QA</figcaption>
             </figure>
           </div>
@@ -217,21 +213,16 @@ export default function IntegrationBeePage() {
           <p className="text-slate-600 mb-6 max-w-3xl">
             1º lugar: 1000€. 2º lugar: 500€. 3º lugar: 250€. 4º lugar: vale de 50€ para a loja da SPM (Sociedade Portuguesa de Matemática).
           </p>
-          <ul className="grid sm:grid-cols-3 gap-3">
-            {SPONSORS.map((s) => (
-              <li key={s} className="rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">{s}</li>
+          <ul className="grid sm:grid-cols-3 gap-4">
+            {SPONSORS.map((sp) => (
+              <li key={sp.name} className="rounded-lg border border-slate-200 bg-white p-4 text-center">
+                <div className="h-16 flex items-center justify-center mb-3">
+                  <Img name={sp.logo} alt={`Logótipo: ${sp.name}`} className="max-h-16 max-w-full object-contain" />
+                </div>
+                <div className="text-sm text-slate-600">{sp.name}</div>
+              </li>
             ))}
           </ul>
-        </section>
-
-        {/* Fotografias */}
-        <section className="py-14 border-t border-slate-200">
-          <h2 className="text-3xl mb-8 text-slate-800">Fotografias</h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {PHOTOS.gal.map((src) => (
-              <img key={src} src={src} alt="Fotografia do Integration Bee" loading="lazy" onError={hideBroken} className="w-full rounded-lg" />
-            ))}
-          </div>
         </section>
       </div>
     </div>
