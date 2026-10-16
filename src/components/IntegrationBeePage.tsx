@@ -1,20 +1,25 @@
+import type React from 'react';
 import Header from './Header';
 import { Card, CardContent } from './ui/card';
 import { ArrowLeft, Trophy, MapPin, CalendarDays, Users, ExternalLink } from 'lucide-react';
 import { useDocumentMeta } from './useDocumentMeta';
 
-const IMG = 'https://sites.google.com/u/0/sitesv-images-rt/';
+// Coloca estas imagens em public/integration-bee/ (descarregadas do site de 2025).
+const P = '/integration-bee/';
 
 const PHOTOS = {
-  scranton: IMG + 'AMxu72tY9oBXWLZX6o-VkxyJn1t_wX4w6RdJ5guxRf3jI72CPBIzOXPoAFHfr91-cD9XAmut4YAX0AMNOnIfurXD8xcGug_p8KmEK6O5ta7OEpSIZT6HZKQLxdFBLqRY45V9bGu9l-79Hz3-6IkpcfQu0aS7k0mckWrJUVK8GpE8H17_OEQosMxCVX0xZ0F-Y_wgSkfKlDFVKKkjhRAoe0PJZxLqDj-Rch8MctDIc7jX-zM=w1280',
-  westVirginia: IMG + 'AMxu72sL0x9imi-7O_4steo8BiWOknSlrhkHZogTNxx-6MCWfINBLE5JIUs_3YNNOe-hWekavJ38xzvKy_z7arIqxNEk2m3wIm7uLqAkgY1YGH1gaDgTvnTtPDfGoyBFR-v9w6dvfKIzm3czpwTGx9VfHRxQNsH0pLILP15Uc1qPZ-wkLjsIMmCOveWThlQskVvp25ebEhAD3B2qaXWbdcKN4NzTYKdPhgASm6Lk6Q=w1280',
-  salaIA: IMG + 'AMxu72sMA6H5sFRk8DdIuxvxSQ5zfEHWQ0UdidAYKKU9RZj4IEIAUYSLgGfhnHkOZ7QuxnoDlg9fP_fmTGzDkEkhHXXZqEEchM8rDGqMSq0Vi5tMVrh_7IY5yTLMXTx2zeytoXWXbCKjKVJYvUcLFXBNJnJJN5dCj7TzxVFHOAPSXWkOljR3XJ258YcVS_oaAqslqcXa9cxiI0Rw4rfRUWvOg30OEYAwPm24zv1KPBXq5QY=w1280',
-  anfQA: IMG + 'AMxu72seXL9rOyWnCq7bYtpBQxzzfToX0HEg0E5Lh0VwRHaHUvDNJEtJB4O_FxaeNKYN-jMdYCwX8XihjbLNZrPf_cU0L5-yQi3WRJ5hcQxJYOHdibP1up0YI1o2ryOehKuKDZXCbxe-WhkY54lQCybVBW423SCpIvPpMPGjcHwVlNpNmpuOL8EIs51N77D3_l1HAc7MDoY5vAFm80wrqQ4h-9bcdLVGyasEQCeBqh9LPcE=w1280',
-  gal: [
-    IMG + 'AMxu72tot1IHRFXEr91BLPOHOSwxsaJDSbl-yvSdCNvC5Nyj_PPVDqJRespQ4znzmU40c8gvp-gHZhCR7zmVrUrqaJ5pPVhUuByn0MW2Y7GHs37rECeYuupXGIHPOWXtHaR1Mczeu27xusq-2aQaA5zUVyxXawk2KSkzInHVonTioU1RSSJeRkXufLeTtey_Xm4Ih12whkeVrOVI9Br1yrXyJKSy791yBfS5Bca-tQeS8pw=w1280',
-    IMG + 'AMxu72vATo9Qqk-zA_jriwZ1CDpx3Ajlw7iPjVOjZE6IDfFrSx8Zp4Qh4w2zowjw51Tm1A9yY5Y3SXKaSozldbqjjJD-yA0IyNdpG-cgiYY6ifInlXYSnUT0K3VUvXQbg2jDDa_Vw_G6LHMRq-47anoa56UBQfUN6qQtTWosw5aBGJIzLu_wEFfOUudu-hlDU8E5yVZmm8w8ia0lEn_rGIHrPLrwfoRL_8obNXkPaCDe3WI=w1280',
-    IMG + 'AMxu72uwwkleG62iY8xA-3D5S3z5H4wuMpYR-XeJt1IVjkP2KPOi0wcGMf4dmlMSU_46AIFk7rmuWXIYmtNDqcdj7HymZTdq3enJ7ie2PUTWrqhNpX668S3AMDK_O1lJ0rdlZ6RTXUCgMMLNlxvc95W2QnDTChU7YdQ9VYl-C18Xvz0W7ebXL-VxD1aRIaWQKnD-X52bujWUZx3EbqaxGN2NBWXEaev7vA0IKtQKbz5F=w1280',
-  ],
+  scranton: P + 'scranton-2019.jpg',
+  westVirginia: P + 'west-virginia-2022.jpg',
+  salaIA: P + 'sala-ia.jpg',
+  anfQA: P + 'anfiteatro-qa.jpg',
+  escrita: P + 'fase-escrita.jpg',
+  aoVivo: P + 'meias-finais-e-final.jpg',
+  gal: [P + 'galeria-1.jpg', P + 'galeria-2.jpg', P + 'galeria-3.jpg'],
+};
+
+// Se uma imagem não existir, esconde-a em vez de mostrar o ícone partido.
+const hideBroken = (e: React.SyntheticEvent<HTMLImageElement>) => {
+  e.currentTarget.style.display = 'none';
 };
 
 const WINNERS = [
@@ -137,6 +142,16 @@ export default function IntegrationBeePage() {
               </li>
             ))}
           </ol>
+          <div className="grid sm:grid-cols-2 gap-5 mb-6">
+            <figure>
+              <img src={PHOTOS.escrita} alt="Fase escrita" loading="lazy" onError={hideBroken} className="w-full rounded-lg" />
+              <figcaption className="text-sm text-slate-500 mt-2">Fase escrita</figcaption>
+            </figure>
+            <figure>
+              <img src={PHOTOS.aoVivo} alt="Meias-finais e final" loading="lazy" onError={hideBroken} className="w-full rounded-lg" />
+              <figcaption className="text-sm text-slate-500 mt-2">Meias-finais e final</figcaption>
+            </figure>
+          </div>
           <p className="text-slate-600">As fases ao vivo são abertas a qualquer estudante que queira assistir.</p>
         </section>
 
@@ -148,11 +163,11 @@ export default function IntegrationBeePage() {
           </p>
           <div className="grid sm:grid-cols-2 gap-5">
             <figure>
-              <img src={PHOTOS.scranton} alt="Integration Bee 2019 na University of Scranton" loading="lazy" className="w-full rounded-lg" />
+              <img src={PHOTOS.scranton} alt="Integration Bee 2019 na University of Scranton" loading="lazy" onError={hideBroken} className="w-full rounded-lg" />
               <figcaption className="text-sm text-slate-500 mt-2">Integration Bee 2019, University of Scranton</figcaption>
             </figure>
             <figure>
-              <img src={PHOTOS.westVirginia} alt="Integration Bee 2022 na West Virginia University" loading="lazy" className="w-full rounded-lg" />
+              <img src={PHOTOS.westVirginia} alt="Integration Bee 2022 na West Virginia University" loading="lazy" onError={hideBroken} className="w-full rounded-lg" />
               <figcaption className="text-sm text-slate-500 mt-2">Integration Bee 2022, West Virginia University</figcaption>
             </figure>
           </div>
@@ -171,11 +186,11 @@ export default function IntegrationBeePage() {
           </p>
           <div className="grid sm:grid-cols-2 gap-5">
             <figure>
-              <img src={PHOTOS.salaIA} alt="Sala IA" loading="lazy" className="w-full rounded-lg" />
+              <img src={PHOTOS.salaIA} alt="Sala IA" loading="lazy" onError={hideBroken} className="w-full rounded-lg" />
               <figcaption className="text-sm text-slate-500 mt-2">Fase escrita: Sala IA</figcaption>
             </figure>
             <figure>
-              <img src={PHOTOS.anfQA} alt="Anfiteatro QA" loading="lazy" className="w-full rounded-lg" />
+              <img src={PHOTOS.anfQA} alt="Anfiteatro QA" loading="lazy" onError={hideBroken} className="w-full rounded-lg" />
               <figcaption className="text-sm text-slate-500 mt-2">Fases ao vivo: Anfiteatro QA</figcaption>
             </figure>
           </div>
@@ -214,7 +229,7 @@ export default function IntegrationBeePage() {
           <h2 className="text-3xl mb-8 text-slate-800">Fotografias</h2>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {PHOTOS.gal.map((src) => (
-              <img key={src} src={src} alt="Fotografia do Integration Bee" loading="lazy" className="w-full rounded-lg" />
+              <img key={src} src={src} alt="Fotografia do Integration Bee" loading="lazy" onError={hideBroken} className="w-full rounded-lg" />
             ))}
           </div>
         </section>
