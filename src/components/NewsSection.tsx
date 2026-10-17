@@ -25,6 +25,8 @@ export default function NewsSection() {
             excerpt: r.excerpt,
             category: r.category,
             date: formatDateRange(r.event_date, r.event_end_date),
+            time: r.event_time || '',
+            location: r.location || '',
             featured: r.featured,
             icon: ICONS[r.icon] || CalendarIcon,
             fullContent: r.full_content,
@@ -82,7 +84,7 @@ export default function NewsSection() {
 
                       <div className="flex items-center justify-between">
                         <div className="flex items-center space-x-4 text-blue-200">
-                          <span>{item.date}</span>
+                          <span>{[item.date, item.time, item.location].filter(Boolean).join(' · ')}</span>
                         </div>
 
                         <a href={announcementUrl(item)}>
@@ -140,7 +142,7 @@ export default function NewsSection() {
                                 {item.excerpt}
                               </p>
                               <div className="flex items-center justify-between text-sm text-slate-500">
-                                <span>{item.date}</span>
+                                <span>{[item.date, item.time, item.location].filter(Boolean).join(' · ')}</span>
                                 <ArrowRight className="h-4 w-4 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
                               </div>
                             </div>

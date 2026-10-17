@@ -3,7 +3,7 @@ import Header from './Header';
 import { Card } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, Clock, MapPin } from 'lucide-react';
 import { useDocumentMeta } from './useDocumentMeta';
 import { CardSkeleton } from './CardSkeleton';
 import { toast } from 'sonner';
@@ -80,6 +80,21 @@ export default function AnnouncementDetailPage({ id }: { id: number }) {
                 </div>
 
                 <h1 className="text-4xl mb-6 text-slate-800">{item.title}</h1>
+
+                {(item.event_time || item.location) && (
+                  <div className="flex flex-wrap gap-x-6 gap-y-2 mb-6 text-slate-600">
+                    {item.event_time && (
+                      <span className="inline-flex items-center gap-2">
+                        <Clock className="h-4 w-4 text-blue-600" /> {item.event_time}
+                      </span>
+                    )}
+                    {item.location && (
+                      <span className="inline-flex items-center gap-2">
+                        <MapPin className="h-4 w-4 text-teal-600" /> {item.location}
+                      </span>
+                    )}
+                  </div>
+                )}
 
                 <div className="prose prose-slate max-w-none">
                   <div

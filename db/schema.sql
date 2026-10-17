@@ -153,3 +153,9 @@ create policy "Leitura pública nmath-uploads"
   on storage.objects for select
   using (bucket_id = 'nmath-uploads');
 
+
+-- Hora e local nos anúncios (opcionais). Corre isto UMA VEZ no Supabase
+-- (SQL Editor > New query) ANTES de fazeres deploy desta versão.
+-- É seguro correr mais do que uma vez.
+alter table announcements add column if not exists event_time text;
+alter table announcements add column if not exists location text;

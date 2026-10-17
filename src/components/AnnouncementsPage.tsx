@@ -34,6 +34,8 @@ export default function AnnouncementsPage() {
             excerpt: r.excerpt,
             category: r.category,
             date: formatDateRange(r.event_date, r.event_end_date),
+            time: r.event_time || '',
+            location: r.location || '',
             featured: r.featured,
             icon: ICONS[r.icon] || CalendarIcon,
             fullContent: r.full_content,
@@ -182,7 +184,7 @@ export default function AnnouncementsPage() {
                         </h3>
                         <p className="text-slate-600 text-sm mb-3 leading-relaxed">{item.excerpt}</p>
                         <div className="flex items-center justify-between text-sm text-slate-500">
-                          <span>{item.date}</span>
+                          <span>{[item.date, item.time, item.location].filter(Boolean).join(' · ')}</span>
                           <ArrowRight className="h-4 w-4 opacity-50 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
                         </div>
                       </div>

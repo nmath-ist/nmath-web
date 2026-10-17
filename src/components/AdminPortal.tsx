@@ -1,3 +1,17 @@
+      <div className="grid grid-cols-2 gap-3">
+        <Field label="Data" required>
+          <Input type="date" value={form.event_date} onChange={(e) => setForm({ ...form, event_date: e.target.value })} required />
+        </Field>
+        <Field label="Hora">
+          <TimeRangeField value={form.event_time} onChange={(v) => setForm({ ...form, event_time: v })} />
+        </Field>
+      </div>
+      <Field label="Data de fim (opcional)" hint="Só para algo que dura mais do que um dia.">
+        <Input type="date" value={form.event_end_date} onChange={(e) => setForm({ ...form, event_end_date: e.target.value })} />
+      </Field>
+      <Field label="Local" required hint="Começa a escrever para ver sugestões.">
+        <LocationField value={form.location} onChange={(v) => setForm({ ...form, location: v })} required />
+      </Field>
 import { useState, useEffect, useCallback, useMemo, FormEvent } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -7,7 +21,7 @@ import { Switch } from './ui/switch';
 import { Badge } from './ui/badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from './ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { Pencil, Trash2, Plus, LogOut, ArrowLeft, X, Upload } from 'lucide-react';
+import { Pencil, Trash2, Plus, LogOut, ArrowLeft, X, Upload, Copy, Search } from 'lucide-react';
 import { sortableTimestamp, sortableCreatedAt } from './dateUtils';
 
 
@@ -27,6 +41,8 @@ type Announcement = {
   category: string;
   event_date: string;
   event_end_date: string;
+  event_time: string;
+  location: string;
   featured: boolean;
   icon: string;
   full_content: string;
@@ -251,6 +267,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             <ContentSection<Announcement>
               apiPath="/api/announcements"
               title="Anúncios"
+              hint="Notícias e avisos. Aparecem na página inicial e em /anuncios. A hora e o local são opcionais."
               emptyItem={emptyAnnouncement}
               renderRow={(item) => ({ title: item.title, subtitle: `${item.category} · ${formatShortDate(item.event_date) || item.event_date}` })}
               FormComponent={AnnouncementForm}
@@ -284,6 +301,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             <ContentSection<UpcomingEvent>
               apiPath="/api/upcoming-events"
               title="Próximos Eventos"
+              hint="Aparecem no calendário do site, do mais próximo para o mais distante. Data e local são obrigatórios."
               emptyItem={emptyEvent}
               renderRow={(item) => ({ title: item.title, subtitle: `${formatShortDate(item.event_date) || item.event_date} · ${item.location}` })}
               FormComponent={EventForm}
@@ -295,6 +313,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             <ContentSection<FlagshipEvent>
               apiPath="/api/flagship-events"
               title="Eventos NMATH (Integration Bee, Jornadas, ENEMATH, Time2Talk...)"
+              hint="Cartões dos grandes eventos. Para uma nova edição, abre o evento e acrescenta o ano com o respetivo link."
               emptyItem={emptyFlagship}
               renderRow={(item) => ({ title: item.title, subtitle: `${item.category} · ${item.stats}` })}
               FormComponent={FlagshipEventForm}
@@ -339,6 +358,128 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
   );
 }
 
+// -------------------- Campos reutilizáveis --------------------
+function Field({ label, hint, required, children }: { label: string; hint?: string; required?: boolean; children: React.ReactNode }) {
+  return (
+    <div className="space-y-1">
+      <Label>
+        {label}
+        {required && <span className="text-red-500"> *</span>}
+      </Label>
+      {children}
+      {hint && <p className="text-xs text-slate-500">{hint}</p>}
+    </div>
+  );
+}
+
+// Hora de início (e fim opcional) com seletores. Guarda texto, ex: "14:00 – 16:00",
+// por isso continua a funcionar com o texto livre que já existia.
+const TIME_RE = /^(\d{2}:\d{2})(?:\s*[–-]\s*(\d{2}:\d{2}))?$/;
+
+function TimeRangeField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const match = TIME_RE.exec(value || '');
+  const [free, setFree] = useState(!!value && !match);
+  const start = match?.[1] ?? '';
+  const end = match?.[2] ?? '';
+  const set = (s: string, e: string) => onChange(s ? (e ? `${s} – ${e}` : s) : '');
+
+  if (free) {
+    return (
+      <div className="space-y-1">
+        <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder="Ex: 14:00 – 18:00" />
+        <button type="button" className="text-xs text-blue-600 hover:underline" onClick={() => { setFree(false); onChange(''); }}>
+          Usar seletores de hora (apaga o texto atual)
+        </button>
+      </div>
+    );
+  }
+  return (
+    <div className="space-y-1">
+      <div className="flex items-center gap-2">
+        <Input type="time" value={start} onChange={(e) => set(e.target.value, end)} aria-label="Hora de início" />
+        <span className="text-sm text-slate-500">até</span>
+        <Input type="time" value={end} onChange={(e) => set(start, e.target.value)} aria-label="Hora de fim (opcional)" />
+      </div>
+      <button type="button" className="text-xs text-blue-600 hover:underline" onClick={() => setFree(true)}>
+        Escrever em texto livre
+      </button>
+    </div>
+  );
+}
+
+const PLACE_SUGGESTIONS = ['Instituto Superior Técnico, Alameda', 'Anfiteatro QA', 'Sala IA', 'Online'];
+
+function LocationField({ value, onChange, required }: { value: string; onChange: (v: string) => void; required?: boolean }) {
+  return (
+    <>
+      <Input list="nmath-places" value={value} onChange={(e) => onChange(e.target.value)} required={required} placeholder="Ex: Anfiteatro QA, IST Alameda" />
+      <datalist id="nmath-places">
+        {PLACE_SUGGESTIONS.map((p) => <option key={p} value={p} />)}
+      </datalist>
+    </>
+  );
+}
+
+const EVENT_TYPES = ['Eventos', 'Palestra', 'Workshop', 'Recreativa'];
+
+function EventTypeField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [other, setOther] = useState(!!value && !EVENT_TYPES.includes(value));
+  return (
+    <div className="space-y-2">
+      <select
+        className="w-full border rounded-md h-9 px-3 bg-input-background text-sm"
+        value={other ? '__other' : value}
+        onChange={(e) => {
+          if (e.target.value === '__other') { setOther(true); onChange(''); }
+          else { setOther(false); onChange(e.target.value); }
+        }}
+      >
+        {EVENT_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+        <option value="__other">Outro...</option>
+      </select>
+      {other && <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder="Escreve o tipo" />}
+    </div>
+  );
+}
+
+// Links por ano dos "Eventos NMATH": uma linha por edição. Guarda no mesmo formato
+// de sempre ("Ano|URL" por linha), por isso nada muda na base de dados.
+type YearLinkRow = { year: string; url: string };
+
+function parseYearLinks(text: string): YearLinkRow[] {
+  return (text || '').split('\n').map((l) => l.trim()).filter(Boolean).map((l) => {
+    const i = l.indexOf('|');
+    return i === -1 ? { year: l, url: '' } : { year: l.slice(0, i).trim(), url: l.slice(i + 1).trim() };
+  });
+}
+
+function serializeYearLinks(rows: YearLinkRow[]): string {
+  return rows.filter((r) => r.year.trim() || r.url.trim()).map((r) => `${r.year.trim()}|${r.url.trim()}`).join('\n');
+}
+
+function YearLinksEditor({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [rows, setRows] = useState<YearLinkRow[]>(() => parseYearLinks(value));
+  const update = (next: YearLinkRow[]) => { setRows(next); onChange(serializeYearLinks(next)); };
+  return (
+    <div className="space-y-2">
+      {rows.length === 0 && <p className="text-sm text-slate-500">Ainda não há edições. Clica em "Adicionar ano".</p>}
+      {rows.map((r, i) => (
+        <div key={i} className="flex items-center gap-2">
+          <Input className="w-24" value={r.year} placeholder="2026" aria-label="Ano" onChange={(e) => update(rows.map((x, j) => (j === i ? { ...x, year: e.target.value } : x)))} />
+          <Input value={r.url} placeholder="https://... ou /integration-bee" aria-label="Link" onChange={(e) => update(rows.map((x, j) => (j === i ? { ...x, url: e.target.value } : x)))} />
+          <Button type="button" size="icon" variant="outline" aria-label="Remover este ano" onClick={() => update(rows.filter((_, j) => j !== i))}>
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        </div>
+      ))}
+      <Button type="button" size="sm" variant="outline" onClick={() => update([{ year: '', url: '' }, ...rows])}>
+        <Plus className="h-4 w-4 mr-1" /> Adicionar ano
+      </Button>
+      <p className="text-xs text-slate-500">Cada linha vira um botão de ano no cartão. Para ligar a uma página do próprio site, escreve só o caminho, por exemplo /integration-bee.</p>
+    </div>
+  );
+}
+
 // -------------------- Bloco genérico: lista + lixo + rascunhos --------------------
 function useContentList(apiPath: string, trashMode: boolean) {
   const [items, setItems] = useState<any[]>([]);
@@ -369,9 +510,11 @@ function ContentSection<T extends { id?: number; published?: boolean }>({
   renderRow,
   FormComponent,
   sortKey,
+  hint,
 }: {
   apiPath: string;
   title: string;
+  hint?: string;
   emptyItem: T;
   renderRow: (item: T) => { title: string; subtitle: string };
   FormComponent: React.ComponentType<{ initial: T; onCancel: () => void; onSave: (item: T) => Promise<void> }>;
@@ -381,6 +524,9 @@ function ContentSection<T extends { id?: number; published?: boolean }>({
   sortKey?: (item: T) => number;
 }) {
   const [trashMode, setTrashMode] = useState(false);
+  const [query, setQuery] = useState('');
+  const [notice, setNotice] = useState('');
+  const flash = (msg: string) => { setNotice(msg); window.setTimeout(() => setNotice(''), 4000); };
   const { items: rawItems, loading, error, reload } = useContentList(apiPath, trashMode);
   const items = useMemo(() => {
     if (trashMode || !sortKey) return rawItems;
@@ -388,22 +534,37 @@ function ContentSection<T extends { id?: number; published?: boolean }>({
   }, [rawItems, trashMode, sortKey]);
   const [editing, setEditing] = useState<T | null>(null);
 
+  const visibleItems = useMemo(() => {
+    const q = query.trim().toLowerCase();
+    if (!q) return items;
+    return items.filter((it) => { const r = renderRow(it); return `${r.title} ${r.subtitle}`.toLowerCase().includes(q); });
+  }, [items, query]);
+
   async function handleSave(item: T) {
     if (item.id) await apiSend(apiPath, 'PUT', item);
     else await apiSend(apiPath, 'POST', item);
     setEditing(null);
     reload();
+    flash(item.published === false ? 'Guardado como rascunho (ainda não está no site).' : 'Guardado. Já está visível no site.');
+  }
+
+  function handleDuplicate(item: T) {
+    const copy: any = { ...item, id: undefined, published: false };
+    if (typeof copy.title === 'string') copy.title = `${copy.title} (cópia)`;
+    setEditing(copy as T);
   }
 
   async function handleTrash(item: T) {
     if (!confirmDelete(renderRow(item).title)) return;
     await apiSend(`${apiPath}?id=${item.id}`, 'DELETE');
     reload();
+    flash('Movido para o lixo. Podes repô-lo em "Lixo".');
   }
 
   async function handleRestore(item: T) {
     await apiSend(apiPath, 'PUT', { id: item.id, action: 'restore' });
     reload();
+    flash('Reposto.');
   }
 
   async function handlePermanentDelete(item: T) {
@@ -427,14 +588,25 @@ function ContentSection<T extends { id?: number; published?: boolean }>({
           )}
         </div>
       </div>
+      {hint && !trashMode && <p className="text-sm text-slate-500 -mt-2">{hint}</p>}
+      {notice && <p role="status" className="text-sm rounded-md bg-green-50 text-green-800 border border-green-200 px-3 py-2">{notice}</p>}
+      {items.length > 5 && (
+        <div className="relative">
+          <Search className="h-4 w-4 absolute left-3 top-2.5 text-slate-400" />
+          <Input className="pl-9" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Pesquisar..." aria-label="Pesquisar na lista" />
+        </div>
+      )}
 
       {loading && <p className="text-slate-500">A carregar...</p>}
       {error && <p className="text-red-600">{error}</p>}
       {!loading && items.length === 0 && (
-        <p className="text-slate-500 text-sm">{trashMode ? 'O lixo está vazio.' : 'Ainda não há nada aqui.'}</p>
+        <p className="text-slate-500 text-sm">{trashMode ? 'O lixo está vazio.' : 'Ainda não há nada aqui. Clica em "Novo" para começar.'}</p>
+      )}
+      {!loading && items.length > 0 && visibleItems.length === 0 && (
+        <p className="text-slate-500 text-sm">Nada encontrado para "{query}".</p>
       )}
 
-      {items.map((item) => {
+      {visibleItems.map((item) => {
         const row = renderRow(item);
         return (
           <Card key={item.id}>
@@ -458,10 +630,13 @@ function ContentSection<T extends { id?: number; published?: boolean }>({
                   </>
                 ) : (
                   <>
-                    <Button size="icon" variant="outline" onClick={() => setEditing(item)} aria-label="Editar">
+                    <Button size="icon" variant="outline" onClick={() => setEditing(item)} aria-label="Editar" title="Editar">
                       <Pencil className="h-4 w-4" />
                     </Button>
-                    <Button size="icon" variant="outline" onClick={() => handleTrash(item)} aria-label="Mover para o lixo">
+                    <Button size="icon" variant="outline" onClick={() => handleDuplicate(item)} aria-label="Duplicar" title="Duplicar (cria um rascunho igual)">
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                    <Button size="icon" variant="outline" onClick={() => handleTrash(item)} aria-label="Mover para o lixo" title="Mover para o lixo">
                       <Trash2 className="h-4 w-4" />
                     </Button>
                   </>
@@ -484,7 +659,7 @@ function ContentSection<T extends { id?: number; published?: boolean }>({
 function FormModal({ title, onClose, children }: { title: string; onClose: () => void; children: React.ReactNode }) {
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50 overflow-y-auto">
-      <Card className="w-full max-w-lg my-8">
+      <Card className="w-full max-w-2xl my-8" role="dialog" aria-modal="true">
         <CardHeader className="flex flex-row items-center justify-between space-y-0">
           <CardTitle>{title}</CardTitle>
           <Button size="icon" variant="ghost" onClick={onClose} aria-label="Fechar">
@@ -508,7 +683,7 @@ function PublishedToggle({ checked, onChange }: { checked: boolean; onChange: (v
 
 // -------------------- Anúncios --------------------
 const emptyAnnouncement: Announcement = {
-  title: '', excerpt: '', category: 'Eventos', event_date: '', event_end_date: '',
+  title: '', excerpt: '', category: 'Eventos', event_date: '', event_end_date: '', event_time: '', location: '',
   featured: false, icon: 'calendar', full_content: '', sort_order: 0, published: true,
 };
 
@@ -575,6 +750,14 @@ function AnnouncementForm({
             <option value="zap">Raio</option>
           </select>
         </div>
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <Field label="Hora (opcional)">
+          <TimeRangeField value={form.event_time || ''} onChange={(v) => setForm({ ...form, event_time: v })} />
+        </Field>
+        <Field label="Local (opcional)">
+          <LocationField value={form.location || ''} onChange={(v) => setForm({ ...form, location: v })} />
+        </Field>
       </div>
       <div>
         <Label>Conteúdo completo (o texto que aparece ao abrir o anúncio — pode incluir HTML simples como &lt;p&gt; e &lt;strong&gt;)</Label>
@@ -770,11 +953,12 @@ function CalendarAdmin() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <h2 className="text-lg">Links dos Calendários por Ano</h2>
+        <h2 className="text-lg">Link do calendário</h2>
         <Button size="sm" onClick={() => setEditing({ ...emptyCalendarYear })}>
           <Plus className="h-4 w-4 mr-1" /> Novo
         </Button>
       </div>
+      <p className="text-sm text-slate-500 -mt-2">O site mostra um único botão "Ver Calendário", que abre o primeiro link desta lista (o de menor ordem).</p>
       {loading && <p className="text-slate-500">A carregar...</p>}
       {error && <p className="text-red-600">{error}</p>}
       {items.map((item) => (
@@ -973,10 +1157,9 @@ function EventForm({
         <Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
       </div>
       <div className="grid grid-cols-2 gap-3">
-        <div>
-          <Label>Tipo</Label>
-          <Input value={form.event_type} onChange={(e) => setForm({ ...form, event_type: e.target.value })} placeholder="Eventos, Palestra..." />
-        </div>
+        <Field label="Tipo">
+          <EventTypeField value={form.event_type} onChange={(v) => setForm({ ...form, event_type: v })} />
+        </Field>
         <div>
           <Label>Link (opcional — inscrição, etc.)</Label>
           <Input value={form.link} onChange={(e) => setForm({ ...form, link: e.target.value })} />
@@ -1055,16 +1238,9 @@ function FlagshipEventForm({
           <option value="mic">Microfone</option>
         </select>
       </div>
-      <div>
-        <Label>Links por ano (um por linha, formato: Ano|URL)</Label>
-        <Textarea
-          className="min-h-24 font-mono text-xs"
-          value={form.year_links}
-          onChange={(e) => setForm({ ...form, year_links: e.target.value })}
-          placeholder={'2025|https://...\n2023|https://...'}
-        />
-        <p className="text-xs text-slate-500 mt-1">Cada linha vira um botão de ano no cartão. Exemplo: <code>2025|https://exemplo.pt</code></p>
-      </div>
+      <Field label="Edições (um botão por ano)">
+        <YearLinksEditor value={form.year_links} onChange={(v) => setForm({ ...form, year_links: v })} />
+      </Field>
       <PublishedToggle checked={form.published} onChange={(v) => setForm({ ...form, published: v })} />
       {error && <p className="text-sm text-red-600">{error}</p>}
       <div className="flex justify-end gap-2 pt-2">
