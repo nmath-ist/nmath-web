@@ -37,10 +37,10 @@ const SOLUTIONS = [
 ];
 
 const STEPS = [
-  { title: 'Fase escrita', text: 'Cada participante resolve um conjunto de integrais. Só os melhores avançam.' },
-  { title: 'Disputa pelo 3º, 4º e 5º lugares', text: 'Ao vivo, para decidir os lugares seguintes ao pódio.' },
-  { title: 'Meia-final', text: 'Ao vivo, com os integrais resolvidos em tempo real.' },
-  { title: 'Final', text: 'Ao vivo, para decidir o 1º e o 2º lugares.' },
+  { title: 'Fase escrita', text: 'Cada participante recebe um conjunto de 10 integrais de dificuldade crescente.As 4 pessoas com maior pontuação, isto é, que tenham resolvido mais integrais, serão selecionadas e passam às meias-finais. Os integrais serão classificados e ordenados consoante a dificuldade, a sua ordem é decrescente.Os concorrentes com o mesmo número de integrais resolvidos são ordenados de forma lexicográfica com base nos integrais que acertaram. Caso este critério não permita distinguir ambos os jogadores, então estes serão chamados para a ronda de desempate' },
+  { title: 'Meia-final', text: 'Das 4 pessoas selecionadas, a que ficou em 1o lugar irá defrontar a que ficou em 4olugar, as restantes irão enfrentar-se entre si. Cada meia-final consiste em 4 integrais, com 4 minutos para resolver cada integral. Os dois jogadores irão enfrentar-se simultaneamente em quadros separados. Em caso de dúvida, o Júri pode pedir esclarecimentos aos participantes sobre como chegaram ao resultado. O vencedor de cada meia-final é aquele que resolver corretamente o maior número de integrais. Em caso de empate, é feita uma ronda de desempate, com novos integrais.' },
+  { title: 'Disputa pelo 3º e 4º lugares', text: 'Os 3.o e 4.o lugares são atribuídos ordenando o número de integrais resolvidos corretamente nas meias-finais pelos dois jogadores que não se qualificam para as finais. Em caso de empate, é feita uma ronda de desempate, com novas integrais' },
+  { title: 'Final', text: 'A final consiste em 5 integrais, com 5 minutos para resolver cada integral. Os dois jogadores resolvem os integrais simultaneamente em quadros separados. Em caso de dúvida, o Júri pode pedir esclarecimentos aos participantes sobre como chegaram ao resultado. A equipa vencedora é a que resolver corretamente o maior número de integrais. Em caso de empate, é feita uma ronda de desempate, com novos integrais' },
 ];
 
 const SPONSORS = [
