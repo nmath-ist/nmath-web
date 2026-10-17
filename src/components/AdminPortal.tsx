@@ -746,7 +746,7 @@ function AnnouncementForm({
         </Field>
       </div>
       <div>
-        <Label>Conteúdo completo (o texto que aparece ao abrir o anúncio — pode incluir HTML simples como &lt;p&gt; e &lt;strong&gt;)</Label>
+        <Label>Conteúdo completo (o texto que aparece ao abrir o anúncio)</Label>
         <Textarea
           className="min-h-32"
           value={form.full_content}
