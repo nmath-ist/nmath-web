@@ -1,17 +1,3 @@
-      <div className="grid grid-cols-2 gap-3">
-        <Field label="Data" required>
-          <Input type="date" value={form.event_date} onChange={(e) => setForm({ ...form, event_date: e.target.value })} required />
-        </Field>
-        <Field label="Hora">
-          <TimeRangeField value={form.event_time} onChange={(v) => setForm({ ...form, event_time: v })} />
-        </Field>
-      </div>
-      <Field label="Data de fim (opcional)" hint="Só para algo que dura mais do que um dia.">
-        <Input type="date" value={form.event_end_date} onChange={(e) => setForm({ ...form, event_end_date: e.target.value })} />
-      </Field>
-      <Field label="Local" required hint="Começa a escrever para ver sugestões.">
-        <LocationField value={form.location} onChange={(v) => setForm({ ...form, location: v })} required />
-      </Field>
 import { useState, useEffect, useCallback, useMemo, FormEvent } from 'react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
@@ -1135,23 +1121,19 @@ function EventForm({
         <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required />
       </div>
       <div className="grid grid-cols-2 gap-3">
-        <div>
-          <Label>Data</Label>
+        <Field label="Data" required>
           <Input type="date" value={form.event_date} onChange={(e) => setForm({ ...form, event_date: e.target.value })} required />
-        </div>
-        <div>
-          <Label>Hora</Label>
-          <Input value={form.event_time} onChange={(e) => setForm({ ...form, event_time: e.target.value })} placeholder="20:30" />
-        </div>
+        </Field>
+        <Field label="Hora">
+          <TimeRangeField value={form.event_time} onChange={(v) => setForm({ ...form, event_time: v })} />
+        </Field>
       </div>
-      <div>
-        <Label>Data de fim (opcional — só para algo que dura mais do que um dia)</Label>
+      <Field label="Data de fim (opcional)" hint="Só para algo que dura mais do que um dia.">
         <Input type="date" value={form.event_end_date} onChange={(e) => setForm({ ...form, event_end_date: e.target.value })} />
-      </div>
-      <div>
-        <Label>Local</Label>
-        <Input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })} required />
-      </div>
+      </Field>
+      <Field label="Local" required hint="Começa a escrever para ver sugestões.">
+        <LocationField value={form.location} onChange={(v) => setForm({ ...form, location: v })} required />
+      </Field>
       <div>
         <Label>Descrição</Label>
         <Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
