@@ -3,7 +3,8 @@ import { isAuthenticated } from './_auth.js';
 
 const BUCKET = 'nmath-uploads';
 const MAX_BYTES = 5 * 1024 * 1024; // 5MB
-const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif'];
+const MAX_PDF_BYTES = 3 * 1024 * 1024; // 3MB (o Vercel limita o corpo do pedido a ~4,5MB)
+const ALLOWED_TYPES = ['image/png', 'image/jpeg', 'image/webp', 'image/gif', 'application/pdf'];
 
 export const config = {
   api: { bodyParser: { sizeLimit: '8mb' } },
@@ -26,10 +27,13 @@ export default async function handler(req, res) {
       return res.status(400).json({ error: 'Faltam dados do ficheiro.' });
     }
     if (!ALLOWED_TYPES.includes(contentType)) {
-      return res.status(400).json({ error: 'Tipo de ficheiro não suportado. Usa PNG, JPEG, WEBP ou GIF.' });
+      return res.status(400).json({ error: 'Tipo de ficheiro não suportado. Usa PNG, JPEG, WEBP, GIF ou PDF.' });
     }
 
     const buffer = Buffer.from(dataBase64, 'base64');
+    if (contentType === 'application/pdf' && buffer.length > MAX_PDF_BYTES) {
+      return res.status(400).json({ error: 'PDF demasiado grande (máx. 3MB).' });
+    }
     if (buffer.length > MAX_BYTES) {
       return res.status(400).json({ error: 'Imagem demasiado grande (máx. 5MB).' });
     }

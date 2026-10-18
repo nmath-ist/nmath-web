@@ -159,3 +159,29 @@ create policy "Leitura pública nmath-uploads"
 -- É seguro correr mais do que uma vez.
 alter table announcements add column if not exists event_time text;
 alter table announcements add column if not exists location text;
+
+-- Secção "Mobilidade" (Erasmus e mestrados no estrangeiro).
+-- Corre UMA VEZ no Supabase (SQL Editor > New query) ANTES do deploy.
+-- É seguro correr mais do que uma vez.
+create table if not exists mobility_docs (
+  id bigint generated always as identity primary key,
+  program_type text not null default 'Erasmus',
+  continent text not null,
+  country text not null,
+  university text not null,
+  city text not null default '',
+  academic_year text not null default '',
+  semester text not null default '',
+  language text not null default '',
+  scholarship text not null default '',
+  monthly_cost text not null default '',
+  summary text not null default '',
+  author_name text not null default '',
+  file_url text not null,
+  sort_order integer not null default 0,
+  published boolean not null default true,
+  deleted_at timestamptz,
+  created_at timestamptz not null default now()
+);
+create index if not exists mobility_docs_folder_idx on mobility_docs (continent, country, university);
+alter table mobility_docs enable row level security;

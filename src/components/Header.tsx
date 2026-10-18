@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from './ui/button';
-import { Menu, X, Calendar, BookOpen, Users, Newspaper, Headphones, Instagram, HardDrive } from 'lucide-react';
+import { Menu, X, Calendar, BookOpen, Users, Newspaper, Headphones, Instagram, HardDrive, GraduationCap } from 'lucide-react';
 import whiteLogo from '../assets/white.png';
 
 export default function Header() {
@@ -9,6 +9,7 @@ export default function Header() {
   const navItems = [
     { icon: Newspaper, label: 'Anúncios', href: '/anuncios' },
     { icon: Calendar, label: 'Calendário', href: '/#calendar' },
+    { icon: GraduationCap, label: 'Mobilidade', href: '/mobilidade' },
     { icon: Users, label: 'Equipa', href: '/#team' },
     { icon: Headphones, label: 'Oráculo', href: 'https://open.spotify.com/show/2yqzMLv5S0W5kaiDGJ6Fa7?si=537cde4120b3435c', external: true },
     { icon: HardDrive, label: 'Repositório', href: 'https://repositorio.nmath.pt' },

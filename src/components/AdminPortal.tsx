@@ -50,6 +50,25 @@ type MagazineEdition = {
   published: boolean;
 };
 
+type MobilityDoc = {
+  id?: number;
+  program_type: string;
+  continent: string;
+  country: string;
+  university: string;
+  city: string;
+  academic_year: string;
+  semester: string;
+  language: string;
+  scholarship: string;
+  monthly_cost: string;
+  summary: string;
+  author_name: string;
+  file_url: string;
+  sort_order: number;
+  published: boolean;
+};
+
 type CalendarYear = {
   id?: number;
   year_label: string;
@@ -247,6 +266,7 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
             <TabsTrigger value="flagship">Eventos NMATH</TabsTrigger>
             <TabsTrigger value="oracle">Oráculo</TabsTrigger>
             <TabsTrigger value="photos">Fotos</TabsTrigger>
+            <TabsTrigger value="mobility">Mobilidade</TabsTrigger>
           </TabsList>
 
           <TabsContent value="announcements">
@@ -336,6 +356,20 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
               renderRow={(item) => ({ title: item.title, subtitle: `${formatShortDate(item.album_date)} · ${item.drive_url}` })}
               FormComponent={PhotoAlbumForm}
               sortKey={(item) => sortableTimestamp(item.album_date)}
+            />
+          </TabsContent>
+          <TabsContent value="mobility">
+            <ContentSection<MobilityDoc>
+              apiPath="/api/mobility-docs"
+              title="Mobilidade (Erasmus e mestrados no estrangeiro)"
+              hint="Cada documento aparece em /mobilidade, na pasta continente > país > universidade. As pastas criam-se sozinhas a partir do que preencheres."
+              emptyItem={emptyMobility}
+              renderRow={(item) => ({
+                title: `${item.university} (${item.country})`,
+                subtitle: `${item.program_type} · ${item.academic_year || 'sem ano'}${item.author_name ? ` · ${item.author_name}` : ''}`,
+              })}
+              FormComponent={MobilityForm}
+              sortKey={(item: any) => sortableCreatedAt(item.created_at)}
             />
           </TabsContent>
         </Tabs>
@@ -768,6 +802,12 @@ function AnnouncementForm({
 }
 
 // -------------------- Revista --------------------
+const emptyMobility: MobilityDoc = {
+  program_type: 'Erasmus', continent: '', country: '', university: '', city: '',
+  academic_year: '', semester: '', language: '', scholarship: '', monthly_cost: '',
+  summary: '', author_name: '', file_url: '', sort_order: 0, published: true,
+};
+
 const emptyMagazine: MagazineEdition = {
   title: '', issue: '', cover_image_url: '', description: '', highlights: '',
   publish_date: '', link: '', is_current: false, sort_order: 0, published: true,
@@ -827,6 +867,159 @@ function ImageUploadField({ value, onChange }: { value: string; onChange: (url: 
       </div>
       {error && <p className="text-xs text-red-600">{error}</p>}
     </div>
+  );
+}
+
+function PdfUploadField({ value, onChange }: { value: string; onChange: (url: string) => void }) {
+  const [uploading, setUploading] = useState(false);
+  const [error, setError] = useState('');
+
+  async function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setError('');
+    setUploading(true);
+    try {
+      const dataBase64: string = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve((reader.result as string).split(',')[1] || '');
+        reader.onerror = () => reject(new Error('Não foi possível ler o ficheiro.'));
+        reader.readAsDataURL(file);
+      });
+      const data = await apiSend('/api/upload', 'POST', { filename: file.name, contentType: file.type, dataBase64 });
+      onChange(data.url);
+    } catch (err: any) {
+      setError(err.message || 'Erro ao fazer upload.');
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
+  }
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center gap-2 flex-wrap">
+        <label className="inline-flex items-center gap-2 text-sm border rounded-md px-3 py-1.5 cursor-pointer hover:bg-slate-50">
+          <Upload className="h-3.5 w-3.5" />
+          {uploading ? 'A enviar...' : value ? 'Trocar o PDF' : 'Escolher um PDF'}
+          <input type="file" accept="application/pdf" className="hidden" onChange={handleFile} disabled={uploading} />
+        </label>
+        {value && <a href={value} target="_blank" rel="noopener noreferrer" className="text-sm text-blue-600 hover:underline">Abrir PDF atual</a>}
+      </div>
+      <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder="ou cola aqui o link de um PDF (máx. 3MB no upload)" required />
+      {error && <p className="text-xs text-red-600">{error}</p>}
+    </div>
+  );
+}
+
+const CONTINENTS = ['Europa', 'América do Sul', 'América do Norte', 'América Central', 'Ásia', 'África', 'Oceânia'];
+const PROGRAM_TYPES = ['Erasmus', 'Mestrado no estrangeiro', 'Outro'];
+const SEMESTERS = ['1º semestre', '2º semestre', 'Ano completo'];
+
+function MobilityForm({
+  initial,
+  onCancel,
+  onSave,
+}: {
+  initial: MobilityDoc;
+  onCancel: () => void;
+  onSave: (item: MobilityDoc) => Promise<void>;
+}) {
+  const [form, setForm] = useState<MobilityDoc>(initial);
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState('');
+  const [existing, setExisting] = useState<MobilityDoc[]>([]);
+
+  // Sugestões dos países e universidades que já existem, para não criar pastas duplicadas por gralhas.
+  useEffect(() => {
+    fetch('/api/mobility-docs').then((r) => (r.ok ? r.json() : [])).then(setExisting).catch(() => {});
+  }, []);
+  const countries = [...new Set(existing.filter((d) => !form.continent || d.continent === form.continent).map((d) => d.country))].sort();
+  const universities = [...new Set(existing.filter((d) => (!form.country || d.country === form.country)).map((d) => d.university))].sort();
+
+  const set = (patch: Partial<MobilityDoc>) => setForm((f) => ({ ...f, ...patch }));
+
+  async function handleSubmit(e: FormEvent) {
+    e.preventDefault();
+    setSaving(true);
+    setError('');
+    try {
+      await onSave({ ...form, country: form.country.trim(), university: form.university.trim(), city: form.city.trim() });
+    } catch (err: any) {
+      setError(err.message || 'Erro ao guardar.');
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  const selectClass = 'w-full border rounded-md h-9 px-3 bg-input-background text-sm';
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-3">
+      <div className="grid grid-cols-2 gap-3">
+        <Field label="Tipo" required>
+          <select className={selectClass} value={form.program_type} onChange={(e) => set({ program_type: e.target.value })}>
+            {PROGRAM_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+          </select>
+        </Field>
+        <Field label="Continente" required hint="Define a pasta de topo.">
+          <select className={selectClass} value={form.continent} onChange={(e) => set({ continent: e.target.value })} required>
+            <option value="">Escolher...</option>
+            {CONTINENTS.map((c) => <option key={c} value={c}>{c}</option>)}
+          </select>
+        </Field>
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <Field label="País" required hint="Escreve igual aos que já existem (aparecem as sugestões).">
+          <Input list="mob-countries" value={form.country} onChange={(e) => set({ country: e.target.value })} required placeholder="Ex: Chile" />
+          <datalist id="mob-countries">{countries.map((c) => <option key={c} value={c} />)}</datalist>
+        </Field>
+        <Field label="Universidade / faculdade" required>
+          <Input list="mob-universities" value={form.university} onChange={(e) => set({ university: e.target.value })} required placeholder="Ex: Universidad de Chile (FCFM)" />
+          <datalist id="mob-universities">{universities.map((u) => <option key={u} value={u} />)}</datalist>
+        </Field>
+      </div>
+      <div className="grid grid-cols-3 gap-3">
+        <Field label="Cidade">
+          <Input value={form.city} onChange={(e) => set({ city: e.target.value })} placeholder="Ex: Santiago" />
+        </Field>
+        <Field label="Ano letivo">
+          <Input value={form.academic_year} onChange={(e) => set({ academic_year: e.target.value })} placeholder="2024/25" />
+        </Field>
+        <Field label="Semestre">
+          <select className={selectClass} value={form.semester} onChange={(e) => set({ semester: e.target.value })}>
+            <option value="">—</option>
+            {SEMESTERS.map((x) => <option key={x} value={x}>{x}</option>)}
+          </select>
+        </Field>
+      </div>
+      <div className="grid grid-cols-3 gap-3">
+        <Field label="Língua">
+          <Input value={form.language} onChange={(e) => set({ language: e.target.value })} placeholder="Espanhol" />
+        </Field>
+        <Field label="Bolsa">
+          <Input value={form.scholarship} onChange={(e) => set({ scholarship: e.target.value })} placeholder="Santander, 2500€" />
+        </Field>
+        <Field label="Custo mensal aprox.">
+          <Input value={form.monthly_cost} onChange={(e) => set({ monthly_cost: e.target.value })} placeholder="~500€" />
+        </Field>
+      </div>
+      <Field label="Resumo (1 ou 2 frases)" hint="Aparece no cartão do documento.">
+        <Textarea value={form.summary} onChange={(e) => set({ summary: e.target.value })} />
+      </Field>
+      <Field label="Nome do autor (opcional)" hint="Só se o autor aceitou aparecer. Vazio aparece como autor anónimo.">
+        <Input value={form.author_name} onChange={(e) => set({ author_name: e.target.value })} />
+      </Field>
+      <Field label="Documento (PDF)" required>
+        <PdfUploadField value={form.file_url} onChange={(url) => set({ file_url: url })} />
+      </Field>
+      <PublishedToggle checked={form.published} onChange={(v) => set({ published: v })} />
+      {error && <p className="text-sm text-red-600">{error}</p>}
+      <div className="flex justify-end gap-2 pt-2">
+        <Button type="button" variant="outline" onClick={onCancel}>Cancelar</Button>
+        <Button type="submit" disabled={saving}>{saving ? 'A guardar...' : 'Guardar'}</Button>
+      </div>
+    </form>
   );
 }
 

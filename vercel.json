@@ -49,7 +49,11 @@
       "destination": "/index.html"
     },
     {
-      "source": "/integration-bee/(.*)",
+      "source": "/mobilidade",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/mobilidade/(.*)",
       "destination": "/index.html"
     }
   ]
