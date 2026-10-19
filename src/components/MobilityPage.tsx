@@ -113,7 +113,7 @@ export default function MobilityPage() {
   const university = sUniversity ? docs.find((d) => slug(d.continent) === sContinent && slug(d.country) === sCountry && slug(d.university) === sUniversity)?.university : undefined;
 
   const title = university ? `${university} | Mobilidade` : country ? `${country} | Mobilidade` : continent ? `${continent} | Mobilidade` : 'Mobilidade | NMATH';
-  useDocumentMeta(title, 'Experiências de alunos do IST em Erasmus e mestrados no estrangeiro, organizadas por continente, país e universidade.');
+  useDocumentMeta(title, 'Experiências de alunos de matemática do IST em Erasmus e mestrados no estrangeiro, organizadas por continente, país e universidade.');
 
   const searching = query.trim().length > 0;
   const results = useMemo(() => {
@@ -210,7 +210,7 @@ export default function MobilityPage() {
           </a>
           <h1 className="text-4xl md:text-5xl mb-3">Mobilidade</h1>
           <p className="text-blue-100 max-w-2xl">
-            Experiências de alunos do IST que fizeram Erasmus ou mestrado no estrangeiro. Cada documento responde às mesmas
+            Experiências de alunos de matemática do IST que fizeram Erasmus ou mestrado no estrangeiro. Cada documento responde às mesmas
             perguntas: alojamento, custos, bolsas, língua, clima, burocracia e dificuldades.
           </p>
         </div>

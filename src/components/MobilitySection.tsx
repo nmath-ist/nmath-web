@@ -1,4 +1,4 @@
-import { GraduationCap, FolderTree, ListChecks, Users, ArrowRight } from 'lucide-react';
+import { GraduationCap, FolderTree, Users, ArrowRight } from 'lucide-react';
 
 export default function MobilitySection() {
   return (
@@ -11,25 +11,18 @@ export default function MobilitySection() {
           </div>
           <h2 className="text-3xl md:text-4xl mb-4">Mobilidade</h2>
           <p className="text-slate-200 max-w-2xl mx-auto">
-            Vais fazer Erasmus ou mestrado fora? Lê as experiências de alunos do IST que já passaram por lá: alojamento,
+            Vais fazer Erasmus ou mestrado fora? Lê as experiências de alunos de matemática do IST que já passaram por lá: alojamento,
             custos, bolsas, burocracia e dicas.
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-3 mb-12">
+        <div className="grid gap-6 md:grid-cols-2 max-w-3xl mx-auto mb-12">
           <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
             <div className="bg-teal-500/20 rounded-xl p-3 inline-flex mb-4">
               <FolderTree className="h-6 w-6 text-teal-300" />
             </div>
             <h3 className="mb-2">Organizado por pastas</h3>
             <p className="text-slate-300 text-sm">Continente, país e universidade. Vai direto ao destino que te interessa.</p>
-          </div>
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-            <div className="bg-blue-500/20 rounded-xl p-3 inline-flex mb-4">
-              <ListChecks className="h-6 w-6 text-blue-300" />
-            </div>
-            <h3 className="mb-2">As mesmas perguntas</h3>
-            <p className="text-slate-300 text-sm">Todos os documentos respondem às mesmas questões, por isso é fácil comparar.</p>
           </div>
           <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
             <div className="bg-orange-500/20 rounded-xl p-3 inline-flex mb-4">
