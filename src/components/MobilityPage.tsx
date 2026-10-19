@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import Header from './Header';
 import { Card, CardContent } from './ui/card';
 import { Input } from './ui/input';
-import { Folder, FileText, ChevronRight, Search, ExternalLink, Home } from 'lucide-react';
+import { Folder, FileText, ChevronRight, Search, ExternalLink, Home, ArrowLeft } from 'lucide-react';
 import { useDocumentMeta } from './useDocumentMeta';
 
 type MobilityDoc = {
@@ -14,9 +14,6 @@ type MobilityDoc = {
   city: string;
   academic_year: string;
   semester: string;
-  language: string;
-  scholarship: string;
-  monthly_cost: string;
   summary: string;
   author_name: string;
   file_url: string;
@@ -60,11 +57,6 @@ function FolderCard({ href, name, detail }: { href: string; name: string; detail
 
 function DocCard({ doc, showPath }: { doc: MobilityDoc; showPath?: boolean }) {
   const when = [doc.academic_year, doc.semester].filter(Boolean).join(', ');
-  const facts: [string, string][] = [
-    ['Língua', doc.language],
-    ['Bolsa', doc.scholarship],
-    ['Custo mensal aproximado', doc.monthly_cost],
-  ].filter(([, v]) => v) as [string, string][];
   return (
     <Card className="border border-slate-200">
       <CardContent className="p-5">
@@ -79,16 +71,6 @@ function DocCard({ doc, showPath }: { doc: MobilityDoc; showPath?: boolean }) {
           {doc.city && <span className="text-sm text-slate-500">· {doc.city}</span>}
         </div>
         {doc.summary && <p className="text-slate-700 mb-3">{doc.summary}</p>}
-        {facts.length > 0 && (
-          <dl className="grid sm:grid-cols-3 gap-x-6 gap-y-1 text-sm mb-3">
-            {facts.map(([k, v]) => (
-              <div key={k}>
-                <dt className="text-slate-500">{k}</dt>
-                <dd className="text-slate-800">{v}</dd>
-              </div>
-            ))}
-          </dl>
-        )}
         <div className="flex flex-wrap items-center justify-between gap-2">
           <span className="text-sm text-slate-500">{doc.author_name ? `Por ${doc.author_name}` : 'Autor anónimo'}</span>
           <a
@@ -138,7 +120,7 @@ export default function MobilityPage() {
     const q = query.trim().toLowerCase();
     if (!q) return [];
     return filtered.filter((d) =>
-      [d.continent, d.country, d.university, d.city, d.program_type, d.summary, d.language, d.scholarship, d.author_name, d.academic_year]
+      [d.continent, d.country, d.university, d.city, d.program_type, d.summary, d.author_name, d.academic_year]
         .join(' ').toLowerCase().includes(q)
     );
   }, [filtered, query]);
@@ -220,6 +202,12 @@ export default function MobilityPage() {
 
       <section className="bg-gradient-to-br from-slate-900 via-blue-900 to-teal-800 text-white">
         <div className="container mx-auto px-4 py-12 md:py-16">
+          <a
+            href="/"
+            className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-4 py-2 text-sm hover:bg-white/20 mb-6"
+          >
+            <ArrowLeft className="h-4 w-4" /> Voltar ao site
+          </a>
           <h1 className="text-4xl md:text-5xl mb-3">Mobilidade</h1>
           <p className="text-blue-100 max-w-2xl">
             Experiências de alunos do IST que fizeram Erasmus ou mestrado no estrangeiro. Cada documento responde às mesmas

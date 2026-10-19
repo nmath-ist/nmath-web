@@ -59,9 +59,6 @@ type MobilityDoc = {
   city: string;
   academic_year: string;
   semester: string;
-  language: string;
-  scholarship: string;
-  monthly_cost: string;
   summary: string;
   author_name: string;
   file_url: string;
@@ -804,7 +801,7 @@ function AnnouncementForm({
 // -------------------- Revista --------------------
 const emptyMobility: MobilityDoc = {
   program_type: 'Erasmus', continent: '', country: '', university: '', city: '',
-  academic_year: '', semester: '', language: '', scholarship: '', monthly_cost: '',
+  academic_year: '', semester: '',
   summary: '', author_name: '', file_url: '', sort_order: 0, published: true,
 };
 
@@ -991,17 +988,6 @@ function MobilityForm({
             <option value="">—</option>
             {SEMESTERS.map((x) => <option key={x} value={x}>{x}</option>)}
           </select>
-        </Field>
-      </div>
-      <div className="grid grid-cols-3 gap-3">
-        <Field label="Língua">
-          <Input value={form.language} onChange={(e) => set({ language: e.target.value })} placeholder="Espanhol" />
-        </Field>
-        <Field label="Bolsa">
-          <Input value={form.scholarship} onChange={(e) => set({ scholarship: e.target.value })} placeholder="Santander, 2500€" />
-        </Field>
-        <Field label="Custo mensal aprox.">
-          <Input value={form.monthly_cost} onChange={(e) => set({ monthly_cost: e.target.value })} placeholder="~500€" />
         </Field>
       </div>
       <Field label="Resumo (1 ou 2 frases)" hint="Aparece no cartão do documento.">
