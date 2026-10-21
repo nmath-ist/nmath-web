@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import {
   Calendar,
-  CalendarPlus,
   ChevronLeft,
   ChevronRight,
   Clock,
@@ -11,7 +10,6 @@ import {
 import { sortableTimestamp, formatDateRange, isIsoDate } from "./dateUtils";
 
 // ---------- Tipos ----------
-type CalendarLink = { id?: number; year: string; link: string };
 
 // Evento já normalizado, venha do Google Calendar ou do admin.
 type CalEvent = {
@@ -177,33 +175,6 @@ function fromAdmin(r: any): CalEvent {
   };
 }
 
-function downloadIcs(ev: CalEvent) {
-  const esc = (s: string) => s.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,").replace(/\n/g, "\\n");
-  const stamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
-  const lines = [
-    "BEGIN:VCALENDAR",
-    "VERSION:2.0",
-    "PRODID:-//NMATH//Site//PT",
-    "BEGIN:VEVENT",
-    `UID:${ev.id}@nmath.pt`,
-    `DTSTAMP:${stamp}`,
-    ev.icsStart,
-    ev.icsEnd,
-    `SUMMARY:${esc(ev.title)}`,
-    ev.location ? `LOCATION:${esc(ev.location)}` : "",
-    ev.description ? `DESCRIPTION:${esc(ev.description)}` : "",
-    "END:VEVENT",
-    "END:VCALENDAR",
-  ].filter(Boolean);
-  const blob = new Blob([lines.join("\r\n")], { type: "text/calendar;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `${ev.title.replace(/[^\w-]+/g, "_").slice(0, 40) || "evento"}.ics`;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
 // ---------- Cores ----------
 const getEventTypeColor = (type: string) => {
   const colors: { [key: string]: string } = {
@@ -253,15 +224,6 @@ function EventItem({ ev }: { ev: CalEvent }) {
             Mais informações <ExternalLink className="h-3.5 w-3.5" />
           </a>
         )}
-        {ev.icsStart && (
-          <button
-            type="button"
-            onClick={() => downloadIcs(ev)}
-            className="inline-flex items-center gap-1.5 text-sm text-slate-700 border border-slate-300 hover:bg-slate-50 px-3 py-1.5 rounded-lg"
-          >
-            <CalendarPlus className="h-3.5 w-3.5" /> Adicionar ao meu calendário
-          </button>
-        )}
       </div>
     </div>
   );
@@ -284,7 +246,6 @@ function NoticeItem({ ev }: { ev: CalEvent }) {
 const WEEKDAYS = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
 
 export default function CalendarSection() {
-  const [calendarLinks, setCalendarLinks] = useState<CalendarLink[]>([]);
   const [adminEvents, setAdminEvents] = useState<CalEvent[]>([]);
   const [google, setGoogle] = useState<{ configured: boolean; error: boolean; events: CalEvent[] }>({ configured: false, error: false, events: [] });
   const [loading, setLoading] = useState(true);
@@ -295,11 +256,6 @@ export default function CalendarSection() {
   const [selected, setSelected] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/calendar-years")
-      .then((r) => r.json())
-      .then((rows) => setCalendarLinks(rows.map((r: any) => ({ id: r.id, year: r.year_label, link: r.calendar_link }))))
-      .catch(() => setCalendarLinks([]));
-
     const fromDb = fetch("/api/upcoming-events")
       .then((r) => r.json())
       .then((rows) => setAdminEvents(rows.map(fromAdmin)))
@@ -468,16 +424,6 @@ export default function CalendarSection() {
                 <p className="text-slate-500 text-sm">Não há eventos marcados para as próximas 2 semanas.</p>
               ) : (
                 panelEvents.map((e) => (e.kind === "notice" ? <NoticeItem key={e.id} ev={e} /> : <EventItem key={e.id} ev={e} />))
-              )}
-              {calendarLinks.length > 0 && (
-                <a
-                  href={calendarLinks[0].link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-blue-700 hover:underline pt-2"
-                >
-                  <Calendar className="h-4 w-4" /> Abrir no Google Calendar <ExternalLink className="h-3.5 w-3.5" />
-                </a>
               )}
             </div>
           </div>
