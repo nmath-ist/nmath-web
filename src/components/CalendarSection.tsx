@@ -25,6 +25,7 @@ type CalEvent = {
   description: string;
   link: string;
   type: string; // só nos eventos do admin
+  kind: "event" | "notice"; // "notice" = feriado, semana de exames, etc. (não é um evento do NMATH)
   sortKey: number;
   icsStart: string; // linhas prontas para o ficheiro .ics
   icsEnd: string;
@@ -39,6 +40,7 @@ type GoogleEvent = {
   location: string;
   description: string;
   link: string;
+  notice?: boolean; // vem do calendário de avisos (feriados, exames...)
 };
 
 // ---------- Datas (tudo em hora de Lisboa) ----------
@@ -72,6 +74,30 @@ function dayLabel(start: string, end: string): string {
 
 const compactUtc = (iso: string) => new Date(iso).toISOString().replace(/[-:]/g, "").replace(/\.\d{3}/, "");
 
+// ---------- Avisos (feriados, exames...) ----------
+// Isto não são eventos do NMATH: aparecem a cinzento no calendário e ficam fora de "Próximos eventos".
+// Um evento conta como aviso se o título tiver uma destas expressões (sem acentos, sem maiúsculas),
+// se começar por "[Aviso]", ou se (nos eventos do admin) o tipo for "Aviso".
+// Para ajustar, basta editar esta lista.
+const NOTICE_WORDS = [
+  "feriado",
+  "exame",
+  "semana de testes",
+  "semana de avaliac",
+  "interrupc",
+  "ferias",
+  "sem aulas",
+  "pausa letiva",
+  "tolerancia de ponto",
+];
+const strip = (s: string) => s.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
+function classify(title: string, type: string): "event" | "notice" {
+  const t = strip(title);
+  if (strip(type) === "aviso" || t.startsWith("[aviso]")) return "notice";
+  return NOTICE_WORDS.some((w) => t.includes(w)) ? "notice" : "event";
+}
+const cleanTitle = (title: string) => title.replace(/^\s*\[aviso\]\s*/i, "");
+
 // ---------- Normalização ----------
 function fromGoogle(e: GoogleEvent): CalEvent {
   let startDay: string, endDay: string, timeLabel = "", icsStart: string, icsEnd: string, sortKey: number;
@@ -97,7 +123,7 @@ function fromGoogle(e: GoogleEvent): CalEvent {
   }
   return {
     id: e.id,
-    title: e.title,
+    title: cleanTitle(e.title),
     startDay,
     endDay,
     dateLabel: dayLabel(startDay, endDay),
@@ -106,6 +132,7 @@ function fromGoogle(e: GoogleEvent): CalEvent {
     description: e.description,
     link: e.link,
     type: "",
+    kind: e.notice ? "notice" : classify(e.title, ""),
     sortKey,
     icsStart,
     icsEnd,
@@ -134,7 +161,7 @@ function fromAdmin(r: any): CalEvent {
   }
   return {
     id: `db-${r.id}`,
-    title: r.title,
+    title: cleanTitle(r.title),
     startDay,
     endDay,
     dateLabel: formatDateRange(r.event_date, r.event_end_date),
@@ -143,6 +170,7 @@ function fromAdmin(r: any): CalEvent {
     description: r.description || "",
     link: r.link || "",
     type: r.event_type || "",
+    kind: classify(r.title || "", r.event_type || ""),
     sortKey: sortableTimestamp(r.event_date, r.event_end_date),
     icsStart,
     icsEnd,
@@ -186,7 +214,8 @@ const getEventTypeColor = (type: string) => {
   };
   return colors[type] || "bg-blue-100 text-blue-700 border border-blue-200";
 };
-const chipClass = (e: CalEvent) => (e.type ? getEventTypeColor(e.type) : "bg-blue-100 text-blue-800 border border-blue-200");
+const chipClass = (e: CalEvent) =>
+  e.kind === "notice" ? "bg-slate-100 text-slate-500 border border-slate-200 italic" : e.type ? getEventTypeColor(e.type) : "bg-blue-100 text-blue-800 border border-blue-200";
 
 // ---------- Cartão de evento ----------
 function EventItem({ ev }: { ev: CalEvent }) {
@@ -234,6 +263,20 @@ function EventItem({ ev }: { ev: CalEvent }) {
           </button>
         )}
       </div>
+    </div>
+  );
+}
+
+// ---------- Cartão de aviso (feriado, exames...) ----------
+function NoticeItem({ ev }: { ev: CalEvent }) {
+  return (
+    <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <h4 className="text-slate-700">{ev.title}</h4>
+        <span className="px-3 py-0.5 rounded-full text-xs bg-slate-200 text-slate-600">Aviso</span>
+      </div>
+      <p className="text-sm text-slate-500 first-letter:uppercase">{ev.dateLabel}</p>
+      {ev.description && <p className="text-sm text-slate-500 mt-1 line-clamp-3 whitespace-pre-line">{ev.description}</p>}
     </div>
   );
 }
@@ -287,14 +330,14 @@ export default function CalendarSection() {
         d = addDays(d, 1);
       }
     }
-    for (const list of map.values()) list.sort((a, b) => a.sortKey - b.sortKey);
+    for (const list of map.values()) list.sort((a, b) => (a.kind === b.kind ? 0 : a.kind === "notice" ? 1 : -1) || a.sortKey - b.sortKey);
     return map;
   }, [events]);
 
   const upcoming = useMemo(
     () =>
       events
-        .filter((e) => !e.startDay || e.endDay >= todayKey)
+        .filter((e) => e.kind === "event" && (!e.startDay || e.endDay >= todayKey))
         .sort((a, b) => a.sortKey - b.sortKey)
         .slice(0, 6),
     [events, todayKey]
@@ -390,7 +433,7 @@ export default function CalendarSection() {
                       {/* Telemóvel: bolinhas. Computador: etiquetas com o título. */}
                       <div className="flex gap-0.5 md:hidden">
                         {list.slice(0, 3).map((e) => (
-                          <span key={e.id} className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+                          <span key={e.id} className={`h-1.5 w-1.5 rounded-full ${e.kind === "notice" ? "bg-slate-400" : "bg-blue-500"}`} />
                         ))}
                       </div>
                       <div className="hidden md:flex flex-col gap-1">
@@ -422,7 +465,7 @@ export default function CalendarSection() {
               {panelEvents.length === 0 ? (
                 <p className="text-slate-500 text-sm">Ainda não há eventos marcados.</p>
               ) : (
-                panelEvents.map((e) => <EventItem key={e.id} ev={e} />)
+                panelEvents.map((e) => (e.kind === "notice" ? <NoticeItem key={e.id} ev={e} /> : <EventItem key={e.id} ev={e} />))
               )}
               {calendarLinks.length > 0 && (
                 <a

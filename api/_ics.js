@@ -29,6 +29,11 @@ function cleanText(raw) {
     .trim();
 }
 
+// Se a descrição do evento tiver #aviso (ou [aviso]), o evento conta como aviso
+// (feriado, semana de exames...) e a marca é tirada do texto que aparece no site.
+const NOTICE_MARK = /(^|\s)(#aviso|\[aviso\])(?=\s|$)/i;
+const NOTICE_MARK_ALL = new RegExp(NOTICE_MARK.source, 'gi');
+
 function firstUrl(...texts) {
   for (const t of texts) {
     const m = /https?:\/\/[^\s<>"')]+/i.exec(String(t || ''));
@@ -51,7 +56,11 @@ function toRecord(item, startTime, endTime, uid) {
     end = endTime.toJSDate().toISOString();
   }
   const rawDesc = item.description || '';
-  const description = cleanText(rawDesc);
+  let description = cleanText(rawDesc);
+  const notice = NOTICE_MARK.test(description);
+  if (notice) {
+    description = description.replace(NOTICE_MARK_ALL, ' ').replace(/[ \t]+\n/g, '\n').replace(/\n{3,}/g, '\n\n').trim();
+  }
   return {
     id: `${uid}_${start}`,
     title: item.summary || '(sem título)',
@@ -61,6 +70,7 @@ function toRecord(item, startTime, endTime, uid) {
     location: cleanText(item.location || ''),
     description: description.length > 300 ? `${description.slice(0, 297)}...` : description,
     link: firstUrl(rawDesc, item.component.getFirstPropertyValue('url')),
+    ...(notice ? { notice: true } : {}),
   };
 }
 

@@ -48,10 +48,25 @@ async function handleCalendarEvents(req, res) {
     return res.status(405).json({ error: 'Método não permitido' });
   }
   const url = process.env.GOOGLE_CALENDAR_ICS_URL;
-  if (!url) return res.status(200).json({ configured: false, events: [] });
+  // Calendário opcional só para avisos (feriados, semana de exames...). Tudo o que vier
+  // daqui é marcado com notice: true e o site mostra-o como aviso, não como evento.
+  const noticesUrl = process.env.GOOGLE_CALENDAR_NOTICES_ICS_URL;
+  if (!url && !noticesUrl) return res.status(200).json({ configured: false, events: [] });
   try {
     const { fetchCalendarEvents } = await import('./_ics.js');
-    const events = await fetchCalendarEvents(url);
+    const [main, notices] = await Promise.all([
+      url ? fetchCalendarEvents(url) : [],
+      noticesUrl
+        ? fetchCalendarEvents(noticesUrl)
+            .then((list) => list.map((e) => ({ ...e, id: `n-${e.id}`, notice: true })))
+            .catch((err) => {
+              // Se só o calendário de avisos falhar, os eventos continuam a aparecer.
+              console.error('Erro a ler o calendário de avisos:', err);
+              return [];
+            })
+        : [],
+    ]);
+    const events = [...main, ...notices].sort((a, b) => a.start.localeCompare(b.start));
     res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=900');
     return res.status(200).json({ configured: true, events });
   } catch (err) {
