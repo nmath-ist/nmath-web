@@ -38,8 +38,34 @@ async function handleRecruitmentLink(req, res, supabase) {
   return res.status(405).json({ error: 'Método não permitido' });
 }
 
+// Eventos do Google Calendar, lidos do endereço iCal guardado em GOOGLE_CALENDAR_ICS_URL.
+// Também vive nesta função (?resource=events) para não gastar mais uma das 12 funções do plano.
+// O import é dinâmico de propósito: se faltar a biblioteca, só os eventos falham e o resto
+// (links do calendário, recrutamento) continua a funcionar.
+async function handleCalendarEvents(req, res) {
+  if (req.method !== 'GET') {
+    res.setHeader('Allow', 'GET');
+    return res.status(405).json({ error: 'Método não permitido' });
+  }
+  const url = process.env.GOOGLE_CALENDAR_ICS_URL;
+  if (!url) return res.status(200).json({ configured: false, events: [] });
+  try {
+    const { fetchCalendarEvents } = await import('./_ics.js');
+    const events = await fetchCalendarEvents(url);
+    res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=900');
+    return res.status(200).json({ configured: true, events });
+  } catch (err) {
+    console.error('Erro a ler o Google Calendar:', err);
+    return res.status(200).json({ configured: true, events: [], error: 'Não foi possível ler o calendário.' });
+  }
+}
+
 export default async function handler(req, res) {
   try {
+    if (req.query?.resource === 'events') {
+      return handleCalendarEvents(req, res);
+    }
+
     const supabase = getSupabase();
 
     if (req.query?.resource === 'recruitment') {

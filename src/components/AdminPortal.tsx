@@ -1123,7 +1123,7 @@ function CalendarAdmin() {
           <Plus className="h-4 w-4 mr-1" /> Novo
         </Button>
       </div>
-      <p className="text-sm text-slate-500 -mt-2">O site mostra um único botão "Ver Calendário", que abre o primeiro link desta lista (o de menor ordem).</p>
+      <p className="text-sm text-slate-500 -mt-2">O botão "Abrir no Google Calendar", junto ao calendário do site, abre o primeiro link desta lista (o de menor ordem). Os eventos mostrados no calendário vêm do Google Calendar, ligado ao site pela variável GOOGLE_CALENDAR_ICS_URL.</p>
       {loading && <p className="text-slate-500">A carregar...</p>}
       {error && <p className="text-red-600">{error}</p>}
       {items.map((item) => (
