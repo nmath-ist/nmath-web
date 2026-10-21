@@ -327,8 +327,8 @@ export default function CalendarSection() {
             <Calendar className="h-5 w-5 text-blue-600" />
             <span className="text-blue-700">Calendário</span>
           </div>
-          <h2 className="text-3xl md:text-4xl mb-4 text-slate-800">Organiza o Teu Semestre</h2>
-          <p className="text-slate-600 max-w-2xl mx-auto">Acede ao calendário e fica a par dos nossos próximos eventos!</p>
+          <h2 className="text-3xl md:text-4xl mb-4 text-slate-800">Não Percas Nada</h2>
+          <p className="text-slate-600 max-w-2xl mx-auto">Vê o que o NMATH tem preparado para as próximas semanas e marca já na agenda.</p>
         </div>
 
         {loading ? (

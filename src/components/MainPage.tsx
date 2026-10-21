@@ -111,9 +111,9 @@ export default function MainPage() {
     <div className="min-h-screen bg-white">
       <Header />
       <HeroSection />
+      <CalendarSection />
       <NewsSection />
       <EventsSection />
-      <CalendarSection />
       <PsiLeagueSection />
       <MagazineSection />
       <MobilitySection />
