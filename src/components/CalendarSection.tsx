@@ -56,6 +56,12 @@ function addDays(day: string, n: number): string {
   return d.toISOString().slice(0, 10);
 }
 
+// Segunda-feira da semana a que o dia pertence (a semana começa à segunda).
+function mondayOf(day: string): string {
+  const dow = (new Date(`${day}T00:00:00Z`).getUTCDay() + 6) % 7;
+  return addDays(day, -dow);
+}
+
 function dayLabel(start: string, end: string): string {
   const clean = (s: string) => s.replace(/\./g, "");
   if (!end || end === start) return clean(fmtUtc(start, { weekday: "short", day: "numeric", month: "long" }));
@@ -241,7 +247,8 @@ export default function CalendarSection() {
   const [loading, setLoading] = useState(true);
 
   const todayKey = DAY_FMT.format(new Date());
-  const [cursor, setCursor] = useState({ y: Number(todayKey.slice(0, 4)), m: Number(todayKey.slice(5, 7)) - 1 });
+  // Início da janela de 2 semanas visível (sempre uma segunda-feira).
+  const [start, setStart] = useState(() => mondayOf(todayKey));
   const [selected, setSelected] = useState<string | null>(null);
 
   useEffect(() => {
@@ -293,24 +300,18 @@ export default function CalendarSection() {
     [events, todayKey]
   );
 
-  // Grelha do mês (a semana começa à segunda)
-  const monthKey = `${cursor.y}-${pad(cursor.m + 1)}`;
-  const offset = (new Date(Date.UTC(cursor.y, cursor.m, 1)).getUTCDay() + 6) % 7;
-  const daysInMonth = new Date(Date.UTC(cursor.y, cursor.m + 1, 0)).getUTCDate();
-  const total = Math.ceil((offset + daysInMonth) / 7) * 7;
-  const cells = Array.from({ length: total }, (_, i) => {
-    const n = i - offset + 1;
-    return n < 1 || n > daysInMonth ? null : `${monthKey}-${pad(n)}`;
-  });
-  const monthTitle = fmtUtc(`${monthKey}-01`, { month: "long", year: "numeric" });
+  // Grelha de 2 semanas (a semana começa à segunda)
+  const WEEKS = 2;
+  const cells = Array.from({ length: WEEKS * 7 }, (_, i) => addDays(start, i));
+  const endDay = addDays(start, WEEKS * 7 - 1);
+  const rangeTitle = `${dayLabel(start, endDay)} de ${endDay.slice(0, 4)}`;
 
-  const goMonth = (delta: number) => {
-    const d = new Date(Date.UTC(cursor.y, cursor.m + delta, 1));
-    setCursor({ y: d.getUTCFullYear(), m: d.getUTCMonth() });
+  const goStep = (delta: number) => {
+    setStart(addDays(start, delta * WEEKS * 7));
     setSelected(null);
   };
   const goToday = () => {
-    setCursor({ y: Number(todayKey.slice(0, 4)), m: Number(todayKey.slice(5, 7)) - 1 });
+    setStart(mondayOf(todayKey));
     setSelected(null);
   };
 
@@ -333,18 +334,18 @@ export default function CalendarSection() {
           <p className="text-center text-slate-500">A carregar o calendário...</p>
         ) : (
           <div className="grid lg:grid-cols-[1fr_400px] gap-6 items-start">
-            {/* Calendário do mês */}
+            {/* Calendário das próximas 2 semanas */}
             <div className="rounded-2xl border border-slate-200 bg-white p-4 md:p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl md:text-2xl text-slate-800 first-letter:uppercase">{monthTitle}</h3>
+                <h3 className="text-xl md:text-2xl text-slate-800 first-letter:uppercase">{rangeTitle}</h3>
                 <div className="flex items-center gap-1">
                   <button type="button" onClick={goToday} className="text-sm text-blue-700 hover:bg-blue-50 rounded-lg px-3 py-1.5">
                     Hoje
                   </button>
-                  <button type="button" onClick={() => goMonth(-1)} aria-label="Mês anterior" className="p-2 rounded-lg hover:bg-slate-100">
+                  <button type="button" onClick={() => goStep(-1)} aria-label="Duas semanas anteriores" className="p-2 rounded-lg hover:bg-slate-100">
                     <ChevronLeft className="h-5 w-5" />
                   </button>
-                  <button type="button" onClick={() => goMonth(1)} aria-label="Mês seguinte" className="p-2 rounded-lg hover:bg-slate-100">
+                  <button type="button" onClick={() => goStep(1)} aria-label="Duas semanas seguintes" className="p-2 rounded-lg hover:bg-slate-100">
                     <ChevronRight className="h-5 w-5" />
                   </button>
                 </div>
@@ -357,10 +358,10 @@ export default function CalendarSection() {
                   </div>
                 ))}
                 {cells.map((day, i) => {
-                  if (!day) return <div key={i} className="bg-slate-50/60 min-h-[56px] md:min-h-[96px]" />;
                   const list = byDay.get(day) || [];
                   const isToday = day === todayKey;
                   const isSel = day === selected;
+                  const isPast = day < todayKey;
                   const n = Number(day.slice(8));
                   return (
                     <button
@@ -371,15 +372,21 @@ export default function CalendarSection() {
                       aria-label={`${n} de ${fmtUtc(day, { month: "long" })}${list.length ? `, ${list.length} ${list.length === 1 ? "evento" : "eventos"}` : ""}`}
                       className={`text-left bg-white p-1.5 md:p-2 min-h-[56px] md:min-h-[96px] flex flex-col gap-1 transition-colors ${
                         list.length ? "hover:bg-blue-50 cursor-pointer" : "cursor-default"
-                      } ${isSel ? "ring-2 ring-inset ring-blue-500 bg-blue-50" : ""}`}
+                      } ${isSel ? "ring-2 ring-inset ring-blue-500 bg-blue-50" : ""} ${isPast ? "opacity-60" : ""}`}
                     >
-                      <span
-                        className={`text-xs md:text-sm inline-flex h-6 w-6 items-center justify-center rounded-full ${
-                          isToday ? "bg-blue-600 text-white" : "text-slate-700"
-                        }`}
-                      >
-                        {n}
-                      </span>
+                      <div className="flex items-center gap-1">
+                        <span
+                          className={`text-xs md:text-sm inline-flex h-6 w-6 items-center justify-center rounded-full ${
+                            isToday ? "bg-blue-600 text-white" : "text-slate-700"
+                          }`}
+                        >
+                          {n}
+                        </span>
+                        {/* Mostra o mês no primeiro dia da janela e sempre que o mês muda */}
+                        {(i === 0 || n === 1) && (
+                          <span className="text-xs text-slate-500">{fmtUtc(day, { month: "short" }).replace(".", "")}</span>
+                        )}
+                      </div>
                       {/* Telemóvel: bolinhas. Computador: etiquetas com o título. */}
                       <div className="flex gap-0.5 md:hidden">
                         {list.slice(0, 3).map((e) => (
