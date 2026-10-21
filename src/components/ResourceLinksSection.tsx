@@ -113,16 +113,6 @@ export default function ResourceLinksSection() {
                     <p className="text-white/90 mb-6 leading-relaxed">
                       {link.description}
                     </p>
-
-                {link.id === 2 && (
-                  <Button
-                    className="w-full bg-white/20 hover:bg-white/30 text-white border-0 group-hover:bg-white group-hover:text-slate-800 transition-all"
-                    onClick={() => window.open(link.url, '_blank')}
-                  >
-                    Ouvir Agora
-                    <ExternalLink className="ml-2 h-4 w-4" />
-                  </Button>
-                )}
                   </div>
                 </div>
 

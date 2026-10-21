@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import Header from './Header';
 import { Card, CardContent } from './ui/card';
-import { Button } from './ui/button';
 import { ArrowLeft, Play, Clock, Headphones } from 'lucide-react';
 import { CardSkeletonGrid } from './CardSkeleton';
 import { toast } from 'sonner';
@@ -114,15 +113,6 @@ export default function OracleEpisodesPage() {
             ))}
           </div>
         )}
-
-        <div className="text-center mt-10">
-          <Button
-            variant="outline"
-            onClick={() => window.open('https://open.spotify.com/show/2yqzMLv5S0W5kaiDGJ6Fa7?si=537cde4120b3435c', '_blank')}
-          >
-            Ouvir no Spotify
-          </Button>
-        </div>
       </div>
     </div>
   );
