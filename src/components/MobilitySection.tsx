@@ -1,4 +1,4 @@
-import { GraduationCap, FolderTree, Users, ArrowRight } from 'lucide-react';
+import { GraduationCap, Users, ArrowRight } from 'lucide-react';
 
 export default function MobilitySection() {
   return (
@@ -16,20 +16,13 @@ export default function MobilitySection() {
           </p>
         </div>
 
-        <div className="grid gap-6 md:grid-cols-2 max-w-3xl mx-auto mb-12">
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-            <div className="bg-teal-500/20 rounded-xl p-3 inline-flex mb-4">
-              <FolderTree className="h-6 w-6 text-teal-300" />
-            </div>
-            <h3 className="mb-2">Organizado por pastas</h3>
-            <p className="text-slate-300 text-sm">Continente, país e universidade. Vai direto ao destino que te interessa.</p>
+        <div className="max-w-2xl mx-auto mb-10 rounded-2xl border border-white/15 bg-white/10 backdrop-blur-sm p-6 md:p-8 flex flex-col sm:flex-row items-center gap-5 text-center sm:text-left">
+          <div className="shrink-0 rounded-full bg-orange-400/20 p-4">
+            <Users className="h-8 w-8 text-orange-300" />
           </div>
-          <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-            <div className="bg-orange-500/20 rounded-xl p-3 inline-flex mb-4">
-              <Users className="h-6 w-6 text-orange-300" />
-            </div>
-            <h3 className="mb-2">Feito por alunos</h3>
-            <p className="text-slate-300 text-sm">Experiências reais, contadas por quem estudou nesses destinos.</p>
+          <div>
+            <h3 className="text-xl mb-1">Feito por alunos</h3>
+            <p className="text-slate-200">Experiências reais, contadas por quem estudou nesses destinos.</p>
           </div>
         </div>
 
