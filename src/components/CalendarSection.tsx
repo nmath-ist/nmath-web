@@ -334,13 +334,15 @@ export default function CalendarSection() {
     return map;
   }, [events]);
 
+  const upcomingEnd = addDays(todayKey, 13); // hoje + 13 dias = 2 semanas
   const upcoming = useMemo(
     () =>
       events
-        .filter((e) => e.kind === "event" && (!e.startDay || e.endDay >= todayKey))
-        .sort((a, b) => a.sortKey - b.sortKey)
-        .slice(0, 6),
-    [events, todayKey]
+        // Só eventos (não avisos) que decorrem nas próximas 2 semanas, a contar de hoje.
+        // Eventos com data em texto antigo (sem data certa) não entram.
+        .filter((e) => e.kind === "event" && !!e.startDay && e.endDay >= todayKey && e.startDay <= upcomingEnd)
+        .sort((a, b) => a.sortKey - b.sortKey),
+    [events, todayKey, upcomingEnd]
   );
 
   // Grelha de 2 semanas (a semana começa à segunda)
@@ -463,7 +465,7 @@ export default function CalendarSection() {
                 )}
               </div>
               {panelEvents.length === 0 ? (
-                <p className="text-slate-500 text-sm">Ainda não há eventos marcados.</p>
+                <p className="text-slate-500 text-sm">Não há eventos marcados para as próximas 2 semanas.</p>
               ) : (
                 panelEvents.map((e) => (e.kind === "notice" ? <NoticeItem key={e.id} ev={e} /> : <EventItem key={e.id} ev={e} />))
               )}
