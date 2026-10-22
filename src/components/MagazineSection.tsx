@@ -67,8 +67,8 @@ export default function MagazineSection() {
         </div>
 
         {/* Revista (tamanho mantido) com o Repositório ao lado; em ecrãs pequenos ficam um por baixo do outro */}
-        <div className="max-w-6xl mx-auto grid gap-6 lg:grid-cols-[minmax(0,48rem)_minmax(0,1fr)]">
-          <div className="w-full max-w-3xl mx-auto lg:mx-0">
+        <div className="max-w-7xl mx-auto grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
+          <div className="w-full max-w-3xl mx-auto lg:max-w-none lg:mx-0">
             {!currentEdition ? (
               <p className="text-center text-slate-500">A carregar edições...</p>
             ) : (
@@ -143,30 +143,31 @@ export default function MagazineSection() {
 
           {/* Repositório */}
           <div className="w-full max-w-3xl mx-auto lg:max-w-none lg:mx-0">
-            <Card className="h-full border border-slate-200 shadow-xl bg-white">
-              <CardContent className="p-6 flex flex-col h-full">
-                <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-blue-600 to-teal-600 text-white flex items-center justify-center mb-4">
-                  <FolderOpen className="h-6 w-6" />
+            <Card className="h-full border-0 shadow-xl bg-gradient-to-br from-blue-600 to-teal-600 text-white overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -translate-y-24 translate-x-24"></div>
+              <div className="absolute bottom-0 left-0 w-40 h-40 bg-white/10 rounded-full translate-y-20 -translate-x-20"></div>
+              <CardContent className="p-8 flex flex-col h-full relative z-10">
+                <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center mb-6">
+                  <FolderOpen className="h-8 w-8" />
                 </div>
-                <h3 className="text-2xl mb-2 text-slate-800">Repositório</h3>
-                <p className="text-slate-600 leading-relaxed mb-4">
-                  O arquivo de documentos de matemática do NMATH, para quem estuda no IST.
+                <h3 className="text-3xl mb-3">Repositório</h3>
+                <p className="text-white/90 text-lg leading-relaxed mb-6">
+                  Testes e exames, resumos, apontamentos, projetos e muito mais. Os documentos de matemática que o núcleo reúne para ti, da licenciatura ao doutoramento.
                 </p>
-                <div className="flex flex-wrap gap-2 mb-4">
+                <div className="flex flex-wrap gap-2 mb-8">
                   {['LMAC', 'MMAC', 'MECD', 'Doutoramento'].map((c) => (
-                    <span key={c} className="px-3 py-1 rounded-full text-xs bg-blue-50 text-blue-700 border border-blue-200">
+                    <span key={c} className="px-3 py-1 rounded-full text-sm bg-white/15 border border-white/30">
                       {c}
                     </span>
                   ))}
                 </div>
-                <p className="text-sm text-slate-500 mb-6">Entras com a tua conta do Fénix.</p>
+                <p className="text-sm text-white/80 mt-auto mb-4">Entras com a tua conta do Fénix.</p>
                 <a
                   href="https://repositorio.nmath.pt"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="mt-auto"
                 >
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">
+                  <Button className="w-full bg-white text-blue-700 hover:bg-slate-100">
                     <ExternalLink className="mr-2 h-4 w-4" />
                     Abrir Repositório
                   </Button>
