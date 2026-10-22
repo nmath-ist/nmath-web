@@ -117,12 +117,12 @@ export default function EventsSection() {
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 bg-white bg-opacity-60 border border-gray-200 rounded-full px-4 py-2 mb-6">
             <Sparkles className="h-4 w-4 text-blue-600" />
-            <span className="text-sm text-gray-600">Principais Eventos</span>
+            <span className="text-sm text-gray-600">Os Nossos Clássicos</span>
           </div>
 
-          <h2 className="text-4xl mb-6 text-blue-600">Eventos NMATH</h2>
+          <h2 className="text-4xl mb-6 text-blue-600">Os Eventos que Marcam o Ano</h2>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Descobre os principais eventos organizados pelo NMATH ao longo dos anos.
+            Os eventos que já são tradição no NMATH, para além do dia a dia. Explora as edições passadas de cada um.
           </p>
         </div>
 
