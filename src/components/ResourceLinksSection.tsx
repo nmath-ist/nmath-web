@@ -61,7 +61,7 @@ export default function ResourceLinksSection() {
       title: "𝜓-Liga",
       description: "Participa nos eventos do núcleo, soma 𝜓's e sobe no ranking. No final do ano há prémios para os melhores.",
       icon: Trophy,
-      color: "from-orange-500 to-orange-600",
+      color: "from-blue-600 to-teal-600",
       cta: { label: "Ver ranking", href: RANKING_URL, external: true },
     },
     {
@@ -69,7 +69,7 @@ export default function ResourceLinksSection() {
       title: "Mobilidade",
       description: "Experiências de alunos de matemática do IST em Erasmus e mestrados fora: alojamento, custos, bolsas e dicas.",
       icon: GraduationCap,
-      color: "from-teal-600 to-teal-700",
+      color: "from-blue-600 to-teal-600",
       cta: { label: "Ver documentos", href: "/mobilidade" },
     },
     {
@@ -77,7 +77,7 @@ export default function ResourceLinksSection() {
       title: "Álbum de Fotos",
       description: "Revive as memórias dos nossos eventos e atividades.",
       icon: Camera,
-      color: "from-blue-600 to-blue-700",
+      color: "from-blue-600 to-teal-600",
       extra: latestAlbum && { label: "Álbum mais recente", title: latestAlbum.title, href: latestAlbum.url },
       cta: { label: "Ver todas as fotos", href: "/fotos" },
     },
@@ -86,7 +86,7 @@ export default function ResourceLinksSection() {
       title: "Oráculo",
       description: "Se aprender Matemática é bom, ouvir Matemática é ainda melhor.",
       icon: Headphones,
-      color: "from-purple-600 to-blue-700",
+      color: "from-blue-600 to-teal-600",
       extra: latestEpisode && { label: "Último episódio", title: latestEpisode.title, href: latestEpisode.url },
       cta: { label: "Ver todos os episódios", href: "/oraculo" },
     },
@@ -96,9 +96,9 @@ export default function ResourceLinksSection() {
     <section id="photos" className="py-12 md:py-16 bg-gradient-to-br from-slate-50 to-blue-50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-8">
-          <h2 className="text-4xl mb-4 text-slate-800">Conecta & Explora</h2>
+          <h2 className="text-4xl mb-4 text-slate-800">Para Além das Aulas</h2>
           <p className="text-slate-600 max-w-2xl mx-auto">
-            Compete na 𝜓-Liga, prepara a tua mobilidade, revê as nossas memórias e ouve o Oráculo.
+            Compete, prepara o teu Erasmus ou mestrado no estrangeiro, revê memórias e ouve Matemática. O NMATH também se vive fora da sala.
           </p>
         </div>
 
