@@ -55,9 +55,9 @@ export default function TeamSection() {
     { id: 2, name: "Francisco Relvas", role: "Vice Presidente", year: "2º Ano - MMAC", image: relvasImg, key: "relvas" },
     { id: 3, name: "Gabriela Barros", role: "Tesoureira", year: "2º Ano - MMAC", image: gabrielaImg, key: "gabriela" },
     { id: 4, name: "Pedro Coelho", role: "Coordenador da Educação", year: "1º Ano - MMAC", image: ptImg, key: "pedro" },
-    { id: 5, name: "Matilde Neri", role: "Coordenador de Eventos e Relações Empresariais", year: "1º Ano - MECD", image: matildeImg, key: "matilde" },
+    { id: 5, name: "Matilde Neri", role: "Coordenadora de Eventos e Relações Empresariais", year: "1º Ano - MECD", image: matildeImg, key: "matilde" },
     { id: 6, name: "Madalena Oliveira", role: "Coordenadora do Marketing", year: "2º Ano - MMAC", image: madalenaImg, key: "madalena" },
-    { id: 7, name: "Duarte Serra", role: "Coordenadora da Recreativa", year: "1º Ano - MECD", image: duarteImg, key: "duarte" },
+    { id: 7, name: "Duarte Serra", role: "Coordenador da Recreativa", year: "1º Ano - MECD", image: duarteImg, key: "duarte" },
   ];
 
   const MemberCard = ({ member }: { member: typeof teamMembers[0] }) => {
