@@ -12,11 +12,19 @@ import {
 
 const RANKING_URL = "https://leaderboarded.com/board/cmbtpbfhczsgr/?public=true";
 
-type Extra = { label: string; title: string; href: string };
+function formatShortDate(dateStr: string): string {
+  if (!dateStr) return '';
+  const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+  const [ano, mes, dia] = dateStr.split('-').map(Number);
+  if (!ano || !mes || !dia) return dateStr; // fallback se não vier no formato esperado
+  return `${dia} ${meses[mes - 1]} ${ano}`;
+}
+
+type Extra = { label: string; title: string; href: string; date?: string };
 
 export default function ResourceLinksSection() {
-  const [latestEpisode, setLatestEpisode] = useState<{ title: string; url: string } | null>(null);
-  const [latestAlbum, setLatestAlbum] = useState<{ title: string; url: string } | null>(null);
+  const [latestEpisode, setLatestEpisode] = useState<{ title: string; url: string; date: string } | null>(null);
+  const [latestAlbum, setLatestAlbum] = useState<{ title: string; url: string; date: string } | null>(null);
 
   useEffect(() => {
     fetch('/api/oracle-episodes')
@@ -27,7 +35,7 @@ export default function ResourceLinksSection() {
             (a, b) => new Date(b.episode_date).getTime() - new Date(a.episode_date).getTime()
           );
           const ep = sorted[0];
-          setLatestEpisode({ title: ep.title, url: ep.url });
+          setLatestEpisode({ title: ep.title, url: ep.url, date: formatShortDate(ep.episode_date) });
         }
       })
       .catch(() => setLatestEpisode(null));
@@ -40,7 +48,7 @@ export default function ResourceLinksSection() {
             (a, b) => new Date(b.album_date).getTime() - new Date(a.album_date).getTime()
           );
           const album = sorted[0];
-          setLatestAlbum({ title: album.title, url: album.drive_url });
+          setLatestAlbum({ title: album.title, url: album.drive_url, date: formatShortDate(album.album_date) });
         }
       })
       .catch(() => setLatestAlbum(null));
@@ -78,7 +86,7 @@ export default function ResourceLinksSection() {
       description: "Revive as memórias dos nossos eventos e atividades.",
       icon: Camera,
       color: "from-blue-600 to-teal-600",
-      extra: latestAlbum && { label: "Álbum mais recente", title: latestAlbum.title, href: latestAlbum.url },
+      extra: latestAlbum && { label: "Álbum mais recente", title: latestAlbum.title, href: latestAlbum.url, date: latestAlbum.date },
       cta: { label: "Ver todas as fotos", href: "/fotos" },
     },
     {
@@ -87,7 +95,7 @@ export default function ResourceLinksSection() {
       description: "Se aprender Matemática é bom, ouvir Matemática é ainda melhor.",
       icon: Headphones,
       color: "from-blue-600 to-teal-600",
-      extra: latestEpisode && { label: "Último episódio", title: latestEpisode.title, href: latestEpisode.url },
+      extra: latestEpisode && { label: "Último episódio", title: latestEpisode.title, href: latestEpisode.url, date: latestEpisode.date },
       cta: { label: "Ver todos os episódios", href: "/oraculo" },
     },
   ];
@@ -119,10 +127,18 @@ export default function ResourceLinksSection() {
                       href={card.extra.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="block mb-4 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 px-3 py-2 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
+                      className="flex items-center gap-3 mb-4 rounded-lg border border-slate-200 bg-slate-50 hover:bg-slate-100 p-3 transition focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500"
                     >
-                      <span className="block text-xs text-slate-500">{card.extra.label}</span>
-                      <span className="block text-sm text-slate-800 leading-tight line-clamp-2">{card.extra.title}</span>
+                      <div className="w-10 h-10 shrink-0 rounded-lg bg-blue-100 text-blue-700 flex items-center justify-center">
+                        <card.icon className="h-5 w-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <span className="block text-xs text-slate-500">
+                          {card.extra.label}
+                          {card.extra.date ? ` · ${card.extra.date}` : ''}
+                        </span>
+                        <span className="block text-sm font-medium text-slate-800 leading-tight line-clamp-2">{card.extra.title}</span>
+                      </div>
                     </a>
                   )}
 

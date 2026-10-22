@@ -72,8 +72,8 @@ export default function MagazineSection() {
             {!currentEdition ? (
               <p className="text-center text-slate-500">A carregar edições...</p>
             ) : (
-              <Card className="overflow-hidden border border-slate-200 shadow-xl bg-white cursor-pointer hover:shadow-2xl transition-all">
-                <div className="grid lg:grid-cols-2 gap-0" onClick={() => handleEditionClick(currentEdition.link)}>
+              <Card className="overflow-hidden border border-slate-200 shadow-xl bg-white">
+                <div className="grid lg:grid-cols-2 gap-0">
                   <div className="aspect-[3/4] bg-slate-100 relative overflow-hidden">
                     <ImageWithFallback 
                       src={currentEdition.coverImage}
@@ -119,15 +119,12 @@ export default function MagazineSection() {
                       <div className="flex space-x-3">
                         <Button 
                           className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleEditionClick(currentEdition.link);
-                          }}
+                          onClick={() => handleEditionClick(currentEdition.link)}
                         >
                           <ExternalLink className="mr-2 h-4 w-4" />
                           Ler Online
                         </Button>
-                        <a href="/revista" onClick={(e) => e.stopPropagation()}>
+                        <a href="/revista">
                           <Button variant="outline">
                             Arquivo
                             <ArrowRight className="ml-2 h-4 w-4" />
