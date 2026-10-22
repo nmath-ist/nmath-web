@@ -2,11 +2,9 @@ import Header from './Header';
 import HeroSection from './HeroSection';
 import NewsSection from './NewsSection';
 import CalendarSection from './CalendarSection';
-import PsiLeagueSection from './PsiLeagueSection';
 import TeamSection from './TeamSection';
 import EventsSection from './EventsSection';
 import MagazineSection from './MagazineSection';
-import MobilitySection from './MobilitySection';
 import ResourceLinksSection from './ResourceLinksSection';
 import { 
   Facebook,
@@ -115,8 +113,6 @@ export default function MainPage() {
       <NewsSection />
       <EventsSection />
       <MagazineSection />
-      <PsiLeagueSection />
-      <MobilitySection />
       <ResourceLinksSection />
       <TeamSection />
      
