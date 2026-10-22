@@ -186,7 +186,7 @@ const getEventTypeColor = (type: string) => {
   return colors[type] || "bg-blue-100 text-blue-700 border border-blue-200";
 };
 const chipClass = (e: CalEvent) =>
-  e.kind === "notice" ? "bg-slate-100 text-slate-500 border border-slate-200 italic" : e.type ? getEventTypeColor(e.type) : "bg-blue-100 text-blue-800 border border-blue-200";
+  e.kind === "notice" ? "bg-slate-100 text-slate-500 border border-slate-200 italic" : e.type ? getEventTypeColor(e.type) : "bg-blue-200 text-blue-900 border border-blue-300 font-medium";
 
 // ---------- Cartão de evento ----------
 function EventItem({ ev }: { ev: CalEvent }) {
