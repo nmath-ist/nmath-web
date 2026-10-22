@@ -45,9 +45,9 @@ export default function NewsSection() {
   const others = newsItems.filter((item) => !item.featured).slice(0, 4);
 
   return (
-    <section id="news" className="py-16 bg-gradient-to-br from-slate-50 to-blue-50">
+    <section id="news" className="py-12 bg-gradient-to-br from-slate-50 to-blue-50">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <h2 className="text-4xl mb-4 text-slate-800">Anúncios</h2>
           <p className="text-slate-600 max-w-2xl mx-auto">
             Mantém-te informado com os anúncios e oportunidades do NMATH.
@@ -58,11 +58,11 @@ export default function NewsSection() {
           <CardSkeletonGrid count={5} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6" />
         ) : (
           <div>
-            <div className="mb-8">
+            <div className="mb-6">
               {featured.map((item) => (
                 <Card key={item.id} className="overflow-hidden border-0 shadow-xl bg-gradient-to-br from-blue-600 to-teal-600 text-white">
-                  <div className="p-8">
-                    <div className="flex items-center space-x-4 mb-6">
+                  <div className="p-6">
+                    <div className="flex items-center space-x-4 mb-4">
                       <Badge variant="secondary" className="bg-white/20 text-white border-0">
                         Em destaque
                       </Badge>
@@ -71,14 +71,14 @@ export default function NewsSection() {
                       </Badge>
                     </div>
 
-                    <CardHeader className="p-0 mb-4">
-                      <CardTitle className="text-3xl leading-tight">
+                    <CardHeader className="p-0 mb-3">
+                      <CardTitle className="text-2xl leading-tight">
                         {item.title}
                       </CardTitle>
                     </CardHeader>
 
                     <CardContent className="p-0">
-                      <p className="text-blue-100 text-lg mb-6 leading-relaxed">
+                      <p className="text-blue-100 mb-4 leading-relaxed">
                         {item.excerpt}
                       </p>
 

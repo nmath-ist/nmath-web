@@ -53,9 +53,9 @@ export default function MagazineSection() {
   };
 
   return (
-    <section id="magazine" className="py-12 bg-white">
+    <section id="magazine" className="py-10 bg-white">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-8">
+        <div className="text-center mb-6">
           <div className="inline-flex items-center space-x-2 bg-blue-50 px-4 py-2 rounded-full mb-4">
             <BookOpen className="h-5 w-5 text-blue-600" />
             <span className="text-blue-600">Revista e Repositório</span>
@@ -67,13 +67,13 @@ export default function MagazineSection() {
         </div>
 
         {/* Revista (tamanho mantido) com o Repositório ao lado; em ecrãs pequenos ficam um por baixo do outro */}
-        <div className="max-w-7xl mx-auto grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
+        <div className="max-w-6xl mx-auto grid gap-6 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,1fr)]">
           <div className="w-full max-w-3xl mx-auto lg:max-w-none lg:mx-0">
             {!currentEdition ? (
               <p className="text-center text-slate-500">A carregar edições...</p>
             ) : (
               <Card className="overflow-hidden border border-slate-200 shadow-xl bg-white">
-                <div className="grid lg:grid-cols-2 gap-0">
+                <div className="grid lg:grid-cols-[2fr_3fr] gap-0">
                   <div className="aspect-[3/4] bg-slate-100 relative overflow-hidden">
                     <ImageWithFallback 
                       src={currentEdition.coverImage}
