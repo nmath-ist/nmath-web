@@ -146,26 +146,26 @@ export default function MagazineSection() {
             <Card className="h-full border-0 shadow-xl bg-gradient-to-br from-blue-600 to-teal-600 text-white overflow-hidden relative">
               <div className="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full -translate-y-24 translate-x-24"></div>
               <div className="absolute bottom-0 left-0 w-40 h-40 bg-white/10 rounded-full translate-y-20 -translate-x-20"></div>
-              <CardContent className="p-8 flex flex-col h-full relative z-10">
-                <div className="w-16 h-16 rounded-2xl bg-white/20 flex items-center justify-center mb-6">
-                  <FolderOpen className="h-8 w-8" />
+              <CardContent className="p-6 flex flex-col h-full relative z-10">
+                <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center mb-4">
+                  <FolderOpen className="h-6 w-6" />
                 </div>
-                <h3 className="text-3xl mb-3">Repositório</h3>
-                <p className="text-white/90 text-lg leading-relaxed mb-6">
+                <h3 className="text-2xl mb-2">Repositório</h3>
+                <p className="text-white/90 leading-relaxed mb-4">
                   Testes e exames, resumos, apontamentos, projetos e muito mais. Os documentos de matemática que o núcleo reúne para ti, da licenciatura ao doutoramento.
                 </p>
-                <div className="flex flex-wrap gap-2 mb-8">
+                <div className="flex flex-wrap gap-2 mb-6">
                   {['LMAC', 'MMAC', 'MECD', 'Doutoramento'].map((c) => (
-                    <span key={c} className="px-3 py-1 rounded-full text-sm bg-white/15 border border-white/30">
+                    <span key={c} className="px-3 py-1 rounded-full text-xs bg-white/15 border border-white/30">
                       {c}
                     </span>
                   ))}
                 </div>
-                <p className="text-sm text-white/80 mt-auto mb-4">Entras com a tua conta do Fénix.</p>
                 <a
                   href="https://repositorio.nmath.pt"
                   target="_blank"
                   rel="noopener noreferrer"
+                  className="mt-auto"
                 >
                   <Button className="w-full bg-white text-blue-700 hover:bg-slate-100">
                     <ExternalLink className="mr-2 h-4 w-4" />
