@@ -52,9 +52,9 @@ export default function MagazineSection() {
   };
 
   return (
-    <section id="magazine" className="py-16 bg-gradient-to-br from-slate-50 to-blue-50">
+    <section id="magazine" className="py-12 bg-white">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+        <div className="text-center mb-8">
           <div className="inline-flex items-center space-x-2 bg-blue-50 px-4 py-2 rounded-full mb-4">
             <BookOpen className="h-5 w-5 text-blue-600" />
             <span className="text-blue-600">Revista Académica</span>
@@ -69,7 +69,7 @@ export default function MagazineSection() {
           <p className="text-center text-slate-500">A carregar edições...</p>
         ) : (
           <>
-            <Card className="overflow-hidden border border-slate-200 shadow-xl bg-white mb-6 cursor-pointer hover:shadow-2xl transition-all max-w-4xl mx-auto">
+            <Card className="overflow-hidden border border-slate-200 shadow-xl bg-white mb-6 cursor-pointer hover:shadow-2xl transition-all max-w-3xl mx-auto">
               <div className="grid lg:grid-cols-2 gap-0" onClick={() => handleEditionClick(currentEdition.link)}>
                 <div className="aspect-[3/4] bg-slate-100 relative overflow-hidden">
                   <ImageWithFallback 
@@ -88,9 +88,9 @@ export default function MagazineSection() {
                   </div>
                 </div>
 
-                <div className="p-8">
-                  <CardHeader className="p-0 mb-6">
-                    <CardTitle className="text-3xl mb-2">{currentEdition.title}</CardTitle>
+                <div className="p-6">
+                  <CardHeader className="p-0 mb-4">
+                    <CardTitle className="text-2xl mb-2">{currentEdition.title}</CardTitle>
                     <p className="text-slate-600">{currentEdition.issue}</p>
                   </CardHeader>
 

@@ -114,8 +114,8 @@ export default function MainPage() {
       <CalendarSection />
       <NewsSection />
       <EventsSection />
-      <PsiLeagueSection />
       <MagazineSection />
+      <PsiLeagueSection />
       <MobilitySection />
       <ResourceLinksSection />
       <TeamSection />
