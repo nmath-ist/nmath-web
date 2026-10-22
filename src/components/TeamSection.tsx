@@ -147,6 +147,9 @@ export default function TeamSection() {
             <span className="text-blue-600">Direção</span>
           </div>
           <h2 className="text-4xl mb-4 text-slate-800">Conhece a Nossa Equipa</h2>
+          <p className="text-slate-600 max-w-2xl mx-auto">
+            Somos estudantes como tu. Esta é a equipa que organiza as atividades do núcleo e representa os alunos de Matemática do IST.
+          </p>
         </div>
 
         <div className="max-w-6xl mx-auto">

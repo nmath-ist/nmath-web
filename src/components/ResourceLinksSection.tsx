@@ -157,12 +157,12 @@ export default function ResourceLinksSection() {
         </div>
 
         {/* Contact Section */}
-        <Card className="mt-10 border border-slate-200 bg-gradient-to-r from-blue-600 to-teal-600 text-white overflow-hidden">
-          <CardContent className="p-8 relative">
+        <Card className="mt-8 border border-slate-200 bg-gradient-to-r from-blue-600 to-teal-600 text-white overflow-hidden">
+          <CardContent className="p-5 relative">
             <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -translate-y-16 translate-x-16"></div>
             <div className="relative z-10 text-center">
-              <h3 className="text-2xl mb-3">Precisas de Ajuda ou Tens Sugestões?</h3>
-              <p className="text-blue-100 mb-6 max-w-2xl mx-auto">
+              <h3 className="text-xl mb-2">Precisas de Ajuda ou Tens Sugestões?</h3>
+              <p className="text-blue-100 text-sm mb-4 max-w-2xl mx-auto">
                 Estamos aqui para ajudar! Entra em contacto connosco para suporte, feedback ou ideias para melhorar a tua experiência em Matemática.
               </p>
               <div className="flex justify-center">
