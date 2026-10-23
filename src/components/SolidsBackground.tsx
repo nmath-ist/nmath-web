@@ -8,7 +8,7 @@ import icosaedro from '../assets/solidos/icosaedro.png';
 //   'grandes'  → 3 sólidos grandes por secção (tamanho parecido com o do início da página)
 //   'pequenos' → vários sólidos pequenos espalhados
 // ─────────────────────────────────────────────────────────────
-const VERSAO: 'grandes' | 'pequenos' = 'grandes';
+const VERSAO: 'pequenos' | 'grandes' = 'pequenos';
 
 const SOLIDS = [tetraedro, cubo, dodecaedro, icosaedro];
 

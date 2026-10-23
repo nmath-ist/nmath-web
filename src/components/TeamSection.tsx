@@ -52,8 +52,8 @@ export default function TeamSection() {
   }, []);
 
   const teamMembers = [
-    { id: 1, name: "Bernardo Alves", role: "Presidente", year: "2º Ano - MMAC", image: bernardoImg, key: "bernardo" },
-    { id: 2, name: "Francisco Relvas", role: "Vice Presidente", year: "2º Ano - MMAC", image: relvasImg, key: "relvas" },
+    { id: 1, name: "Francisco Relvas", role: "Vice Presidente", year: "2º Ano - MMAC", image: relvasImg, key: "relvas" },
+    { id: 2, name: "Bernardo Alves", role: "Presidente", year: "2º Ano - MMAC", image: bernardoImg, key: "bernardo" },
     { id: 3, name: "Gabriela Barros", role: "Tesoureira", year: "2º Ano - MMAC", image: gabrielaImg, key: "gabriela" },
     { id: 4, name: "Pedro Coelho", role: "Coordenador da Educação", year: "1º Ano - MMAC", image: ptImg, key: "pedro" },
     { id: 5, name: "Matilde Neri", role: "Coordenadora de Eventos e Relações Empresariais", year: "1º Ano - MECD", image: matildeImg, key: "matilde" },
