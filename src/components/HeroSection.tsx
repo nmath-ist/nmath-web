@@ -75,23 +75,28 @@ export default function HeroSection() {
       </div>
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center relative">
+        <div className="grid lg:grid-cols-2 gap-12 items-stretch relative">
           <img
             src={icosaedro}
             alt=""
             className="hidden lg:block absolute left-[38%] top-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 xl:w-24 xl:h-24 object-contain z-20 opacity-[0.08]"
           />
-          <div>
-            <div className="flex justify-center lg:justify-start mb-8">
-              {/* ✅ Usa o import estático */}
-              <img
-                src={whiteLogo}
-                alt="NMATH Logo"
-                className="h-64 w-64 lg:h-80 lg:w-80 object-contain"
-              />
+          {/* Coluna da esquerda: o símbolo fica no topo e o texto na base, para alinhar com o cartão da direita */}
+          <div className="flex flex-col justify-between gap-8">
+            <div className="flex justify-center lg:justify-start">
+              {/* O PNG do logótipo tem margem transparente (22% em cima, 9% em baixo).
+                  Esta moldura corta essa margem para o topo do símbolo ficar rente ao topo da coluna. */}
+              <div className="relative w-64 lg:w-80 aspect-[1890/505] overflow-hidden">
+                <img
+                  src={whiteLogo}
+                  alt="NMATH Logo"
+                  className="absolute left-0 w-full h-auto max-w-none"
+                  style={{ top: '-32.28%' }}
+                />
+              </div>
             </div>
 
-            <div className="text-lg mb-8 leading-relaxed">
+            <div className="text-lg leading-relaxed">
               <p className="text-blue-100 mb-4">
                 O Núcleo de Estudantes de Matemática do Instituto Superior Técnico (NMATH) foi fundado em 2012 por alunos da Licenciatura em Matemática Aplicada e Computação (LMAC) e do Mestrado em Matemática e Aplicações (MMA).
               </p>
@@ -101,8 +106,8 @@ export default function HeroSection() {
             </div>
           </div>
 
-          <div className="relative">
-            <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/10">
+          <div className="relative flex flex-col">
+            <div className="flex-1 flex flex-col bg-white/5 backdrop-blur-sm rounded-2xl p-6 md:p-8 border border-white/10">
               <h2 className="text-2xl mb-1">Os Nossos Departamentos</h2>
               <p className="text-blue-200 text-sm mb-5">O que fazemos no NMATH, área a área.</p>
 
@@ -140,7 +145,7 @@ export default function HeroSection() {
                 id="dep-panel"
                 role="tabpanel"
                 aria-labelledby={`dep-tab-${dep.id}`}
-                className="bg-gradient-to-br from-blue-500/20 to-teal-500/20 rounded-lg p-5 border border-white/10 min-h-[12rem]"
+                className="bg-gradient-to-br from-blue-500/20 to-teal-500/20 rounded-lg p-5 border border-white/10 min-h-[12rem] flex-1"
               >
                 <div className="flex items-center gap-3 mb-3">
                   <div className="w-10 h-10 rounded-lg bg-white/15 flex items-center justify-center shrink-0">
