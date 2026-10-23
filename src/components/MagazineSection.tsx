@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SolidsBackground from './SolidsBackground';
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
@@ -53,8 +54,9 @@ export default function MagazineSection() {
   };
 
   return (
-    <section id="magazine" className="py-10 bg-white">
-      <div className="container mx-auto px-4">
+    <section id="magazine" className="py-10 bg-white relative overflow-hidden">
+      <SolidsBackground layout={3} />
+      <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-6">
           <div className="inline-flex items-center space-x-2 bg-blue-50 px-4 py-2 rounded-full mb-4">
             <BookOpen className="h-5 w-5 text-blue-600" />

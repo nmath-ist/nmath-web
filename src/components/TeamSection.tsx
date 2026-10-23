@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SolidsBackground from './SolidsBackground';
 import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
@@ -139,8 +140,9 @@ export default function TeamSection() {
   };
 
   return (
-    <section id="team" className="py-16 bg-white">
-      <div className="container mx-auto px-4">
+    <section id="team" className="py-16 bg-white relative overflow-hidden">
+      <SolidsBackground layout={5} />
+      <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-12">
           <div className="inline-flex items-center space-x-2 bg-blue-50 px-4 py-2 rounded-full mb-4">
             <Users className="h-5 w-5 text-blue-600" />

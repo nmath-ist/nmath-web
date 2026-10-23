@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import SolidsBackground from './SolidsBackground';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
 import { Badge } from './ui/badge';
 import { Trophy, BookOpen, Mic, Sparkles } from 'lucide-react';
@@ -108,6 +109,7 @@ export default function EventsSection() {
 
   return (
     <section id="events" className="py-20 bg-gradient-to-br from-slate-50 to-blue-50 relative overflow-hidden">
+      <SolidsBackground layout={2} />
       <div className="absolute inset-0 overflow-hidden">
         <div className="absolute top-20 left-10 w-32 h-32 bg-blue-200 opacity-20 rounded-full blur-3xl"></div>
         <div className="absolute bottom-32 right-16 w-40 h-40 bg-purple-200 opacity-20 rounded-full blur-3xl"></div>

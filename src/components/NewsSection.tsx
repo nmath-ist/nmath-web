@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
+import SolidsBackground from './SolidsBackground';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { ArrowRight, Zap, Trophy, Calendar as CalendarIcon } from 'lucide-react';
@@ -45,8 +46,9 @@ export default function NewsSection() {
   const others = newsItems.filter((item) => !item.featured).slice(0, 4);
 
   return (
-    <section id="news" className="py-12 bg-gradient-to-br from-slate-50 to-blue-50">
-      <div className="container mx-auto px-4">
+    <section id="news" className="py-12 bg-gradient-to-br from-slate-50 to-blue-50 relative overflow-hidden">
+      <SolidsBackground layout={1} />
+      <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-8">
           <h2 className="text-4xl mb-4 text-slate-800">Anúncios</h2>
           <p className="text-slate-600 max-w-2xl mx-auto">

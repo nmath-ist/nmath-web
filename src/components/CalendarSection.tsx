@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
+import SolidsBackground from './SolidsBackground';
 import {
   Calendar,
   ChevronLeft,
@@ -319,8 +320,9 @@ export default function CalendarSection() {
   const panelEvents = selected ? byDay.get(selected) || [] : upcoming;
 
   return (
-    <section id="calendar" className="py-16 md:py-20 bg-gradient-to-br from-slate-50 via-blue-50/30 to-teal-50/30">
-      <div className="container mx-auto px-4 max-w-7xl">
+    <section id="calendar" className="py-16 md:py-20 bg-gradient-to-br from-slate-50 via-blue-50/30 to-teal-50/30 relative overflow-hidden">
+      <SolidsBackground layout={0} />
+      <div className="container mx-auto px-4 max-w-7xl relative z-10">
         {/* Cabeçalho */}
         <div className="text-center mb-10 md:mb-12">
           <div className="inline-flex items-center gap-2 bg-white border border-blue-200 px-4 py-2 rounded-full mb-5 shadow-sm">

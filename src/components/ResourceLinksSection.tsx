@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import SolidsBackground from './SolidsBackground';
 import { Card, CardContent } from './ui/card';
 import { Button } from './ui/button';
 import {
@@ -101,8 +102,9 @@ export default function ResourceLinksSection() {
   ];
 
   return (
-    <section id="photos" className="py-12 md:py-16 bg-gradient-to-br from-slate-50 to-blue-50">
-      <div className="container mx-auto px-4">
+    <section id="photos" className="py-12 md:py-16 bg-gradient-to-br from-slate-50 to-blue-50 relative overflow-hidden">
+      <SolidsBackground layout={4} />
+      <div className="container mx-auto px-4 relative z-10">
         <div className="text-center mb-8">
           <h2 className="text-4xl mb-4 text-slate-800">Para Além das Aulas</h2>
           <p className="text-slate-600 max-w-2xl mx-auto">
