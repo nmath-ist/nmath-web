@@ -60,8 +60,6 @@
     },
     "scripts": {
         "dev": "vite",
-        "build": "vite build",
-        "seed": "node db/seed.mjs",
-        "seed:new": "node db/seed-new-tables.mjs"
+        "build": "vite build"
     }
 }

@@ -35,3 +35,7 @@ pnpm-debug.log*
 /coverage
 .vercel
 .env*
+
+chave*
+*.pem
+id_rsa*

@@ -4,7 +4,7 @@ Site institucional do NMATH — Núcleo de Estudantes de Matemática do Institut
 
 ## Visão geral
 
-Página única (single-page) com as secções principais do núcleo: apresentação, notícias, eventos, calendários académicos, a revista Ponto Fixo, a equipa, e acessos rápidos a outros recursos do NMATH (Repositório, fórum Oráculo, fotos, entre outros).
+Página única (single-page) com as secções principais do núcleo: apresentação, notícias, eventos, calendário de eventos (lido do Google Calendar), a revista Ponto Fixo, a equipa, e acessos rápidos a outros recursos do NMATH (Repositório, fórum Oráculo, fotos, entre outros).
 
 O acesso ao Repositório de documentos (LMAC/MMAC) é feito por uma rota especial: `nmath.pt/#repositorio` redireciona automaticamente para a pasta do MEGA correspondente.
 
@@ -33,7 +33,6 @@ O acesso ao Repositório de documentos (LMAC/MMAC) é feito por uma rota especia
 │   │   ├── MagazineSection.tsx        # Revista Ponto Fixo
 │   │   ├── TeamSection.tsx
 │   │   ├── ResourceLinksSection.tsx   # Repositório, Oráculo, Fotos, etc.
-│   │   ├── StudyRoomSection.tsx
 │   │   ├── MainPage.tsx               # Composição das secções + Footer
 │   │   ├── Router.tsx                 # Routing simples por hash (#repositorio, etc.)
 │   │   ├── ui/                        # Componentes shadcn/ui (Radix + Tailwind)

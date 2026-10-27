@@ -1,153 +1,81 @@
-# Portal de Administração — Guia de Instalação
+# Portal de Administração: guia de instalação
 
-Este site passou a ter uma área `/admin` (link "Administrador" no fundo do
-site) onde é possível editar Anúncios, Edições da Revista, Calendários por
-Ano e Próximos Eventos sem mexer em código.
+O site tem uma área `/admin` (link "Administrador" no fundo do site) onde se
+editam, sem mexer em código:
 
-Segue estes passos, por ordem, uma única vez, para pores tudo a funcionar.
+- **Anúncios** (com hora e local opcionais)
+- **Calendário**: mostra se o site está ligado ao Google Calendar. Os eventos
+  criam-se no próprio Google Calendar
+- **Eventos NMATH** (Integration Bee, Jornadas, ENEMATH, Time2Talk...)
+- **Revista** (Ponto Fixo)
+- **Oráculo** (episódios do podcast)
+- **Fotos** (álbuns)
+- **Mobilidade** (documentos de Erasmus e mestrados no estrangeiro)
+- **Recrutamento** (link do botão "Candidata-te")
+
+Segue estes passos, por ordem, uma única vez.
 
 ## 1. Criar o projeto Supabase (base de dados gratuita)
 
-1. Vai a [supabase.com](https://supabase.com) e cria uma conta (podes usar o GitHub).
-2. Cria um novo projeto (**New Project**). Escolhe uma password de base de
-   dados forte e guarda-a nalgum sítio seguro (não é a mesma coisa que a
-   password do admin do site).
-3. Espera 1-2 minutos até o projeto ficar pronto.
+1. Vai a [supabase.com](https://supabase.com) e cria uma conta.
+2. Cria um projeto (**New Project**) com uma password de base de dados forte,
+   guardada num sítio seguro (não é a password do admin do site).
+3. Espera 1 a 2 minutos até o projeto ficar pronto.
 
 ## 2. Criar as tabelas
 
-1. No menu lateral do Supabase, abre **SQL Editor** → **New query**.
-2. Copia todo o conteúdo do ficheiro `db/schema.sql` (está na raiz deste
-   projeto) e cola no editor.
-3. Clica em **Run**. Devias ver 4 tabelas novas em **Table Editor**:
-   `announcements`, `magazine_editions`, `calendar_years`, `upcoming_events`.
+1. No Supabase, abre **SQL Editor**, **New query**.
+2. Cola o conteúdo de `db/schema.sql` e clica em **Run**.
+3. É seguro repetir: só cria o que ainda não existe e nunca apaga dados.
+
+> A tabela `upcoming_events` (antigos "Próximos Eventos") já não é usada pelo
+> site, porque os eventos vêm do Google Calendar. Pode ficar na base de dados.
 
 ## 3. Obter as chaves do Supabase
 
-1. No menu lateral, vai a **Project Settings** → **API**.
-2. Copia o **Project URL** (algo como `https://xxxxx.supabase.co`).
-3. Copia a chave **service_role** (não é a `anon public` — tem de ser a
-   `service_role`, que fica secreta e nunca vai para o browser).
+1. **Project Settings**, **API**.
+2. Copia o **Project URL** e a chave **service_role** (não a `anon public`).
+   A `service_role` é secreta e nunca vai para o browser nem para o código.
 
-## 4. Popular a base de dados com o conteúdo atual do site
+## 4. Variáveis de ambiente no Vercel
 
-No teu computador, dentro da pasta do projeto:
+Em **Settings**, **Environment Variables** do projeto, cria:
 
-```bash
-npm install
-export SUPABASE_URL="https://xxxxx.supabase.co"
-export SUPABASE_SERVICE_ROLE_KEY="a_tua_service_role_key"
-npm run seed
-```
+| Nome | Valor |
+|---|---|
+| `ADMIN_PASSWORD` | uma password forte, só tua. Não a escrevas em ficheiros do projeto |
+| `SUPABASE_URL` | o Project URL |
+| `SUPABASE_SERVICE_ROLE_KEY` | a chave service_role |
+| `GOOGLE_CALENDAR_ICS_URL` | "Endereço secreto no formato iCal" do calendário dos eventos |
+| `GOOGLE_CALENDAR_NOTICES_ICS_URL` | (opcional) o mesmo, para um calendário só de avisos (feriados, exames) |
 
-(No Windows/PowerShell usa `$env:SUPABASE_URL="..."` em vez de `export`.)
+Para obter o endereço iCal: Google Calendar no computador, ao lado do
+calendário, três pontinhos, **Definições e partilha**, **Integrar calendário**,
+**Endereço secreto no formato iCal**. Não cliques em "Repor", porque isso
+invalida o endereço. Aplica as variáveis a todos os ambientes.
 
-Isto vai inserir nas tabelas todos os anúncios, edições da revista,
-calendários e eventos que já estavam escritos no código do site — para
-começares exatamente de onde o site está hoje.
+## 5. Deploy
 
-## 5. Configurar as variáveis de ambiente no Vercel
+Faz `git push`. O Vercel faz o deploy sozinho, com as funções de `api/`.
+Depois de mudares uma variável de ambiente é preciso um **Redeploy**.
 
-No dashboard do Vercel, abre o projeto do site → **Settings** →
-**Environment Variables**, e adiciona:
+## 6. Testar
 
-| Nome                     | Valor                                             |
-|---------------------------|---------------------------------------------------|
-| `ADMIN_PASSWORD`          | `gabriela` (ou a password que preferires)          |
-| `SUPABASE_URL`             | o Project URL do passo 3                          |
-| `SUPABASE_SERVICE_ROLE_KEY`| a service_role key do passo 3                     |
+1. Abre o site, vai ao fundo da página e clica em **Administrador**.
+2. Entra com a `ADMIN_PASSWORD`.
+3. No separador **Calendário** deve aparecer "Ligado ao Google Calendar".
 
-Aplica a todos os ambientes (Production, Preview, Development).
+## Notas
 
-## 6. Deploy
-
-Faz `git push` como habitualmente — o Vercel vai fazer o deploy automático,
-já com as funções em `api/` incluídas.
-
-## 7. Testar
-
-1. Abre o site e vai ao fundo da página — clica em **Administrador**.
-2. Introduz a password (`gabriela`, ou a que definiste).
-3. Deves ver 4 separadores: Anúncios, Revista, Calendário, Próximos Eventos.
-   Experimenta editar ou criar algo e confirma que aparece no site público.
-
-## Notas importantes
-
-- **A password não está no código**: fica só na variável de ambiente
-  `ADMIN_PASSWORD` do Vercel. Ainda assim, é uma proteção simples (uma
-  password partilhada, sem contas individuais) — adequada para conteúdo de
-  marketing, não para dados sensíveis.
-- **Imagens da revista**: o formulário de nova edição pede um URL de
-  imagem. As edições antigas já têm as capas em `public/magazine/`. Para
-  edições novas, ou fazes upload da imagem a um serviço como o Google
-  Drive/Imgur e colas o link direto, ou pedes a alguém para adicionar o
-  ficheiro à pasta `public/magazine/` do repositório.
-- **Se mudares a password**: só precisas de atualizar a variável
-  `ADMIN_PASSWORD` no Vercel e fazer um novo deploy (ou "Redeploy" sem
-  alterações) — as sessões já iniciadas com a password antiga deixam de
-  funcionar automaticamente.
-- **Testar localmente**: usa `vercel dev` (depois de instalares a CLI do
-  Vercel com `npm i -g vercel` e correres `vercel link`) para correres o
-  site com as funções `api/` a funcionar no teu computador, com as mesmas
-  variáveis de ambiente num ficheiro `.env`.
-
-## Atualização: "Eventos NMATH" e "Oráculo"
-
-Se já tinhas o portal a funcionar e acabaste de atualizar o código com as
-secções **Eventos NMATH** (Integration Bee, Jornadas, ENEMATH, Time2Talk)
-e **Oráculo** (episódios do podcast), só precisas de 2 passos extra —
-**não é preciso repetir a instalação toda**:
-
-1. No Supabase → **SQL Editor** → **New query**, cola de novo o conteúdo
-   completo de `db/schema.sql` e corre. É seguro repetir: as tabelas que já
-   existiam (`announcements`, `magazine_editions`, etc.) não são apagadas
-   nem alteradas — só são criadas as 2 tabelas novas (`flagship_events` e
-   `oracle_episodes`).
-
-2. No terminal, com as variáveis `SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY`
-   definidas (como antes), corre:
-   ```bash
-   npm install
-   npm run seed:new
-   ```
-   **Não uses `npm run seed`** (esse apaga e reescreve as 4 tabelas
-   originais, o que perderia qualquer edição que já tenhas feito no admin).
-   `npm run seed:new` só mexe nas 2 tabelas novas.
-
-3. Faz `git push` do código atualizado e, se o Vercel não fizer deploy
-   automático, força um com Redeploy. Não é preciso mudar nenhuma variável
-   de ambiente — são as mesmas de antes.
-
-## Atualização: páginas de arquivo, rascunhos, lixo e upload de imagens
-
-Se já tinhas o portal com "Eventos NMATH" e "Oráculo" a funcionar e acabaste
-de atualizar outra vez o código, aqui está o que mudou e o que fazer:
-
-**O que é novo:**
-- `/anuncios` — página com o arquivo completo de todos os anúncios (a
-  homepage passou a mostrar só os mais recentes, com um botão "Ver todos")
-- `/revista` — página com o arquivo completo de edições da revista (a
-  homepage mostra só a edição atual, com um botão "Ver arquivo completo")
-- Cada item (anúncios, revista, eventos NMATH, próximos eventos, Oráculo)
-  tem agora um interruptor **Publicado / Rascunho** — um rascunho fica
-  guardado mas não aparece no site até ativares "Publicado"
-- Ao apagar algo no admin, ele vai para o **Lixo** em vez de desaparecer
-  logo — há um botão "Lixo" em cada secção para o veres, repor, ou eliminar
-  definitivamente
-- No formulário da Revista já dá para fazer **upload direto de uma imagem**
-  em vez de teres de arranjar um link à parte
-
-**O que precisas de fazer:**
-
-1. No Supabase → SQL Editor, cola de novo o `db/schema.sql` completo e
-   corre. É seguro repetir — só acrescenta as colunas novas
-   (`published`, `deleted_at`) às tabelas existentes e cria o espaço de
-   armazenamento para as imagens (`nmath-uploads`). Nada é apagado.
-2. **Não precisas de correr nenhum seed novo** — os anúncios, revista, etc.
-   que já tinhas ficam automaticamente marcados como "Publicado".
-3. `git push` do código novo e confirma o deploy no Vercel.
-4. Testa: no `/admin`, confirma que consegues marcar algo como rascunho e
-   que deixa de aparecer no site; apaga um item de teste e confirma que
-   aparece no "Lixo" com opção de repor.
-
-
+- **Segurança**: a password é partilhada (sem contas individuais), por isso
+  serve para conteúdo do site, não para dados sensíveis. Se a mudares, atualiza
+  `ADMIN_PASSWORD` no Vercel e faz Redeploy. As sessões antigas deixam de valer.
+- **Rascunhos e lixo**: cada item tem o interruptor Publicado/Rascunho. O que
+  se apaga vai primeiro para o Lixo, de onde se pode repor.
+- **Uploads**: imagens até 5 MB e PDFs até 3 MB (limite do Vercel).
+- **Limite de funções**: o plano gratuito do Vercel só permite 12 funções em
+  `api/`. Neste momento há 10. Para novos pedidos à API, reaproveita uma função
+  existente (como se faz com `?resource=` em `api/calendar-years.js`).
+- **Testar localmente**: `vercel dev` (depois de `npm i -g vercel` e
+  `vercel link`), com as variáveis num ficheiro `.env` que nunca se commita.
+- **Segredos**: `.env`, chaves SSH e passwords nunca devem ir para o git.

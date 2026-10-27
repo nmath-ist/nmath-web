@@ -8,11 +8,10 @@ import {
   MapPin,
   ExternalLink,
 } from "lucide-react";
-import { sortableTimestamp, formatDateRange, isIsoDate } from "./dateUtils";
 
 // ---------- Tipos ----------
 
-// Evento já normalizado, venha do Google Calendar ou do admin.
+// Evento já normalizado (vem do Google Calendar).
 type CalEvent = {
   id: string;
   title: string;
@@ -23,7 +22,6 @@ type CalEvent = {
   location: string;
   description: string;
   link: string;
-  type: string; // só nos eventos do admin
   kind: "event" | "notice"; // "notice" = feriado, semana de exames, etc. (não é um evento do NMATH)
   sortKey: number;
   icsStart: string; // linhas prontas para o ficheiro .ics
@@ -76,7 +74,7 @@ const compactUtc = (iso: string) => new Date(iso).toISOString().replace(/[-:]/g,
 // ---------- Avisos (feriados, exames...) ----------
 // Isto não são eventos do NMATH: aparecem a cinzento no calendário e ficam fora de "Próximos eventos".
 // Um evento conta como aviso se o título tiver uma destas expressões (sem acentos, sem maiúsculas),
-// se começar por "[Aviso]", ou se (nos eventos do admin) o tipo for "Aviso".
+// ou se começar por "[Aviso]".
 // Para ajustar, basta editar esta lista.
 const NOTICE_WORDS = [
   "feriado",
@@ -130,7 +128,6 @@ function fromGoogle(e: GoogleEvent): CalEvent {
     location: e.location,
     description: e.description,
     link: e.link,
-    type: "",
     kind: e.notice ? "notice" : classify(e.title, ""),
     sortKey,
     icsStart,
@@ -138,56 +135,9 @@ function fromGoogle(e: GoogleEvent): CalEvent {
   };
 }
 
-function fromAdmin(r: any): CalEvent {
-  const iso = isIsoDate(r.event_date);
-  const startDay = iso ? r.event_date : "";
-  const endDay = iso ? (isIsoDate(r.event_end_date) ? r.event_end_date : startDay) : "";
-  const time = String(r.event_time || "");
-  const m = /^(\d{2}):(\d{2})(?:\s*[–-]\s*(\d{2}):(\d{2}))?$/.exec(time);
-  let icsStart = "";
-  let icsEnd = "";
-  if (iso) {
-    if (m) {
-      const d1 = startDay.replace(/-/g, "");
-      const d2 = endDay.replace(/-/g, "");
-      const endHm = m[3] ? `${m[3]}${m[4]}` : `${pad(Math.min(23, Number(m[1]) + 1))}${m[2]}`;
-      icsStart = `DTSTART;TZID=${TZ}:${d1}T${m[1]}${m[2]}00`;
-      icsEnd = `DTEND;TZID=${TZ}:${d2}T${endHm}00`;
-    } else {
-      icsStart = `DTSTART;VALUE=DATE:${startDay.replace(/-/g, "")}`;
-      icsEnd = `DTEND;VALUE=DATE:${addDays(endDay, 1).replace(/-/g, "")}`;
-    }
-  }
-  return {
-    id: `db-${r.id}`,
-    title: cleanTitle(r.title),
-    startDay,
-    endDay,
-    dateLabel: formatDateRange(r.event_date, r.event_end_date),
-    timeLabel: time,
-    location: r.location || "",
-    description: r.description || "",
-    link: r.link || "",
-    type: r.event_type || "",
-    kind: classify(r.title || "", r.event_type || ""),
-    sortKey: sortableTimestamp(r.event_date, r.event_end_date),
-    icsStart,
-    icsEnd,
-  };
-}
-
 // ---------- Cores ----------
-const getEventTypeColor = (type: string) => {
-  const colors: { [key: string]: string } = {
-    Recreativa: "bg-orange-100 text-orange-700 border border-orange-200",
-    Palestra: "bg-purple-100 text-purple-700 border border-purple-200",
-    Eventos: "bg-teal-100 text-teal-700 border border-teal-200",
-    Workshop: "bg-slate-100 text-slate-800 border border-slate-300",
-  };
-  return colors[type] || "bg-blue-100 text-blue-700 border border-blue-200";
-};
 const chipClass = (e: CalEvent) =>
-  e.kind === "notice" ? "bg-slate-100 text-slate-500 border border-slate-200 italic" : e.type ? getEventTypeColor(e.type) : "bg-blue-200 text-blue-900 border border-blue-300 font-medium";
+  e.kind === "notice" ? "bg-slate-100 text-slate-500 border border-slate-200 italic" : "bg-blue-200 text-blue-900 border border-blue-300 font-medium";
 
 // ---------- Cartão de evento ----------
 function EventItem({ ev }: { ev: CalEvent }) {
@@ -195,7 +145,6 @@ function EventItem({ ev }: { ev: CalEvent }) {
     <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
       <div className="flex flex-wrap items-start justify-between gap-2 mb-1">
         <h4 className="text-lg text-slate-800">{ev.title}</h4>
-        {ev.type && <span className={`px-3 py-0.5 rounded-full text-sm ${getEventTypeColor(ev.type)}`}>{ev.type}</span>}
       </div>
       <div className="text-sm text-slate-600 space-y-1 mb-2">
         <div className="flex items-center gap-2">
@@ -247,7 +196,6 @@ function NoticeItem({ ev }: { ev: CalEvent }) {
 const WEEKDAYS = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
 
 export default function CalendarSection() {
-  const [adminEvents, setAdminEvents] = useState<CalEvent[]>([]);
   const [google, setGoogle] = useState<{ configured: boolean; error: boolean; events: CalEvent[] }>({ configured: false, error: false, events: [] });
   const [loading, setLoading] = useState(true);
 
@@ -257,11 +205,6 @@ export default function CalendarSection() {
   const [selected, setSelected] = useState<string | null>(null);
 
   useEffect(() => {
-    const fromDb = fetch("/api/upcoming-events")
-      .then((r) => r.json())
-      .then((rows) => setAdminEvents(rows.map(fromAdmin)))
-      .catch(() => setAdminEvents([]));
-
     const fromGoogleCal = fetch("/api/calendar-years?resource=events")
       .then((r) => r.json())
       .then((d) =>
@@ -269,12 +212,11 @@ export default function CalendarSection() {
       )
       .catch(() => setGoogle({ configured: false, error: true, events: [] }));
 
-    Promise.all([fromDb, fromGoogleCal]).finally(() => setLoading(false));
+    fromGoogleCal.finally(() => setLoading(false));
   }, []);
 
-  // Se o Google Calendar estiver ligado e a funcionar, é a fonte. Senão, usa os eventos do admin.
-  const useGoogle = google.configured && !google.error;
-  const events = useGoogle ? google.events : adminEvents;
+  const events = google.events;
+  const unavailable = !google.configured || google.error;
 
   const byDay = useMemo(() => {
     const map = new Map<string, CalEvent[]>();
@@ -423,7 +365,9 @@ export default function CalendarSection() {
                 )}
               </div>
               {panelEvents.length === 0 ? (
-                <p className="text-slate-500 text-sm">Não há eventos marcados para as próximas 2 semanas.</p>
+                <p className="text-slate-500 text-sm">
+                  {unavailable ? "O calendário está temporariamente indisponível." : "Não há eventos marcados para as próximas 2 semanas."}
+                </p>
               ) : (
                 panelEvents.map((e) => (e.kind === "notice" ? <NoticeItem key={e.id} ev={e} /> : <EventItem key={e.id} ev={e} />))
               )}

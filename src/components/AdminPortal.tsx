@@ -78,20 +78,6 @@ type RecruitmentLink = {
   link: string;
 };
 
-type UpcomingEvent = {
-  id?: number;
-  title: string;
-  event_date: string;
-  event_end_date: string;
-  event_time: string;
-  location: string;
-  description: string;
-  event_type: string;
-  link: string;
-  sort_order: number;
-  published: boolean;
-};
-
 type FlagshipEvent = {
   id?: number;
   title: string;
@@ -256,14 +242,13 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
         <Tabs defaultValue="announcements">
           <TabsList className="mb-6 flex-wrap h-auto">
             <TabsTrigger value="announcements">Anúncios</TabsTrigger>
-            <TabsTrigger value="magazine">Revista</TabsTrigger>
             <TabsTrigger value="calendar">Calendário</TabsTrigger>
-            <TabsTrigger value="recruitment">Recrutamento</TabsTrigger>
-            <TabsTrigger value="events">Próximos Eventos</TabsTrigger>
             <TabsTrigger value="flagship">Eventos NMATH</TabsTrigger>
+            <TabsTrigger value="magazine">Revista</TabsTrigger>
             <TabsTrigger value="oracle">Oráculo</TabsTrigger>
             <TabsTrigger value="photos">Fotos</TabsTrigger>
             <TabsTrigger value="mobility">Mobilidade</TabsTrigger>
+            <TabsTrigger value="recruitment">Recrutamento</TabsTrigger>
           </TabsList>
 
           <TabsContent value="announcements">
@@ -298,18 +283,6 @@ function Dashboard({ onLogout }: { onLogout: () => void }) {
 
           <TabsContent value="recruitment">
             <RecruitmentAdmin />
-          </TabsContent>
-
-          <TabsContent value="events">
-            <ContentSection<UpcomingEvent>
-              apiPath="/api/upcoming-events"
-              title="Próximos Eventos"
-              hint="Aparecem no calendário do site, do mais próximo para o mais distante. Data e local são obrigatórios."
-              emptyItem={emptyEvent}
-              renderRow={(item) => ({ title: item.title, subtitle: `${formatShortDate(item.event_date) || item.event_date} · ${item.location}` })}
-              FormComponent={EventForm}
-              sortKey={(item) => sortableTimestamp(item.event_date, item.event_end_date)}
-            />
           </TabsContent>
 
           <TabsContent value="flagship">
@@ -434,28 +407,6 @@ function LocationField({ value, onChange, required }: { value: string; onChange:
         {PLACE_SUGGESTIONS.map((p) => <option key={p} value={p} />)}
       </datalist>
     </>
-  );
-}
-
-const EVENT_TYPES = ['Eventos', 'Palestra', 'Workshop', 'Recreativa'];
-
-function EventTypeField({ value, onChange }: { value: string; onChange: (v: string) => void }) {
-  const [other, setOther] = useState(!!value && !EVENT_TYPES.includes(value));
-  return (
-    <div className="space-y-2">
-      <select
-        className="w-full border rounded-md h-9 px-3 bg-input-background text-sm"
-        value={other ? '__other' : value}
-        onChange={(e) => {
-          if (e.target.value === '__other') { setOther(true); onChange(''); }
-          else { setOther(false); onChange(e.target.value); }
-        }}
-      >
-        {EVENT_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
-        <option value="__other">Outro...</option>
-      </select>
-      {other && <Input value={value} onChange={(e) => onChange(e.target.value)} placeholder="Escreve o tipo" />}
-    </div>
   );
 }
 
@@ -1083,101 +1034,92 @@ function MagazineForm({
   );
 }
 
-// -------------------- Calendário (sem lixo/rascunho — são só links por ano) --------------------
-const emptyCalendarYear: CalendarYear = { year_label: '', calendar_link: '', sort_order: 0 };
+// -------------------- Calendário (ligação ao Google Calendar) --------------------
+type GoogleEventLite = { id: string; title: string; start: string; allDay: boolean; notice?: boolean };
 
 function CalendarAdmin() {
-  const [items, setItems] = useState<CalendarYear[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [editing, setEditing] = useState<CalendarYear | null>(null);
-  const [error, setError] = useState('');
+  const [state, setState] = useState<{ loading: boolean; configured: boolean; error: string; events: GoogleEventLite[] }>({
+    loading: true, configured: false, error: '', events: [],
+  });
 
-  function load() {
-    setLoading(true);
-    apiGet<CalendarYear[]>('/api/calendar-years')
-      .then(setItems)
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
-  }
+  useEffect(() => {
+    fetch('/api/calendar-years?resource=events')
+      .then((r) => r.json())
+      .then((d) => setState({ loading: false, configured: !!d.configured, error: d.error || '', events: d.events || [] }))
+      .catch(() => setState({ loading: false, configured: true, error: 'Não foi possível contactar o servidor.', events: [] }));
+  }, []);
 
-  useEffect(load, []);
+  const todayKey = new Intl.DateTimeFormat('en-CA', { timeZone: 'Europe/Lisbon' }).format(new Date());
+  const isFuture = (e: GoogleEventLite) => (e.allDay ? e.start >= todayKey : new Date(e.start).getTime() >= Date.now());
+  const events = state.events.filter((e) => !e.notice);
+  const notices = state.events.filter((e) => e.notice);
+  const upcoming = events.filter(isFuture).slice(0, 6);
 
-  async function handleSave(item: CalendarYear) {
-    if (item.id) await apiSend('/api/calendar-years', 'PUT', item);
-    else await apiSend('/api/calendar-years', 'POST', item);
-    setEditing(null);
-    load();
-  }
-
-  async function handleDelete(item: CalendarYear) {
-    if (!window.confirm(`Eliminar "${item.year_label}"? Esta ação não pode ser desfeita.`)) return;
-    await apiSend(`/api/calendar-years?id=${item.id}`, 'DELETE');
-    load();
-  }
+  const when = (e: GoogleEventLite) =>
+    e.allDay
+      ? new Intl.DateTimeFormat('pt-PT', { timeZone: 'UTC', day: 'numeric', month: 'short' }).format(new Date(`${e.start}T00:00:00Z`))
+      : new Intl.DateTimeFormat('pt-PT', { timeZone: 'Europe/Lisbon', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }).format(new Date(e.start));
 
   return (
-    <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg">Link do calendário</h2>
-        <Button size="sm" onClick={() => setEditing({ ...emptyCalendarYear })}>
-          <Plus className="h-4 w-4 mr-1" /> Novo
-        </Button>
+    <div className="space-y-5">
+      <div>
+        <h2 className="text-lg">Calendário do site</h2>
+        <p className="text-sm text-slate-500">
+          O calendário do site é lido do Google Calendar. Para criar, mudar ou apagar um evento, faz isso no próprio Google Calendar.
+        </p>
       </div>
-      <p className="text-sm text-slate-500 -mt-2">O botão "Abrir no Google Calendar", junto ao calendário do site, abre o primeiro link desta lista (o de menor ordem). Os eventos mostrados no calendário vêm do Google Calendar, ligado ao site pela variável GOOGLE_CALENDAR_ICS_URL.</p>
-      {loading && <p className="text-slate-500">A carregar...</p>}
-      {error && <p className="text-red-600">{error}</p>}
-      {items.map((item) => (
-        <Card key={item.id}>
-          <CardContent className="flex items-center justify-between py-4">
-            <div>
-              <p className="font-medium">{item.year_label}</p>
-              <p className="text-sm text-slate-500">{item.calendar_link}</p>
-            </div>
-            <div className="flex gap-2">
-              <Button size="icon" variant="outline" onClick={() => setEditing(item)} aria-label="Editar">
-                <Pencil className="h-4 w-4" />
-              </Button>
-              <Button size="icon" variant="outline" onClick={() => handleDelete(item)} aria-label="Eliminar">
-                <Trash2 className="h-4 w-4" />
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
 
-      {editing && (
-        <FormModal title={editing.id ? 'Editar ano' : 'Novo ano'} onClose={() => setEditing(null)}>
-          <form
-            className="space-y-3"
-            onSubmit={async (e) => {
-              e.preventDefault();
-              await handleSave(editing);
-            }}
-          >
-            <div>
-              <Label>Nome do ano</Label>
-              <Input
-                value={editing.year_label}
-                onChange={(e) => setEditing({ ...editing, year_label: e.target.value })}
-                placeholder="Ex: 1º Ano, Mestrado"
-                required
-              />
-            </div>
-            <div>
-              <Label>Link do Google Calendar (link de incorporação/embed)</Label>
-              <Input
-                value={editing.calendar_link}
-                onChange={(e) => setEditing({ ...editing, calendar_link: e.target.value })}
-                required
-              />
-            </div>
-            <div className="flex justify-end gap-2 pt-2">
-              <Button type="button" variant="outline" onClick={() => setEditing(null)}>Cancelar</Button>
-              <Button type="submit">Guardar</Button>
-            </div>
-          </form>
-        </FormModal>
+      {state.loading && <p className="text-sm text-slate-500">A verificar a ligação ao Google Calendar...</p>}
+
+      {!state.loading && !state.configured && (
+        <div className="rounded-lg border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900 space-y-1">
+          <p className="font-medium">O calendário do site ainda não está ligado ao Google Calendar.</p>
+          <p>Define <code>GOOGLE_CALENDAR_ICS_URL</code> no Vercel e faz Redeploy (instruções em baixo).</p>
+        </div>
       )}
+
+      {!state.loading && state.configured && state.error && (
+        <div className="rounded-lg border border-red-300 bg-red-50 p-4 text-sm text-red-900 space-y-1">
+          <p className="font-medium">A ligação está configurada, mas não foi possível ler o calendário.</p>
+          <p>Confirma que o endereço não foi reposto no Google Calendar e que continua certo no Vercel.</p>
+        </div>
+      )}
+
+      {!state.loading && state.configured && !state.error && (
+        <div className="rounded-lg border border-green-300 bg-green-50 p-4 text-sm text-green-900 space-y-2">
+          <p className="font-medium">
+            Ligado ao Google Calendar: {events.length} {events.length === 1 ? 'evento' : 'eventos'} e {notices.length}{' '}
+            {notices.length === 1 ? 'aviso' : 'avisos'} lidos.
+          </p>
+          {upcoming.length === 0 ? (
+            <p>Não há eventos futuros no calendário.</p>
+          ) : (
+            <ul className="space-y-0.5">
+              {upcoming.map((e) => (
+                <li key={e.id}>
+                  <span className="text-green-800">{when(e)}</span> · {e.title}
+                </li>
+              ))}
+            </ul>
+          )}
+          <p className="text-xs text-green-800">As alterações feitas no Google demoram uns 5 minutos a aparecer no site.</p>
+        </div>
+      )}
+
+      <div className="rounded-lg border border-slate-200 bg-white p-4 text-sm text-slate-700 space-y-2">
+        <p className="font-medium">Como está ligado</p>
+        <ul className="list-disc pl-5 space-y-1">
+          <li>
+            <code>GOOGLE_CALENDAR_ICS_URL</code>: calendário dos eventos do NMATH. É o "Endereço secreto no formato iCal" (Google Calendar,
+            definições do calendário, Integrar calendário).
+          </li>
+          <li>
+            <code>GOOGLE_CALENDAR_NOTICES_ICS_URL</code> (opcional): calendário só de avisos, como feriados e semanas de exames. Aparecem a cinzento.
+          </li>
+          <li>Um evento do primeiro calendário também conta como aviso se tiver <code>#aviso</code> na descrição.</li>
+          <li>Estas variáveis mudam-se no Vercel (Settings, Environment Variables), seguido de Redeploy.</li>
+        </ul>
+      </div>
     </div>
   );
 }
@@ -1258,81 +1200,6 @@ function RecruitmentAdmin() {
         </FormModal>
       )}
     </div>
-  );
-}
-
-// -------------------- Próximos Eventos --------------------
-const emptyEvent: UpcomingEvent = {
-  title: '', event_date: '', event_end_date: '', event_time: '', location: '', description: '',
-  event_type: 'Eventos', link: '', sort_order: 0, published: true,
-};
-
-function EventForm({
-  initial,
-  onCancel,
-  onSave,
-}: {
-  initial: UpcomingEvent;
-  onCancel: () => void;
-  onSave: (item: UpcomingEvent) => Promise<void>;
-}) {
-  const [form, setForm] = useState<UpcomingEvent>(initial);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState('');
-
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    setSaving(true);
-    setError('');
-    try {
-      await onSave(form);
-    } catch (err: any) {
-      setError(err.message || 'Erro ao guardar.');
-    } finally {
-      setSaving(false);
-    }
-  }
-
-  return (
-    <form onSubmit={handleSubmit} className="space-y-3">
-      <div>
-        <Label>Título</Label>
-        <Input value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} required />
-      </div>
-      <div className="grid grid-cols-2 gap-3">
-        <Field label="Data" required>
-          <Input type="date" value={form.event_date} onChange={(e) => setForm({ ...form, event_date: e.target.value })} required />
-        </Field>
-        <Field label="Hora">
-          <TimeRangeField value={form.event_time} onChange={(v) => setForm({ ...form, event_time: v })} />
-        </Field>
-      </div>
-      <Field label="Data de fim (opcional)" hint="Só para algo que dura mais do que um dia.">
-        <Input type="date" value={form.event_end_date} onChange={(e) => setForm({ ...form, event_end_date: e.target.value })} />
-      </Field>
-      <Field label="Local" required hint="Começa a escrever para ver sugestões.">
-        <LocationField value={form.location} onChange={(v) => setForm({ ...form, location: v })} required />
-      </Field>
-      <div>
-        <Label>Descrição</Label>
-        <Textarea value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-      </div>
-      <div className="grid grid-cols-2 gap-3">
-        <Field label="Tipo">
-          <EventTypeField value={form.event_type} onChange={(v) => setForm({ ...form, event_type: v })} />
-        </Field>
-        <div>
-          <Label>Link (opcional — inscrição, etc.)</Label>
-          <Input value={form.link} onChange={(e) => setForm({ ...form, link: e.target.value })} />
-        </div>
-      </div>
-      <PublishedToggle checked={form.published} onChange={(v) => setForm({ ...form, published: v })} />
-      {error && <p className="text-sm text-red-600">{error}</p>}
-      <div className="flex justify-end gap-2 pt-2">
-        <Button type="button" variant="outline" onClick={onCancel}>Cancelar</Button>
-        <Button type="submit" disabled={saving}>{saving ? 'A guardar...' : 'Guardar'}</Button>
-      </div>
-    </form>
   );
 }
 
