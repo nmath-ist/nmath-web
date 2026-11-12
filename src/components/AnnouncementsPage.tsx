@@ -4,13 +4,13 @@ import { Card, CardContent } from './ui/card';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
-import { ArrowLeft, ArrowRight, Zap, Trophy, Calendar as CalendarIcon, Search } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Zap, GraduationCap, Trophy, Calendar as CalendarIcon, Search } from 'lucide-react';
 import { announcementUrl } from './slug';
 import { CardSkeletonGrid } from './CardSkeleton';
 import { toast } from 'sonner';
 import { sortByDateDesc, formatDateRange } from './dateUtils';
 
-const ICONS: Record<string, any> = { calendar: CalendarIcon, trophy: Trophy, zap: Zap };
+const ICONS: Record<string, any> = { calendar: CalendarIcon, trophy: Trophy, zap: Zap, graduation: GraduationCap };
 
 function getInitialParam(name: string, fallback: string): string {
   if (typeof window === 'undefined') return fallback;

@@ -11,7 +11,7 @@ create table if not exists announcements (
   event_date text not null,
   read_time text not null default '2 min',
   featured boolean not null default false,
-  icon text not null default 'calendar', -- 'calendar' | 'trophy' | 'zap'
+  icon text not null default 'calendar', -- 'calendar' | 'trophy' | 'zap' | 'graduation'
   full_content text not null default '',
   sort_order integer not null default 0,
   created_at timestamptz not null default now()

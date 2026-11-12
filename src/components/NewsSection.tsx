@@ -2,14 +2,14 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import SolidsBackground from './SolidsBackground';
 import { Badge } from './ui/badge';
 import { Button } from './ui/button';
-import { ArrowRight, Zap, Trophy, Calendar as CalendarIcon } from 'lucide-react';
+import { ArrowRight, Zap, GraduationCap, Trophy, Calendar as CalendarIcon } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { announcementUrl } from './slug';
 import { CardSkeletonGrid } from './CardSkeleton';
 import { toast } from 'sonner';
 import { sortByDateDesc, formatDateRange } from './dateUtils';
 
-const ICONS: Record<string, any> = { calendar: CalendarIcon, trophy: Trophy, zap: Zap };
+const ICONS: Record<string, any> = { calendar: CalendarIcon, trophy: Trophy, zap: Zap, graduation: GraduationCap };
 
 export default function NewsSection() {
   const [newsItems, setNewsItems] = useState<any[]>([]);

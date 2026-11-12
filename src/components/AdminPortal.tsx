@@ -716,6 +716,7 @@ function AnnouncementForm({
             <option value="calendar">Calendário</option>
             <option value="trophy">Troféu</option>
             <option value="zap">Raio</option>
+            <option value="graduation">Chapéu de formatura</option>
           </select>
         </div>
       </div>
